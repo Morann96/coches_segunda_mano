@@ -84,6 +84,7 @@ CREATE TABLE prestaciones (
     par INT,
     velocidad_max INT,
     aceleracion DECIMAL(10, 2),
+    fecha_extraccion DATETIME,
     FOREIGN KEY (id_marca) REFERENCES marcas(id_marca),
     FOREIGN KEY (id_modelo) REFERENCES modelos(id_modelo),
     FOREIGN KEY (id_distintivo_ambiental) REFERENCES distintivos_ambientales(id_distintivo),
