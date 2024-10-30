@@ -1,0 +1,96 @@
+CREATE TABLE provincias (
+    id_provincia INT PRIMARY KEY,
+    provincia VARCHAR(100) NOT NULL,
+    comunidad_autonoma VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE concesionarios (
+    id_concesionario INT PRIMARY KEY,
+    nombre_concesionario VARCHAR(100) NOT NULL,
+    direccion VARCHAR(100) NOT NULL,
+    id_provincia INT,
+    FOREIGN KEY (id_provincia) REFERENCES provincias(id_provincia)
+);
+
+CREATE TABLE marcas (
+    id_marca INT PRIMARY KEY,
+    nombre_marca VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE modelos (
+    id_modelo INT PRIMARY KEY,
+    nombre_modelo VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE carrocerias (
+    id_carroceria INT PRIMARY KEY,
+    nombre_carroceria VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE distintivos_ambientales (
+    id_distintivo INT PRIMARY KEY,
+    nombre_distintivo VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE combustibles (
+    id_combustible INT PRIMARY KEY,
+    nombre_combustible VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE tipos_cambio (
+    id_tipo_cambio INT PRIMARY KEY,
+    nombre_tipo_cambio VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE sobrealimentaciones (
+    id_sobrealimentacion INT PRIMARY KEY,
+    nombre_sobrealimentacion VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE prestaciones (
+    id_marca INT,
+    id_modelo INT,
+    mes_matriculacion INT,
+    ano_matriculacion INT,
+    kilometraje INT,
+    id_distintivo_ambiental INT,
+    garantia INT,
+    precio_nuevo DECIMAL(10, 2),
+    precio_contado DECIMAL(10, 2),
+    id_concesionario INT,
+    id_provincia INT,
+    id_carroceria INT,
+    largo INT,
+    ancho INT,
+    alto INT,
+    capacidad_maletero INT,
+    num_plazas INT,
+    num_puertas INT,
+    batalla INT,
+    peso INT,
+    consumo_medio DECIMAL(10, 2),
+    consumo_carretera DECIMAL(10, 2),
+    consumo_urbano DECIMAL(10, 2),
+    co2 DECIMAL(10, 2),
+    deposito DECIMAL(10, 2),
+    id_combustible INT,
+    num_cilindros INT,
+    cilindrada INT,
+    id_sobrealimentacion INT,
+    id_tipo_cambio INT,
+    num_marchas INT,
+    potencia_kw INT,
+    potencia_cv INT,
+    par INT,
+    velocidad_max INT,
+    aceleracion DECIMAL(10, 2),
+    FOREIGN KEY (id_marca) REFERENCES marcas(id_marca),
+    FOREIGN KEY (id_modelo) REFERENCES modelos(id_modelo),
+    FOREIGN KEY (id_distintivo_ambiental) REFERENCES distintivos_ambientales(id_distintivo),
+    FOREIGN KEY (id_concesionario) REFERENCES concesionarios(id_concesionario),
+    FOREIGN KEY (id_provincia) REFERENCES provincias(id_provincia),
+    FOREIGN KEY (id_carroceria) REFERENCES carrocerias(id_carroceria),
+    FOREIGN KEY (id_combustible) REFERENCES combustibles(id_combustible),
+    FOREIGN KEY (id_sobrealimentacion) REFERENCES sobrealimentaciones(id_sobrealimentacion),
+    FOREIGN KEY (id_tipo_cambio) REFERENCES tipos_cambio(id_tipo_cambio)
+);
