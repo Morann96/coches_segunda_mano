@@ -1,20 +1,20 @@
-,id_provincia,nombre_provincia
-0,1,Vizcaya
-1,2,Sevilla
-2,3,Barcelona
-3,4,Málaga
-4,5,Pontevedra
-5,6,La Coruña
-6,7,Zaragoza
-7,8,Madrid
-8,9,Burgos
-9,10,León
-10,11,Girona
-11,12,Valencia
-12,13,Alicante
-13,14,Murcia
-14,15,Badajoz
-15,16,Islas Baleares
-16,17,Las Palmas
-17,18,Toledo
-18,19,Huelva
+id_provincia,nombre_provincia
+1,Vizcaya
+2,Sevilla
+3,Barcelona
+4,Málaga
+5,Pontevedra
+6,La Coruña
+7,Zaragoza
+8,Madrid
+9,Burgos
+10,León
+11,Girona
+12,Valencia
+13,Alicante
+14,Murcia
+15,Badajoz
+16,Islas Baleares
+17,Las Palmas
+18,Toledo
+19,Huelva

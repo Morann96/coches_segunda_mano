@@ -1,9 +1,9 @@
-,id_carroceria,nombre_carroceria
-0,1,Convertible
-1,2,Berlina
-2,3,"4x4, SUV o pickup"
-3,4,Todo Terreno
-4,5,Stationwagon
-5,6,Monovolumen
-6,7,Coupe
-7,8,Berlina mediana o grande
+id_carroceria,nombre_carroceria
+1,Convertible
+2,Berlina
+3,"4x4, SUV o pickup"
+4,Todo Terreno
+5,Stationwagon
+6,Monovolumen
+7,Coupe
+8,Berlina mediana o grande
