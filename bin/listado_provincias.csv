@@ -1,20 +1,51 @@
 id_provincia,nombre_provincia
-1,Vizcaya
+1,Madrid
 2,Sevilla
-3,Barcelona
-4,Málaga
-5,Pontevedra
-6,La Coruña
-7,Zaragoza
-8,Madrid
-9,Burgos
-10,León
-11,Girona
-12,Valencia
-13,Alicante
-14,Murcia
-15,Badajoz
-16,Islas Baleares
-17,Las Palmas
-18,Toledo
-19,Huelva
+3,Córdoba
+4,Alicante
+5,Vizcaya
+6,Barcelona
+7,Valencia
+8,Málaga
+9,Lugo
+10,Cádiz
+11,Las Palmas
+12,Girona
+13,Zaragoza
+14,Asturias
+15,La Coruña
+16,Jaén
+17,Soria
+18,Tenerife
+19,Tarragona
+20,Almería
+21,Murcia
+22,Islas Baleares
+23,Pontevedra
+24,Salamanca
+25,La Rioja
+26,Badajoz
+27,Granada
+28,Ciudad Real
+29,Navarra
+30,Toledo
+31,Albacete
+32,Cantabria
+33,Álava
+34,Cáceres
+35,Castellón
+36,Guadalajara
+37,no disponible
+38,León
+39,Huelva
+40,Burgos
+41,Lleida
+42,Ávila
+43,Orense
+44,Cuenca
+45,Huesca
+46,Zamora
+47,Valladolid
+48,Palencia
+49,Guipúzcoa
+50,Teruel

@@ -1,9 +1,9 @@
 id_combustible,nombre_combustible
-1,Gasolina
-2,Gasolina y corriente eléctrica
-3,Diesel
-4,Corriente eléctrica
-5,Diésel
-6,Híbrido Enchufable
-7,Híbrido
-8,Eléctrico
+1,Diesel
+2,Gasolina
+3,Híbrido Enchufable
+4,Eléctrico
+5,Gasolina/gas
+6,
+7,no disponible
+8,Gas
