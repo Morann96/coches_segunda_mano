@@ -2,11 +2,11 @@ id_provincia,nombre_provincia
 1,Madrid
 2,Sevilla
 3,Córdoba
-4,Alicante
-5,Vizcaya
-6,Barcelona
-7,Valencia
-8,Málaga
+4,Valencia
+5,Málaga
+6,Alicante
+7,Vizcaya
+8,Barcelona
 9,Lugo
 10,Cádiz
 11,Las Palmas
@@ -19,10 +19,10 @@ id_provincia,nombre_provincia
 18,Tenerife
 19,Tarragona
 20,Almería
-21,Murcia
-22,Islas Baleares
-23,Pontevedra
-24,Salamanca
+21,Salamanca
+22,Murcia
+23,Islas Baleares
+24,Pontevedra
 25,La Rioja
 26,Badajoz
 27,Granada
@@ -34,17 +34,17 @@ id_provincia,nombre_provincia
 33,Álava
 34,Cáceres
 35,Castellón
-36,Guadalajara
-37,no disponible
-38,León
-39,Huelva
-40,Burgos
-41,Lleida
-42,Ávila
-43,Orense
-44,Cuenca
-45,Huesca
-46,Zamora
+36,Burgos
+37,Guadalajara
+38,
+39,León
+40,Huelva
+41,Zamora
+42,Lleida
+43,Ávila
+44,Orense
+45,Cuenca
+46,Huesca
 47,Valladolid
 48,Palencia
 49,Guipúzcoa
