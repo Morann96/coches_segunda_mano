@@ -22,9 +22,9 @@ CREATE TABLE modelos (
     nombre_modelo VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE carrocerias (
-    id_carroceria INT PRIMARY KEY,
-    nombre_carroceria VARCHAR(100) NOT NULL
+CREATE TABLE tipo_traccion (
+    id_traccion INT PRIMARY KEY,
+    nombre_traccion VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE distintivos_ambientales (
@@ -59,7 +59,7 @@ CREATE TABLE prestaciones (
     precio_contado DECIMAL(10, 2),
     id_concesionario INT,
     id_provincia INT,
-    id_carroceria INT,
+    id_traccion INT,
     largo INT,
     ancho INT,
     alto INT,
