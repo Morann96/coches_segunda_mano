@@ -1,20 +1,80 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-st.title("Presentación de Datos")
+# Cargar los datos
+@st.cache_data
+def load_data():
+    data = pd.read_csv(bin/data.csv)
+    return data
 
-df = pd.read_csv('datos_coches.csv')
+data = load_data()
 
-marca = st.sidebar.multiselect('Selecciona Marca', df['marca'].unique())
-modelo = st.sidebar.multiselect('Selecciona Modelo', df['modelo'].unique())
+# Título y descripción
+st.title("Explorador de datos de coches de segunda mano")
+st.markdown("""
+Esta aplicación permite explorar y visualizar datos detallados de coches de segunda mano, con filtros interactivos y gráficos dinámicos.
+""")
 
-if marca:
-    df = df[df['marca'].isin(marca)]
-if modelo:
-    df = df[df['modelo'].isin(modelo)]
+# Filtros en la barra lateral
+st.sidebar.header("Filtros")
+selected_provincia = st.sidebar.multiselect(
+    "Selecciona provincia(s):", 
+    options=data["provincia"].unique(), 
+    default=data["provincia"].unique()
+)
 
-st.map(df[['latitud', 'longitud']])
+selected_combustible = st.sidebar.multiselect(
+    "Selecciona tipo de combustible:", 
+    options=data["combustible"].unique(), 
+    default=data["combustible"].unique()
+)
 
-fig = px.histogram(df, x='precio', nbins=50)
-st.plotly_chart(fig)
+selected_carroceria = st.sidebar.multiselect(
+    "Selecciona tipo de carrocería:", 
+    options=data["carroceria"].dropna().unique(), 
+    default=data["carroceria"].dropna().unique()
+)
+
+# Aplicar filtros
+filtered_data = data[
+    (data["provincia"].isin(selected_provincia)) &
+    (data["combustible"].isin(selected_combustible)) &
+    (data["carroceria"].isin(selected_carroceria))
+]
+
+# Mostrar datos filtrados
+st.write("### Datos filtrados", filtered_data)
+
+# Visualizaciones
+st.write("## Visualizaciones")
+
+# 1. Gráfico de barras: Distribución de coches por provincia
+st.write("### Distribución de coches por provincia")
+provincia_counts = filtered_data["provincia"].value_counts()
+st.bar_chart(provincia_counts)
+
+# 2. Gráfico de barras: Distribución de coches por tipo de combustible
+st.write("### Distribución de coches por combustible")
+combustible_counts = filtered_data["combustible"].value_counts()
+st.bar_chart(combustible_counts)
+
+# 3. Boxplot: Kilometraje por tipo de combustible
+st.write("### Kilometraje por tipo de combustible")
+plt.figure(figsize=(10, 5))
+sns.boxplot(data=filtered_data, x="combustible", y="kilometraje")
+plt.xticks(rotation=45)
+plt.title("Kilometraje por combustible")
+st.pyplot(plt)
+
+# 4. Scatter plot: Relación precio vs. kilometraje
+st.write("### Relación entre precio y kilometraje")
+fig, ax = plt.subplots(figsize=(10, 5))
+sns.scatterplot(data=filtered_data, x="kilometraje", y="precio_contado", hue="combustible", ax=ax)
+plt.title("Precio vs. Kilometraje")
+st.pyplot(fig)
+
+# 5. Tabla interactiva
+st.write("### Vista detallada de los datos filtrados")
+st.dataframe(filtered_data)
