@@ -1,80 +1,76 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import plotly.express as px
+from PIL import Image
+import folium
+from streamlit_folium import st_folium
+from folium import Choropleth, GeoJson
+import geopandas as gpd
 
-# Cargar los datos
-@st.cache_data
-def load_data():
-    data = pd.read_csv(bin/data.csv)
-    return data
 
-data = load_data()
+st.set_page_config(page_title="Análisis de Datos de Coches", layout="wide")
 
-# Título y descripción
-st.title("Explorador de datos de coches de segunda mano")
+st.title("Análisis Visual de Coches de Segunda Mano")
+
 st.markdown("""
-Esta aplicación permite explorar y visualizar datos detallados de coches de segunda mano, con filtros interactivos y gráficos dinámicos.
+A continuación, varios gráficos con información clave sobre los coches tratados en el proyecto.
 """)
 
-# Filtros en la barra lateral
-st.sidebar.header("Filtros")
-selected_provincia = st.sidebar.multiselect(
-    "Selecciona provincia(s):", 
-    options=data["provincia"].unique(), 
-    default=data["provincia"].unique()
-)
+imagenes = {
+    "Kilometraje vs Precio": {
+        "ruta": "bin/imagenes/grafico_kilometraje_precio.png",
+        "descripcion": """
+        Este gráfico muestra la relación entre el kilometraje y el precio de los coches. 
+        Podemos ver claramente cómo el precio desciende según aumenta el kilometraje.
+        Hay que tener en cuenta que la bajada no es lineal ya que los datos de precio están en escala logarítmica.
 
-selected_combustible = st.sidebar.multiselect(
-    "Selecciona tipo de combustible:", 
-    options=data["combustible"].unique(), 
-    default=data["combustible"].unique()
-)
+        En menor mdedida también apreciamos que los coches más viejos son más baratos.
+        """
+    },
+    "Precio por Tipo Distintivo": {
+        "ruta": "bin/imagenes/grafico_precio_distintivo.png",
+        "descripcion": """
+        Aquí puedes observar cómo varían los precios según los distintivos de los coches, 
+        destacando diferencias significativas entre categorías.
+        """
+    },
+    "Distribución de Precios": {
+        "ruta": "bin/imagenes/grafico_precio_nuevo_contado.png",
+        "descripcion": """
+        Un histograma que detalla la distribución de los precios de los coches, 
+        mostrando picos interesantes en ciertos rangos.
+        """
+    },
+    "Relación entre Potencia y Precio": {
+        "ruta": "bin/imagenes/grafico_precio_potencia.png",
+        "descripcion": """
+        Este gráfico destaca cómo la potencia del coche afecta al precio. 
+        Los coches con mayor potencia tienden a ser más costosos.
+        """
+    },
 
-selected_carroceria = st.sidebar.multiselect(
-    "Selecciona tipo de carrocería:", 
-    options=data["carroceria"].dropna().unique(), 
-    default=data["carroceria"].dropna().unique()
-)
+    "Mapa de Cantidades por Provincia": {
+        "ruta": "bin/mapa_cantidad.png",
+        "descripcion": """
+        Este mapa muestra la cantidad de coches ofertados por provincia.
 
-# Aplicar filtros
-filtered_data = data[
-    (data["provincia"].isin(selected_provincia)) &
-    (data["combustible"].isin(selected_combustible)) &
-    (data["carroceria"].isin(selected_carroceria))
-]
+        Vemos claramente cómo Madrid y Barcelona son las provincisa con más coches ofertadas y el resto están muy distribuidas. 
+        En León, Palencia, Segovia y Teruel se ofertan notoriamente menos coches que en el resto de provincias
+        """
+    },
+        "Mapa de Precios por Provincia": {
+        "ruta": "bin/mapa_precio.png",
+        "descripcion": """
+        Este mapa muestra el precio medio de coches ofertados por provincia.
 
-# Mostrar datos filtrados
-st.write("### Datos filtrados", filtered_data)
+        En este caso no se aprecia una diferencia significativa en general. 
+        En Coruña y Alicante hay precios extraordinariamente altos que probablemente se deban a datos repetidos de coches muy caros.
+        """
+    },
+}
 
-# Visualizaciones
-st.write("## Visualizaciones")
-
-# 1. Gráfico de barras: Distribución de coches por provincia
-st.write("### Distribución de coches por provincia")
-provincia_counts = filtered_data["provincia"].value_counts()
-st.bar_chart(provincia_counts)
-
-# 2. Gráfico de barras: Distribución de coches por tipo de combustible
-st.write("### Distribución de coches por combustible")
-combustible_counts = filtered_data["combustible"].value_counts()
-st.bar_chart(combustible_counts)
-
-# 3. Boxplot: Kilometraje por tipo de combustible
-st.write("### Kilometraje por tipo de combustible")
-plt.figure(figsize=(10, 5))
-sns.boxplot(data=filtered_data, x="combustible", y="kilometraje")
-plt.xticks(rotation=45)
-plt.title("Kilometraje por combustible")
-st.pyplot(plt)
-
-# 4. Scatter plot: Relación precio vs. kilometraje
-st.write("### Relación entre precio y kilometraje")
-fig, ax = plt.subplots(figsize=(10, 5))
-sns.scatterplot(data=filtered_data, x="kilometraje", y="precio_contado", hue="combustible", ax=ax)
-plt.title("Precio vs. Kilometraje")
-st.pyplot(fig)
-
-# 5. Tabla interactiva
-st.write("### Vista detallada de los datos filtrados")
-st.dataframe(filtered_data)
+for titulo, contenido in imagenes.items():
+    st.header(titulo)
+    st.image(Image.open(contenido["ruta"]), use_column_width=True)
+    st.markdown(contenido["descripcion"])
+    st.markdown("---")
