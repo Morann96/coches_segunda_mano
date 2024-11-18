@@ -1,1 +1,2 @@
 .ipynb_checkpoints/ git add .gitignore git commit -m Actualizar .gitignore para ignorar .ipynb_checkpoints
+notebooks/mejor_modelo.pkl
