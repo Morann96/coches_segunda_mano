@@ -90,7 +90,7 @@ CREATE TABLE prestaciones (
     FOREIGN KEY (id_distintivo_ambiental) REFERENCES distintivos_ambientales(id_distintivo),
     FOREIGN KEY (id_concesionario) REFERENCES concesionarios(id_concesionario),
     FOREIGN KEY (id_provincia) REFERENCES provincias(id_provincia),
-    FOREIGN KEY (id_carroceria) REFERENCES carrocerias(id_carroceria),
+    FOREIGN KEY (id_traccion) REFERENCES tipo_traccion(id_traccion),
     FOREIGN KEY (id_combustible) REFERENCES combustibles(id_combustible),
     FOREIGN KEY (id_sobrealimentacion) REFERENCES sobrealimentaciones(id_sobrealimentacion),
     FOREIGN KEY (id_tipo_cambio) REFERENCES tipos_cambio(id_tipo_cambio)
