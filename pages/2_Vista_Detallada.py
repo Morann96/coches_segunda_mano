@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import mysql.connector as mc
 
 # Cargar los datos
 @st.cache_data
@@ -10,6 +11,59 @@ def load_data():
     return data, marcas_data, modelos_data
 
 data, marcas_data, modelos_data = load_data()
+
+
+# Función para conectar a la base de datos
+def conectar_base_datos():
+    conn = st.connection('mysql', type='sql')
+    return conn
+
+# Función para conectar a la base de datos y comprobar la conexión con streamlit
+def comprobar_conexion():
+    try:
+        conn = conectar_base_datos()
+        conn.connect
+        return True
+    except mc.Error as err:
+        return False
+
+# Interfaz de Streamlit
+st.title("Conexión a la Base de Datos")
+
+def click_button():
+     if comprobar_conexion():
+         st.success("Conexión exitosa a la base de datos.")
+     else:
+         st.error("Error al conectar a la base de datos.")
+
+# Botón para comprobar la conexión
+st.button("Comprobar conexión a la BBDD", on_click=click_button)
+   
+
+
+        
+
+# Función para extraer y mostrar datos
+def mostrar_datos(tabla):
+    conn = conectar_base_datos()
+    query = f"SELECT * FROM {tabla}"
+    conn.query(query)  # Consulta SQL
+    df = conn.query(query) # Extraer datos como DataFrame
+    st.dataframe(df)  # Mostrar los datos en Streamlit
+
+# Streamlit App
+st.title("Explorar Tabla")
+
+# Input para el nombre de la tabla
+tabla = st.text_input("Nombre de la tabla:")
+
+if st.button("Mostrar datos"):
+    if tabla:
+        mostrar_datos(tabla)
+    else:
+        st.warning("Por favor, introduce un nombre de tabla.")
+
+
 
 # Título de la aplicación
 st.title("Visualización de Coches de Segunda Mano")
