@@ -1,2 +1,5 @@
 .ipynb_checkpoints/ git add .gitignore git commit -m Actualizar .gitignore para ignorar .ipynb_checkpoints
 .venv
+bin/.ipynb_checkpoints
+bin/mapa_cantidad.html
+bin/mapa_precio.html
