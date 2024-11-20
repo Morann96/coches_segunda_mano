@@ -1,32 +1,52 @@
 import streamlit as st
 import pandas as pd
 import pickle
+import mysql.connector
 
-# Cargar datos de entrada
-@st.cache_data
-def load_data():
-    data = pd.read_csv('bin/data_preprocess.csv')
-    return data
+# Función para conectar a la base de datos
+def conectar_base_datos():
+    conn = st.connection('mysql', type='sql')
+    return conn
 
-# Cargar modelo
-@st.cache_resource
-def load_model():
-    with open('notebooks/mejor_modelo.pkl', 'rb') as file:
-        model = pickle.load(file)
-    return model
 
-# Uso
-data = load_data()
-model = load_model()
+# Función para extraer y mostrar datos
+def mostrar_datos(tabla):
+    conn = conectar_base_datos()
+    query = f"SELECT * FROM {tabla}"
+    conn.query(query)  # Consulta SQL
+    df = conn.query(query) # Extraer datos como DataFrame
 
+    return df
 
 # Título de la aplicación
 st.title("Predicción del Precio al Contado")
 
-# Mostrar la estructura de los datos
-st.header("Datos de entrenamiento")
-st.write("Las columnas disponibles en el conjunto de datos son:")
-st.write(data.columns.tolist())
+tabla = "vista_prestaciones"
+
+st.dataframe(mostrar_datos(tabla))
+
+
+# MODELO
+
+
+
+
+# Cargar datos de entrada
+@st.cache_data
+def load_data():
+    return pd.read_csv('bin/data_preprocess.csv')
+
+# Cargar modelo
+@st.cache_resource
+def load_model():
+    with open('notebooks/modelo/mejor_modelo.pkl', 'rb') as file:
+        return pickle.load(file)
+
+# Uso del modelo
+data = load_data()
+model = load_model()
+
+
 
 # Pedir entrada de usuario para las características
 st.header("Introduce las características para la predicción")
@@ -49,3 +69,5 @@ if st.button("Predecir"):
         st.success(f"El precio contado predicho es: €{prediction:.2f}")
     except Exception as e:
         st.error(f"Ocurrió un error durante la predicción: {e}")
+
+
