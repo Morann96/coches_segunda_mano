@@ -1,6 +1,6 @@
 CREATE TABLE provincias (
     id_provincia INT PRIMARY KEY,
-    provincia VARCHAR(100) NOT NULL,
+    nombre_provincia VARCHAR(100) NOT NULL,
     comunidad_autonoma VARCHAR(100) NOT NULL
 );
 

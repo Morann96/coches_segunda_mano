@@ -1,50 +1,50 @@
-id_provincia,nombre_provincia
-1,Madrid
-2,Sevilla
-3,Córdoba
-4,Valencia
-5,Málaga
-6,Alicante
-7,Barcelona
-8,Lugo
-9,Cádiz
-10,Las Palmas
-11,Vizcaya
-12,Girona
-13,Zaragoza
-14,Asturias
-15,La Coruña
-16,Jaén
-17,Soria
-18,Tenerife
-19,Tarragona
-20,Almería
-21,Salamanca
-22,Murcia
-23,Islas Baleares
-24,Pontevedra
-25,La Rioja
-26,Badajoz
-27,Granada
-28,Ciudad Real
-29,Navarra
-30,Toledo
-31,Albacete
-32,Cantabria
-33,Álava
-34,Cáceres
-35,Castellón
-36,Burgos
-37,Guadalajara
-38,León
-39,Huelva
-40,Zamora
-41,Lleida
-42,Ávila
-43,Orense
-44,Cuenca
-45,Huesca
-46,Valladolid
-47,Palencia
-48,Guipúzcoa
-49,Teruel
+id_provincia,nombre_provincia,comunidad_autonoma
+1,Madrid,Madrid
+2,Sevilla,Andalucía
+3,Córdoba,Andalucía
+4,Valencia,Valencia
+5,Málaga,Andalucía
+6,Alicante,Valencia
+7,Barcelona,Cataluña
+8,Lugo,Galicia
+9,Cádiz,Andalucía
+10,Las Palmas,Canarias
+11,Vizcaya,País Vasco
+12,Girona,Cataluña
+13,Zaragoza,Aragón
+14,Asturias,Asturias
+15,La Coruña,Galicia
+16,Jaén,Andalucía
+17,Soria,Castilla y León
+18,Tenerife,Canarias
+19,Tarragona,Cataluña
+20,Almería,Andalucía
+21,Salamanca,Castilla y León
+22,Murcia,Murcia
+23,Islas Baleares,Islas Baleares
+24,Pontevedra,Galicia
+25,La Rioja,La Rioja
+26,Badajoz,Extremadura
+27,Granada,Andalucía
+28,Ciudad Real,Castilla-La Mancha
+29,Navarra,Navarra
+30,Toledo,Castilla-La Mancha
+31,Albacete,Castilla-La Mancha
+32,Cantabria,Cantabria
+33,Álava,País Vasco
+34,Cáceres,Extremadura
+35,Castellón,Valencia
+36,Burgos,Castilla y León
+37,Guadalajara,Castilla-La Mancha
+38,León,Castilla y León
+39,Huelva,Andalucía
+40,Zamora,Castilla y León
+41,Lleida,Cataluña
+42,Ávila,Castilla y León
+43,Orense,Galicia
+44,Cuenca,Castilla-La Mancha
+45,Huesca,Aragón
+46,Valladolid,Castilla y León
+47,Palencia,Castilla y León
+48,Guipúzcoa,País Vasco
+49,Teruel,Aragón
