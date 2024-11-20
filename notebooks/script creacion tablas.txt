@@ -6,10 +6,7 @@ CREATE TABLE provincias (
 
 CREATE TABLE concesionarios (
     id_concesionario INT PRIMARY KEY,
-    nombre_concesionario VARCHAR(100) NOT NULL,
-    direccion VARCHAR(100) NOT NULL,
-    id_provincia INT,
-    FOREIGN KEY (id_provincia) REFERENCES provincias(id_provincia)
+    nombre_concesionario VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE marcas (
