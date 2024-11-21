@@ -12,34 +12,17 @@ def load_data():
 
 data, marcas_data, modelos_data = load_data()
 
-
 # Función para conectar a la base de datos
 def conectar_base_datos():
     conn = st.connection('mysql', type='sql')
     return conn
   
-
 # Función para extraer y mostrar datos
-def mostrar_datos(tabla):
+def obtener_datos_vista():
     conn = conectar_base_datos()
-    query = f"SELECT * FROM {tabla}"
-    conn.query(query)  # Consulta SQL
-    df = conn.query(query) # Extraer datos como DataFrame
-    st.dataframe(df)  # Mostrar los datos en Streamlit
-
-# Streamlit App
-st.title("Explorar Tabla")
-
-# Input para el nombre de la tabla
-tabla = st.text_input("Nombre de la tabla:")
-
-if st.button("Mostrar datos"):
-    if tabla:
-        mostrar_datos(tabla)
-    else:
-        st.warning("Por favor, introduce un nombre de tabla.")
-
-
+    query = "SELECT * FROM vista_prestaciones"
+    df = conn.query(query)  # Ejecutar consulta y obtener datos como DataFrame
+    return df
 
 # Título de la aplicación
 st.title("Visualización de Coches de Segunda Mano")
@@ -71,16 +54,19 @@ min_year, max_year = st.sidebar.slider(
 st.session_state.filtros['min_year'] = min_year
 st.session_state.filtros['max_year'] = max_year
 
+#Obtener los datos de vista_prestaciones
+df_vista_prestaciones = obtener_datos_vista()
+
 # Filtrar los datos según los filtros previos
-filtered_data = data[
-    (data['precio_contado'] >= min_price) &
-    (data['precio_contado'] <= max_price) &
-    (data['ano_matriculacion'] >= min_year) &
-    (data['ano_matriculacion'] <= max_year)
+filtered_data = df_vista_prestaciones[
+    (df_vista_prestaciones['precio_contado'] >= min_price) &
+    (df_vista_prestaciones['precio_contado'] <= max_price) &
+    (df_vista_prestaciones['ano_matriculacion'] >= min_year) &
+    (df_vista_prestaciones['ano_matriculacion'] <= max_year)
 ]
 
 # Filtrar marcas
-marcas_unicas = filtered_data['id_marca'].str.upper().dropna().unique()
+marcas_unicas = filtered_data['nombre_marca'].str.upper().dropna().unique()
 marcas_unicas = [str(marca) for marca in marcas_unicas]
 marcas = st.sidebar.multiselect(
     "Selecciona Marca",
@@ -88,10 +74,30 @@ marcas = st.sidebar.multiselect(
     default=[]
 )
 
-# Filtrar por tipo de cambio según la marca seleccionada
+# Filtrar modelos dinámicamente en función de las marcas seleccionadas
 if marcas:
-    filtered_data = filtered_data[filtered_data['id_marca'].str.upper().isin(marcas)]
+    # Si se seleccionan marcas, mostrar los modelos que coincidan con esas marcas
+    modelos_disponibles = filtered_data[filtered_data['nombre_marca'].str.upper().isin(marcas)]['nombre_modelo'].dropna().unique()
+else:
+    # Si no se selecciona ninguna marca, mostrar todos los modelos disponibles
+    modelos_disponibles = filtered_data['nombre_modelo'].dropna().unique()
 
+# Asegúrate de que modelos_disponibles no esté vacío
+if len(modelos_disponibles) > 0:
+    modelos = st.sidebar.multiselect(
+        "Selecciona Modelo",
+        options=sorted(modelos_disponibles),
+        default=[]
+    )
+else:
+    # Si no hay modelos disponibles, mostrar un mensaje
+    st.sidebar.write("No hay modelos disponibles para las marcas seleccionadas")
+
+# Filtrar los modelos
+if modelos:
+    filtered_data = filtered_data[filtered_data['nombre_modelo'].isin(modelos)]
+
+# Filtrar por tipo de cambio
 tipo_cambio_unico = filtered_data['tipo_cambio'].str.upper().dropna().unique()
 tipo_cambio = st.sidebar.multiselect(
     "Selecciona Tipo de Cambio",
@@ -102,15 +108,15 @@ tipo_cambio = st.sidebar.multiselect(
 # Filtrar por provincias disponibles
 provincias = st.sidebar.multiselect(
     "Selecciona Provincias",
-    options=filtered_data['id_provincia'].unique(),
+    options=filtered_data['nombre_provincia'].unique(),
     default=[]
 )
 
 # Filtrar por distintivos ambientales
 distintivos = st.sidebar.multiselect(
     "Selecciona Distintivos Ambientales",
-    options=filtered_data['id_distintivo_ambiental'].unique(),
-    default=filtered_data['id_distintivo_ambiental'].unique()
+    options=filtered_data['distintivo_ambiental'].unique(),
+    default=filtered_data['distintivo_ambiental'].unique()
 )
 
 # Filtrar por número de puertas
@@ -123,8 +129,8 @@ puertas = st.sidebar.multiselect(
 
 # Aplicar los filtros a los datos
 filtered_data = filtered_data[
-    (filtered_data['id_provincia'].isin(provincias) if provincias else True) &
-    (filtered_data['id_distintivo_ambiental'].isin(distintivos) if distintivos else True) &
+    (filtered_data['nombre_provincia'].isin(provincias) if provincias else True) &
+    (filtered_data['distintivo_ambiental'].isin(distintivos) if distintivos else True) &
     (filtered_data['tipo_cambio'].str.upper().isin(tipo_cambio) if tipo_cambio else True) &
     (filtered_data['num_puertas'].isin(puertas) if puertas else True)
 ]
