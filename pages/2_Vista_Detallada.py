@@ -17,31 +17,7 @@ data, marcas_data, modelos_data = load_data()
 def conectar_base_datos():
     conn = st.connection('mysql', type='sql')
     return conn
-
-# Función para conectar a la base de datos y comprobar la conexión con streamlit
-def comprobar_conexion():
-    try:
-        conn = conectar_base_datos()
-        conn.connect
-        return True
-    except mc.Error as err:
-        return False
-
-# Interfaz de Streamlit
-st.title("Conexión a la Base de Datos")
-
-def click_button():
-     if comprobar_conexion():
-         st.success("Conexión exitosa a la base de datos.")
-     else:
-         st.error("Error al conectar a la base de datos.")
-
-# Botón para comprobar la conexión
-st.button("Comprobar conexión a la BBDD", on_click=click_button)
-   
-
-
-        
+  
 
 # Función para extraer y mostrar datos
 def mostrar_datos(tabla):
@@ -71,6 +47,10 @@ st.title("Visualización de Coches de Segunda Mano")
 # Filtros
 st.sidebar.header("Filtros")
 
+# Guardar los filtros en session_state
+if 'filtros' not in st.session_state:
+    st.session_state.filtros = {}
+
 # Filtrar por rango de precio
 min_price, max_price = st.sidebar.slider(
     "Rango de precio",
@@ -78,6 +58,8 @@ min_price, max_price = st.sidebar.slider(
     max_value=int(data['precio_contado'].max()),
     value=(int(data['precio_contado'].min()), int(data['precio_contado'].max()))
 )
+st.session_state.filtros['min_price'] = min_price
+st.session_state.filtros['max_price'] = max_price
 
 # Filtrar por año de matriculación
 min_year, max_year = st.sidebar.slider(
@@ -86,69 +68,71 @@ min_year, max_year = st.sidebar.slider(
     max_value=int(data['ano_matriculacion'].max()),
     value=(int(data['ano_matriculacion'].min()), int(data['ano_matriculacion'].max()))
 )
+st.session_state.filtros['min_year'] = min_year
+st.session_state.filtros['max_year'] = max_year
 
-# Extraer marcas únicas directamente desde el DataFrame principal
-marcas_unicas = data['id_marca'].str.upper().dropna().unique()  # Convertir a mayúsculas y eliminar NaN
-marcas_unicas = [str(marca) for marca in marcas_unicas]  # Asegurar que todo sea string
+# Filtrar los datos según los filtros previos
+filtered_data = data[
+    (data['precio_contado'] >= min_price) &
+    (data['precio_contado'] <= max_price) &
+    (data['ano_matriculacion'] >= min_year) &
+    (data['ano_matriculacion'] <= max_year)
+]
 
-# Filtrar por marca
+# Filtrar marcas
+marcas_unicas = filtered_data['id_marca'].str.upper().dropna().unique()
+marcas_unicas = [str(marca) for marca in marcas_unicas]
 marcas = st.sidebar.multiselect(
     "Selecciona Marca",
-    options=sorted(marcas_unicas),  # Ordenar alfabéticamente
+    options=sorted(marcas_unicas),
     default=[]
 )
 
-# Filtrar por tipo de cambio
-cambio_unico = data['tipo_cambio'].str.upper().dropna().unique()
+# Filtrar por tipo de cambio según la marca seleccionada
+if marcas:
+    filtered_data = filtered_data[filtered_data['id_marca'].str.upper().isin(marcas)]
+
+tipo_cambio_unico = filtered_data['tipo_cambio'].str.upper().dropna().unique()
 tipo_cambio = st.sidebar.multiselect(
     "Selecciona Tipo de Cambio",
-    options=sorted(cambio_unico),
+    options=sorted(tipo_cambio_unico),
     default=[]
 )
 
-# Filtrar por provincia
+# Filtrar por provincias disponibles
 provincias = st.sidebar.multiselect(
     "Selecciona Provincias",
-    options=data['id_provincia'].unique(),
+    options=filtered_data['id_provincia'].unique(),
     default=[]
 )
 
-# Filtrar por distintivo ambiental
+# Filtrar por distintivos ambientales
 distintivos = st.sidebar.multiselect(
     "Selecciona Distintivos Ambientales",
-    options=data['id_distintivo_ambiental'].unique(),
-    default=data['id_distintivo_ambiental'].unique()
+    options=filtered_data['id_distintivo_ambiental'].unique(),
+    default=filtered_data['id_distintivo_ambiental'].unique()
 )
 
 # Filtrar por número de puertas
-puertas_unicas = data['num_puertas'].dropna().unique()
+puertas_unicas = filtered_data['num_puertas'].dropna().unique()
 puertas = st.sidebar.multiselect(
     "Selecciona Número de Puertas",
     options=sorted(puertas_unicas),
     default=[]
 )
 
-# Aplicar filtros
-filtered_data = data[
-    (data['id_provincia'].isin(provincias) if provincias else True) &
-    (data['id_distintivo_ambiental'].isin(distintivos) if distintivos else True) &
-    (data['precio_contado'] >= min_price) &
-    (data['precio_contado'] <= max_price) &
-    (data['id_marca'].str.upper().isin(marcas) if marcas else True) &  # Usar directamente el filtro de marcas
-    (data['ano_matriculacion'] >= min_year) &
-    (data['num_puertas'].isin(puertas) if puertas else True) &
-    (data['tipo_cambio'].str.upper().isin(tipo_cambio) if tipo_cambio else True) &
-    (data['ano_matriculacion'] <= max_year)
+# Aplicar los filtros a los datos
+filtered_data = filtered_data[
+    (filtered_data['id_provincia'].isin(provincias) if provincias else True) &
+    (filtered_data['id_distintivo_ambiental'].isin(distintivos) if distintivos else True) &
+    (filtered_data['tipo_cambio'].str.upper().isin(tipo_cambio) if tipo_cambio else True) &
+    (filtered_data['num_puertas'].isin(puertas) if puertas else True)
 ]
 
-# Mostrar datos filtrados
+# Mostrar los datos filtrados
 st.write(f"Mostrando {len(filtered_data)} resultados:")
 st.dataframe(filtered_data)
 
 # Estadísticas básicas
 st.header("Estadísticas Básicas")
 st.write(filtered_data.describe())
-
-
-
-
