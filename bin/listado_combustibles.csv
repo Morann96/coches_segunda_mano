@@ -1,7 +1,7 @@
 id_combustible,nombre_combustible
-1,Diesel
-2,Gasolina
-3,Híbrido Enchufable
+1,Gasolina
+2,Diesel
+3,Gasolina/gas
 4,Eléctrico
-5,Gasolina/gas
+5,Híbrido Enchufable
 6,Gas

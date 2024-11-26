@@ -1,5 +1,6 @@
 id_sobrealimentacion,nombre_sobrealimentacion
-1,Turbo de geometría variable
-2,Turbo
+1,Turbo
+2,Turbo de geometría variable
 3,Doble turbo
-4,Compresor de raices
+4,Compresor Lisholm
+5,Compresor de raices

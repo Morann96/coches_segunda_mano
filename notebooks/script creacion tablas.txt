@@ -44,6 +44,12 @@ CREATE TABLE sobrealimentaciones (
     nombre_sobrealimentacion VARCHAR(100) NOT NULL
 );
 
+CREATE TABLE links_coches (
+    id_coche INT PRIMARY KEY,
+    link_anuncio VARCHAR(255) NOT NULL,
+    foto_binaria MEDIUMBLOB
+);
+
 CREATE TABLE prestaciones (
     id_marca INT,
     id_modelo INT,
@@ -82,6 +88,7 @@ CREATE TABLE prestaciones (
     velocidad_max INT,
     aceleracion DECIMAL(10, 2),
     fecha_extraccion DATETIME,
+    id_coche INT,
     FOREIGN KEY (id_marca) REFERENCES marcas(id_marca),
     FOREIGN KEY (id_modelo) REFERENCES modelos(id_modelo),
     FOREIGN KEY (id_distintivo_ambiental) REFERENCES distintivos_ambientales(id_distintivo),
@@ -90,5 +97,6 @@ CREATE TABLE prestaciones (
     FOREIGN KEY (id_traccion) REFERENCES tipo_traccion(id_traccion),
     FOREIGN KEY (id_combustible) REFERENCES combustibles(id_combustible),
     FOREIGN KEY (id_sobrealimentacion) REFERENCES sobrealimentaciones(id_sobrealimentacion),
-    FOREIGN KEY (id_tipo_cambio) REFERENCES tipos_cambio(id_tipo_cambio)
+    FOREIGN KEY (id_tipo_cambio) REFERENCES tipos_cambio(id_tipo_cambio),
+    FOREIGN KEY (id_coche) REFERENCES links_coches(id_coche)
 );

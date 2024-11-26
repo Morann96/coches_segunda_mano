@@ -1,50 +1,47 @@
 id_provincia,nombre_provincia,comunidad_autonoma
 1,Madrid,Madrid
-2,Sevilla,Andalucía
-3,Córdoba,Andalucía
-4,Valencia,Valencia
-5,Málaga,Andalucía
-6,Alicante,Valencia
-7,Barcelona,Cataluña
-8,Lugo,Galicia
-9,Cádiz,Andalucía
-10,Las Palmas,Canarias
-11,Vizcaya,País Vasco
-12,Girona,Cataluña
-13,Zaragoza,Aragón
-14,Asturias,Asturias
-15,La Coruña,Galicia
-16,Jaén,Andalucía
-17,Soria,Castilla y León
-18,Tenerife,Canarias
-19,Tarragona,Cataluña
-20,Almería,Andalucía
-21,Salamanca,Castilla y León
-22,Murcia,Murcia
-23,Islas Baleares,Islas Baleares
-24,Pontevedra,Galicia
-25,La Rioja,La Rioja
-26,Badajoz,Extremadura
-27,Granada,Andalucía
-28,Ciudad Real,Castilla-La Mancha
-29,Navarra,Navarra
-30,Toledo,Castilla-La Mancha
-31,Albacete,Castilla-La Mancha
-32,Cantabria,Cantabria
-33,Álava,País Vasco
-34,Cáceres,Extremadura
-35,Castellón,Valencia
-36,Burgos,Castilla y León
-37,Guadalajara,Castilla-La Mancha
-38,León,Castilla y León
-39,Huelva,Andalucía
-40,Zamora,Castilla y León
-41,Lleida,Cataluña
-42,Ávila,Castilla y León
-43,Orense,Galicia
-44,Cuenca,Castilla-La Mancha
-45,Huesca,Aragón
-46,Valladolid,Castilla y León
-47,Palencia,Castilla y León
-48,Guipúzcoa,País Vasco
-49,Teruel,Aragón
+2,Murcia,Murcia
+3,Barcelona,Cataluña
+4,Málaga,Andalucía
+5,León,Castilla y León
+6,Valencia,Valencia
+7,Cádiz,Andalucía
+8,Vizcaya,País Vasco
+9,Sevilla,Andalucía
+10,La Coruña,Galicia
+11,Córdoba,Andalucía
+12,Castellón,Valencia
+13,Tarragona,Cataluña
+14,Alicante,Valencia
+15,La Rioja,La Rioja
+16,Ciudad Real,Castilla-La Mancha
+17,Ávila,Castilla y León
+18,Burgos,Castilla y León
+19,Cantabria,Cantabria
+20,Las Palmas,Canarias
+21,Albacete,Castilla-La Mancha
+22,Cáceres,Extremadura
+23,Navarra,Navarra
+24,Almería,Andalucía
+25,Pontevedra,Galicia
+26,Valladolid,Castilla y León
+27,Badajoz,Extremadura
+28,Granada,Andalucía
+29,Girona,Cataluña
+30,Orense,Galicia
+31,Toledo,Castilla-La Mancha
+32,Guipúzcoa,País Vasco
+33,Asturias,Asturias
+34,Zaragoza,Aragón
+35,Islas Baleares,Islas Baleares
+36,Lleida,Cataluña
+37,Jaén,Andalucía
+38,Teruel,Aragón
+39,Lugo,Galicia
+40,Salamanca,Castilla y León
+41,Álava,País Vasco
+42,Huelva,Andalucía
+43,Tenerife,Canarias
+44,Huesca,Aragón
+45,Guadalajara,Castilla-La Mancha
+46,Soria,Castilla y León
