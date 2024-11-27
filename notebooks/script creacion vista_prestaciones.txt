@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW vista_prestaciones AS
 SELECT 
-    m.nombre_marca,
-    mo.nombre_modelo,
+    m.nombre_marca AS marca,
+    mo.nombre_modelo AS modelo,
     p.mes_matriculacion,
     p.ano_matriculacion,
     p.kilometraje,
@@ -9,8 +9,8 @@ SELECT
     p.garantia,
     p.precio_nuevo,
     p.precio_contado,
-    c.nombre_concesionario,
-    pr.nombre_provincia,
+    c.nombre_concesionario AS concesionario,
+    pr.nombre_provincia AS provincia,
     pr.comunidad_autonoma,
     t.nombre_traccion AS tipo_traccion,
     p.largo,
@@ -36,8 +36,7 @@ SELECT
     p.potencia_cv,
     p.par,
     p.velocidad_max,
-    p.aceleracion,
-    p.fecha_extraccion
+    p.aceleracion
 FROM 
     prestaciones p
 LEFT JOIN 
@@ -58,4 +57,3 @@ LEFT JOIN
     sobrealimentaciones so ON p.id_sobrealimentacion = so.id_sobrealimentacion
 LEFT JOIN 
     tipos_cambio tc ON p.id_tipo_cambio = tc.id_tipo_cambio;
-vista_prestaciones
