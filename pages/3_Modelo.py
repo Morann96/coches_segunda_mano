@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import pickle
+import os
 import mysql.connector
 from datetime import datetime
 
@@ -65,7 +67,7 @@ import streamlit as st
 import pandas as pd
 
 categorical_features = ["marca", "modelo", "distintivo_ambiental", "tipo_cambio", "combustible", "num_puertas"]
-numeric_features = ["potencia_cv", "antiguedad_coche"]
+numeric_features = ["potencia_cv", "antiguedad_coche", 'kilometraje']
 
 input_data = {}
 
@@ -83,6 +85,46 @@ if st.button("Guardar datos"):
     st.write("Datos guardados en el DataFrame:")
     st.dataframe(df)
 
+df['log_kilometraje'] = np.log(df['kilometraje'])
+
+def load_pickles(directory='notebooks/encoders'):
+    encoders = {}
+    # Recorrer todos los archivos en el directorio
+    for file_name in os.listdir(directory):
+        # Filtrar solo archivos con extensión .pkl
+        if file_name.endswith('.pickle'):
+            file_path = os.path.join(directory, file_name)
+            with open(file_path, 'rb') as file:
+                # Usar el nombre del archivo sin extensión como clave
+                encoder_name = os.path.splitext(file_name)[0]
+                encoders[encoder_name] = pickle.load(file)
+    return encoders
+
+encoders = load_pickles(directory='notebooks/encoders')
+print("Encoders cargados:", encoders.keys())
+
+encoder_distintivo_combustible = encoders['combustible_traccion_distintivo_encoder']
+encoder_marca = encoders['marca_encoder']
+encoder_modelo = encoders['modelo_encoder']
+encoder_tipo_cambio = encoders['tipo_cambio']
+
+# Aplicar target encoder
+df['marca'] = encoder_marca.transform(df['marca'])
+df['modelo'] = encoder_modelo.transform(df['modelo'])
+
+# Aplicar label encoder
+df['tipo_cambio'] = encoder_tipo_cambio.transform(df['tipo_cambio'])
+
+# Aplicar el OneHotEncoder
+encoded_cols = encoder_distintivo_combustible.transform(df[['distintivo_ambiental']])
+encoded_cols = pd.DataFrame(encoded_cols, columns=encoder_distintivo_combustible.get_feature_names_out(['distintivo_ambiental']), index=df.index)
+df = pd.concat([df, encoded_cols], axis=1)
+df.drop(columns=['distintivo_ambiental'], inplace=True)
+
+encoded_cols = encoder_distintivo_combustible.transform(df[['combustible']])
+encoded_cols = pd.DataFrame(encoded_cols, columns=encoder_distintivo_combustible.get_feature_names_out(['combustible']), index=df.index)
+df = pd.concat([df, encoded_cols], axis=1)
+df.drop(columns=['combustible'], inplace=True)
 
 
 # Convertir los datos ingresados en un DataFrame
