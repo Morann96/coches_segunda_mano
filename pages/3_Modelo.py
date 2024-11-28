@@ -63,9 +63,6 @@ data['antiguedad_coche'] = ((current_date - data['fecha_matriculacion']).dt.days
 
 # Creamos los inputs para el usuario
 
-import streamlit as st
-import pandas as pd
-
 categorical_features = ["marca", "modelo", "distintivo_ambiental", "tipo_cambio", "combustible", "num_puertas"]
 numeric_features = ["potencia_cv", "antiguedad_coche", 'kilometraje']
 
@@ -92,7 +89,7 @@ def load_pickles(directory='notebooks/encoders'):
     # Recorrer todos los archivos en el directorio
     for file_name in os.listdir(directory):
         # Filtrar solo archivos con extensión .pkl
-        if file_name.endswith('.pickle'):
+        if file_name.endswith('.pkl'):
             file_path = os.path.join(directory, file_name)
             with open(file_path, 'rb') as file:
                 # Usar el nombre del archivo sin extensión como clave
