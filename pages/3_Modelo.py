@@ -66,23 +66,10 @@ data['antiguedad_coche'] = ((current_date - data['fecha_matriculacion']).dt.days
 categorical_features = ["marca", "modelo", "distintivo_ambiental", "tipo_cambio", "combustible", "num_puertas"]
 numeric_features = ["potencia_cv", "antiguedad_coche", 'kilometraje']
 
-input_data = {}
+columnas_modelo = ['marca', 'modelo', 'potencia_cv', 'antiguedad_coche', 'log_kilometraje', 'tipo_cambio', 'distintivo_ambiental', 'combustible']
 
 
-for feature in categorical_features:
-    input_data[feature] = st.selectbox(f"Selecciona {feature.replace('_', ' ')}:", data[feature].unique())
-
-for feature in numeric_features:
-    input_data[feature] = st.number_input(f"Introduce {feature.replace('_', ' ')}:", min_value=0, step=1)
-
-# Botón para guardar los datos en un DataFrame
-if st.button("Guardar datos"):
-    # Convertir a un DataFrame
-    df = pd.DataFrame([input_data])
-    st.write("Datos guardados en el DataFrame:")
-    st.dataframe(df)
-
-df['log_kilometraje'] = np.log(df['kilometraje'])
+# Encoders
 
 def load_pickles(directory='notebooks/encoders'):
     encoders = {}
@@ -98,41 +85,79 @@ def load_pickles(directory='notebooks/encoders'):
     return encoders
 
 encoders = load_pickles(directory='notebooks/encoders')
-print("Encoders cargados:", encoders.keys())
 
-encoder_distintivo_combustible = encoders['combustible_traccion_distintivo_encoder']
+encoder_distintivo = encoders['distintivo_encoder']
 encoder_marca = encoders['marca_encoder']
 encoder_modelo = encoders['modelo_encoder']
-encoder_tipo_cambio = encoders['tipo_cambio']
+encoder_tipo_cambio = encoders['tipo_cambio_encoder']
+combustible_encoder = encoders['combustible_encoder']
 
-# Aplicar target encoder
-df['marca'] = encoder_marca.transform(df['marca'])
-df['modelo'] = encoder_modelo.transform(df['modelo'])
+escaladores = load_pickles(directory='notebooks/escaladores')
+escalador_X = escaladores["x_scaler"]
+escalador_y = escaladores["y_scaler"]
 
-# Aplicar label encoder
-df['tipo_cambio'] = encoder_tipo_cambio.transform(df['tipo_cambio'])
-
-# Aplicar el OneHotEncoder
-encoded_cols = encoder_distintivo_combustible.transform(df[['distintivo_ambiental']])
-encoded_cols = pd.DataFrame(encoded_cols, columns=encoder_distintivo_combustible.get_feature_names_out(['distintivo_ambiental']), index=df.index)
-df = pd.concat([df, encoded_cols], axis=1)
-df.drop(columns=['distintivo_ambiental'], inplace=True)
-
-encoded_cols = encoder_distintivo_combustible.transform(df[['combustible']])
-encoded_cols = pd.DataFrame(encoded_cols, columns=encoder_distintivo_combustible.get_feature_names_out(['combustible']), index=df.index)
-df = pd.concat([df, encoded_cols], axis=1)
-df.drop(columns=['combustible'], inplace=True)
+input_data = {}
 
 
-# Convertir los datos ingresados en un DataFrame
-input_df = pd.DataFrame([input_data])
+for feature in categorical_features:
+    input_data[feature] = st.selectbox(f"Selecciona {feature.replace('_', ' ')}:", data[feature].unique())
+
+for feature in numeric_features:
+    input_data[feature] = st.number_input(f"Introduce {feature.replace('_', ' ')}:", min_value=0, step=1)
+
+# Crear un DataFrame para las entradas del usuario en el estado de sesión
+if "df" not in st.session_state:
+    st.session_state.df = pd.DataFrame()  # Inicializamos un DataFrame vacío
+
+# Botón para guardar los datos del usuario en el DataFrame
+if st.button("Guardar datos"):
+    # Convertir las entradas del usuario a un DataFrame y almacenarlo
+    st.session_state.df = pd.DataFrame([input_data])
+    st.write("Datos guardados en el DataFrame:")
+    st.dataframe(st.session_state.df)
+
+# Operaciones adicionales con el DataFrame del usuario
+if not st.session_state.df.empty:
+    # Calcular logaritmo del kilometraje en el DataFrame del usuario
+    st.session_state.df['log_kilometraje'] = np.log(st.session_state.df['kilometraje'])
+    st.session_state.df.drop(columns=['kilometraje'], inplace=True)
+    st.session_state.df = st.session_state.df[columnas_modelo]
+
+    # Aplicar target encoder
+    st.session_state.df['marca'] = encoder_marca.transform(st.session_state.df['marca'])
+    st.session_state.df['modelo'] = encoder_modelo.transform(st.session_state.df['modelo'])
+
+    # Aplicar label encoder
+    st.session_state.df['tipo_cambio'] = encoder_tipo_cambio.transform(st.session_state.df['tipo_cambio'])
+
+    # Aplicar el OneHotEncoder
+    encoded_cols = combustible_encoder.transform(st.session_state.df[['combustible']])
+
+    encoded_cols = pd.DataFrame(encoded_cols, columns=combustible_encoder.get_feature_names_out(['combustible']), index=st.session_state.df.index)
+    st.session_state.df = pd.concat([st.session_state.df, encoded_cols], axis=1)
+    st.session_state.df.drop(columns=['combustible'], inplace=True)
+
+    encoded_cols = encoder_distintivo.transform(st.session_state.df[['distintivo_ambiental']])
+    
+    encoded_cols = pd.DataFrame(encoded_cols, columns=encoder_distintivo.get_feature_names_out(['distintivo_ambiental']), index=st.session_state.df.index)
+    st.session_state.df = pd.concat([st.session_state.df, encoded_cols], axis=1)
+    st.session_state.df.drop(columns=['distintivo_ambiental'], inplace=True)
+
+    x = escalador_X.transform(st.session_state.df)
+
+
+else:
+    st.warning("Por favor, guarda los datos antes de continuar.")
+
+
 
 # Botón para predecir
 if st.button("Predecir"):
     try:
         # Realizar la predicción
-        prediction = model.predict(input_df)[0]
-        st.success(f"El precio contado predicho es: €{prediction:.2f}")
+        prediction = model.predict(x)
+        prediction_unescaled = escalador_y.inverse_transform(np.array(prediction).reshape(-1,1)).ravel()
+        st.success(f"El precio contado predicho es: {prediction_unescaled:.2f}€")
     except Exception as e:
         st.error(f"Ocurrió un error durante la predicción: {e}")
 
