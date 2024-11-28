@@ -5,6 +5,7 @@ import pickle
 import os
 import mysql.connector
 from datetime import datetime
+import locale
 
 # Función para conectar a la base de datos
 def conectar_base_datos():
@@ -116,48 +117,63 @@ if st.button("Guardar datos"):
     st.write("Datos guardados en el DataFrame:")
     st.dataframe(st.session_state.df)
 
+
+
 # Operaciones adicionales con el DataFrame del usuario
 if not st.session_state.df.empty:
+
+    df_temp = st.session_state.df.copy()
+    df_temp['kilometraje'] = df_temp['kilometraje'].astype(int)
+
     # Calcular logaritmo del kilometraje en el DataFrame del usuario
-    st.session_state.df['log_kilometraje'] = np.log(st.session_state.df['kilometraje'])
-    st.session_state.df.drop(columns=['kilometraje'], inplace=True)
-    st.session_state.df = st.session_state.df[columnas_modelo]
+    df_temp['log_kilometraje'] = np.log(df_temp['kilometraje'])
+    df_temp.drop(columns=['kilometraje'], inplace=True)
+    df_temp = df_temp[columnas_modelo]
 
     # Aplicar target encoder
-    st.session_state.df['marca'] = encoder_marca.transform(st.session_state.df['marca'])
-    st.session_state.df['modelo'] = encoder_modelo.transform(st.session_state.df['modelo'])
+    df_temp['marca'] = encoder_marca.transform(df_temp['marca'])
+    df_temp['modelo'] = encoder_modelo.transform(df_temp['modelo'])
 
     # Aplicar label encoder
-    st.session_state.df['tipo_cambio'] = encoder_tipo_cambio.transform(st.session_state.df['tipo_cambio'])
+    df_temp['tipo_cambio'] = encoder_tipo_cambio.transform(df_temp['tipo_cambio'])
 
     # Aplicar el OneHotEncoder
-    encoded_cols = combustible_encoder.transform(st.session_state.df[['combustible']])
+    encoded_cols = combustible_encoder.transform(df_temp[['combustible']])
 
-    encoded_cols = pd.DataFrame(encoded_cols, columns=combustible_encoder.get_feature_names_out(['combustible']), index=st.session_state.df.index)
-    st.session_state.df = pd.concat([st.session_state.df, encoded_cols], axis=1)
-    st.session_state.df.drop(columns=['combustible'], inplace=True)
+    encoded_cols = pd.DataFrame(encoded_cols, columns=combustible_encoder.get_feature_names_out(['combustible']), index=df_temp.index)
+    df_temp = pd.concat([df_temp, encoded_cols], axis=1)
+    df_temp.drop(columns=['combustible'], inplace=True)
 
-    encoded_cols = encoder_distintivo.transform(st.session_state.df[['distintivo_ambiental']])
+    encoded_cols = encoder_distintivo.transform(df_temp[['distintivo_ambiental']])
     
-    encoded_cols = pd.DataFrame(encoded_cols, columns=encoder_distintivo.get_feature_names_out(['distintivo_ambiental']), index=st.session_state.df.index)
-    st.session_state.df = pd.concat([st.session_state.df, encoded_cols], axis=1)
-    st.session_state.df.drop(columns=['distintivo_ambiental'], inplace=True)
+    encoded_cols = pd.DataFrame(encoded_cols, columns=encoder_distintivo.get_feature_names_out(['distintivo_ambiental']), index=df_temp.index)
+    df_temp = pd.concat([df_temp, encoded_cols], axis=1)
+    df_temp.drop(columns=['distintivo_ambiental'], inplace=True)
 
-    x = escalador_X.transform(st.session_state.df)
+    x = escalador_X.transform(df_temp)
 
 
 else:
     st.warning("Por favor, guarda los datos antes de continuar.")
 
 
+# Configurar la localización para España
+locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')  # En sistemas basados en Unix
+# Para Windows, puedes intentar con 'Spanish_Spain.1252'
 
 # Botón para predecir
 if st.button("Predecir"):
     try:
         # Realizar la predicción
         prediction = model.predict(x)
-        prediction_unescaled = escalador_y.inverse_transform(np.array(prediction).reshape(-1,1)).ravel()
-        st.success(f"El precio contado predicho es: {prediction_unescaled:.2f}€")
+        prediction_unescaled = escalador_y.inverse_transform(np.array(prediction).reshape(-1, 1)).ravel()
+        prediccion_valor = prediction_unescaled[0]  # Extraer el valor escalar
+
+        # Formatear el valor con separadores de miles y decimales
+        prediccion_formateada = locale.format_string("%.2f €", prediccion_valor, grouping=True)
+        
+        # Mostrar el resultado
+        st.success(f"El precio al contado predicho es: {prediccion_formateada}")
     except Exception as e:
         st.error(f"Ocurrió un error durante la predicción: {e}")
 
