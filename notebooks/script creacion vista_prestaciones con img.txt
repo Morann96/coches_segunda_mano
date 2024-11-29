@@ -1,0 +1,62 @@
+CREATE OR REPLACE VIEW vista_prestaciones_img AS
+SELECT 
+    m.nombre_marca AS marca,
+    mo.nombre_modelo AS modelo,
+    p.mes_matriculacion,
+    p.ano_matriculacion,
+    p.kilometraje,
+    da.nombre_distintivo AS distintivo_ambiental,
+    p.garantia,
+    p.precio_nuevo,
+    p.precio_contado,
+    c.nombre_concesionario AS concesionario,
+    pr.nombre_provincia AS provincia,
+    pr.comunidad_autonoma,
+    t.nombre_traccion AS tipo_traccion,
+    p.largo,
+    p.ancho,
+    p.alto,
+    p.capacidad_maletero,
+    p.num_plazas,
+    p.num_puertas,
+    p.batalla,
+    p.peso,
+    p.consumo_medio,
+    p.consumo_carretera,
+    p.consumo_urbano,
+    p.co2,
+    p.deposito,
+    co.nombre_combustible AS combustible,
+    p.num_cilindros,
+    p.cilindrada,
+    so.nombre_sobrealimentacion AS sobrealimentacion,
+    tc.nombre_tipo_cambio AS tipo_cambio,
+    p.num_marchas,
+    p.potencia_kw,
+    p.potencia_cv,
+    p.par,
+    p.velocidad_max,
+    p.aceleracion,
+    lc.foto_binaria
+FROM 
+    prestaciones p
+LEFT JOIN 
+    marcas m ON p.id_marca = m.id_marca
+LEFT JOIN 
+    modelos mo ON p.id_modelo = mo.id_modelo
+LEFT JOIN 
+    distintivos_ambientales da ON p.id_distintivo_ambiental = da.id_distintivo
+LEFT JOIN 
+    concesionarios c ON p.id_concesionario = c.id_concesionario
+LEFT JOIN 
+    provincias pr ON p.id_provincia = pr.id_provincia
+LEFT JOIN 
+    tipo_traccion t ON p.id_traccion = t.id_traccion
+LEFT JOIN 
+    combustibles co ON p.id_combustible = co.id_combustible
+LEFT JOIN 
+    sobrealimentaciones so ON p.id_sobrealimentacion = so.id_sobrealimentacion
+LEFT JOIN 
+    tipos_cambio tc ON p.id_tipo_cambio = tc.id_tipo_cambio
+INNER JOIN 
+    links_coches lc ON p.id_coche = lc.id_coche;
