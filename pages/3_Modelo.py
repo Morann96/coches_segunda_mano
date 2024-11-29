@@ -8,27 +8,27 @@ from datetime import datetime
 import locale
 import tensorflow as tf
 from tensorflow.keras.models import load_model
+import plotly.express as px
+
+st.set_page_config(layout="wide")
 
 # Función para conectar a la base de datos
 def conectar_base_datos():
     conn = st.connection('mysql', type='sql')
     return conn
 
-
 # Función para extraer y mostrar datos
 def mostrar_datos(tabla):
     conn = conectar_base_datos()
     query = f"SELECT * FROM {tabla}"
     conn.query(query)  # Consulta SQL
-    df = conn.query(query) # Extraer datos como DataFrame
-
+    df = conn.query(query)  # Extraer datos como DataFrame
     return df
 
 # Cargar modelo
 @st.cache_resource
 def cargar_modelo(file_name, directory='notebooks/modelo/'):
     file_path = os.path.join(directory, file_name)
-    
     if file_name.endswith('.pkl'):
         with open(file_path, 'rb') as file:
             return pickle.load(file)
@@ -38,11 +38,10 @@ def cargar_modelo(file_name, directory='notebooks/modelo/'):
     else:
         raise ValueError(f"Extensión de archivo no reconocida. Se esperaban '.pkl' o '.keras'.")
 
-model = cargar_modelo(file_name= 'mejor_modelo.pkl')
+model = cargar_modelo(file_name='mejor_modelo.pkl')
 red_neuronal = cargar_modelo(file_name='red_neuronal.keras')
 
 # Cargar encoders
-
 def load_pickles(directory='notebooks/encoders'):
     encoders = {}
     # Recorrer todos los archivos en el directorio
@@ -69,20 +68,18 @@ escalador_X = escaladores["x_scaler"]
 escalador_y = escaladores["y_scaler"]
 
 # Título de la aplicación
-st.title("Predicción del Precio al Contado")
+st.markdown("<h1 style='text-align: center;'>Predicción de Precio al Contado</h1>", unsafe_allow_html=True)
+
 
 tabla = "vista_prestaciones"
 data = mostrar_datos(tabla)
 
 # Creamos la columna fecha_matriculacion para calcular la antigüedad del coche en años
-
 data['fecha_matriculacion'] = (
-    '01/' + data['mes_matriculacion'].astype(int).astype(str) + 
+    '01/' + data['mes_matriculacion'].astype(int).astype(str) +
     '/' + data['ano_matriculacion'].astype(int).astype(str))
-
 data['fecha_matriculacion'] = pd.to_datetime(data['fecha_matriculacion'], format='%d/%m/%Y')
 current_date = pd.to_datetime(datetime.now())
-
 data['antiguedad_coche'] = ((current_date - data['fecha_matriculacion']).dt.days / 365.25).round(2)
 
 # Inicializar st.session_state
@@ -93,6 +90,14 @@ if 'selected_marca' not in st.session_state:
     st.session_state.selected_marca = None
 if 'selected_modelo' not in st.session_state:
     st.session_state.selected_modelo = None
+
+# Inicializar estados de los botones
+if 'datos_guardados' not in st.session_state:
+    st.session_state.datos_guardados = False
+if 'prediccion_ml' not in st.session_state:
+    st.session_state.prediccion_ml = None
+if 'prediccion_rn' not in st.session_state:
+    st.session_state.prediccion_rn = None
 
 # Función para obtener las opciones filtradas
 def get_filtered_options():
@@ -116,7 +121,7 @@ if st.session_state.selected_modelo and st.session_state.selected_marca:
         st.session_state.selected_modelo = None
 
 # Configurar columnas
-col1, col2 = st.columns([5, 4])
+col1, col2 = st.columns([2, 3])
 
 with col1:
     st.header("Características coche")
@@ -140,8 +145,6 @@ with col1:
             key='selected_modelo'
         )
 
-    # No necesitamos modificar st.session_state después de los widgets
-
     # Segunda fila de filtros
     filtro_col3, filtro_col4 = st.columns(2)
     with filtro_col3:
@@ -155,7 +158,7 @@ with col1:
     filtro_col5, filtro_col6 = st.columns(2)
     with filtro_col5:
         # Filtro 5: Kilometraje
-        kilometraje = st.number_input("Kilometraje:", min_value=0, step=1000)
+        kilometraje = st.number_input("Kilometraje (km):", min_value=0, step=1000)
     with filtro_col6:
         # Filtro 6: Potencia
         potencia_cv = st.number_input("Potencia (CV):", min_value=0, step=10)
@@ -169,8 +172,8 @@ with col1:
         # Filtro 8: Tipo de Cambio
         tipo_cambio = st.selectbox("Tipo de Cambio:", data['tipo_cambio'].dropna().unique())
 
-    # Botón para guardar los datos
-    if st.button("Guardar datos"):
+    # Función para guardar los datos
+    def guardar_datos():
         input_data = {
             'marca': st.session_state.selected_marca,
             'modelo': st.session_state.selected_modelo,
@@ -181,87 +184,222 @@ with col1:
             'combustible': combustible,
             'tipo_cambio': tipo_cambio,
         }
-
         # Guardar los datos en el estado de sesión
         st.session_state.df = pd.DataFrame([input_data])
-        st.write("Datos guardados:")
-        st.dataframe(st.session_state.df)
+        st.session_state.datos_guardados = True
+
+    # Botón para guardar los datos
+    st.button("Guardar datos", on_click=guardar_datos)
+
 
 with col2:
     st.header("Resultados")
 
-    # Operaciones adicionales con el DataFrame del usuario
-    if not st.session_state.df.empty:
+    # Mostrar los datos guardados
+    if st.session_state.datos_guardados:
 
-        columnas_modelo = ['marca', 'modelo', 'potencia_cv', 'antiguedad_coche', 'log_kilometraje', 'tipo_cambio', 'distintivo_ambiental', 'combustible']
+        # Operaciones adicionales con el DataFrame del usuario
+        if not st.session_state.df.empty:
+            columnas_modelo = ['marca', 'modelo', 'potencia_cv', 'antiguedad_coche', 'log_kilometraje', 'tipo_cambio', 'distintivo_ambiental', 'combustible']
 
-        df_temp = st.session_state.df.copy()
-        df_temp['kilometraje'] = df_temp['kilometraje'].astype(int)
+            df_temp = st.session_state.df.copy()
+            df_temp['kilometraje'] = df_temp['kilometraje'].astype(int)
 
-        # Calcular logaritmo del kilometraje en el DataFrame del usuario
-        df_temp['log_kilometraje'] = np.log(df_temp['kilometraje'])
-        df_temp.drop(columns=['kilometraje'], inplace=True)
-        df_temp = df_temp[columnas_modelo]
-        
-        # Aplicar target encoder
-        df_temp['marca'] = encoder_marca.transform(df_temp['marca'])
-        df_temp['modelo'] = encoder_modelo.transform(df_temp['modelo'])
+            # Calcular logaritmo del kilometraje en el DataFrame del usuario
+            df_temp['log_kilometraje'] = np.log(df_temp['kilometraje'])
+            df_temp.drop(columns=['kilometraje'], inplace=True)
+            df_temp = df_temp[columnas_modelo]
 
-        # Aplicar label encoder
-        df_temp['tipo_cambio'] = encoder_tipo_cambio.transform(df_temp['tipo_cambio'])
+            # Aplicar target encoder
+            df_temp['marca'] = encoder_marca.transform(df_temp['marca'])
+            df_temp['modelo'] = encoder_modelo.transform(df_temp['modelo'])
 
-        # Aplicar el OneHotEncoder
-        encoded_cols = combustible_encoder.transform(df_temp[['combustible']])
+            # Aplicar label encoder
+            df_temp['tipo_cambio'] = encoder_tipo_cambio.transform(df_temp['tipo_cambio'])
 
-        encoded_cols = pd.DataFrame(encoded_cols, columns=combustible_encoder.get_feature_names_out(['combustible']), index=df_temp.index)
-        df_temp = pd.concat([df_temp, encoded_cols], axis=1)
-        df_temp.drop(columns=['combustible'], inplace=True)
+            # Aplicar el OneHotEncoder
+            encoded_cols = combustible_encoder.transform(df_temp[['combustible']])
+            encoded_cols = pd.DataFrame(encoded_cols, columns=combustible_encoder.get_feature_names_out(['combustible']), index=df_temp.index)
+            df_temp = pd.concat([df_temp, encoded_cols], axis=1)
+            df_temp.drop(columns=['combustible'], inplace=True)
 
-        encoded_cols = encoder_distintivo.transform(df_temp[['distintivo_ambiental']])
-        
-        encoded_cols = pd.DataFrame(encoded_cols, columns=encoder_distintivo.get_feature_names_out(['distintivo_ambiental']), index=df_temp.index)
-        df_temp = pd.concat([df_temp, encoded_cols], axis=1)
-        df_temp.drop(columns=['distintivo_ambiental'], inplace=True)
+            encoded_cols = encoder_distintivo.transform(df_temp[['distintivo_ambiental']])
+            encoded_cols = pd.DataFrame(encoded_cols, columns=encoder_distintivo.get_feature_names_out(['distintivo_ambiental']), index=df_temp.index)
+            df_temp = pd.concat([df_temp, encoded_cols], axis=1)
+            df_temp.drop(columns=['distintivo_ambiental'], inplace=True)
 
-        # Escalar los datos
-        x = escalador_X.transform(df_temp)
+            # Escalar los datos
+            x = escalador_X.transform(df_temp)
 
-
-    else:
-        st.warning("Por favor, guarda los datos antes de continuar.")
+        else:
+            st.warning("Por favor, guarda los datos antes de continuar.")
 
     # Configurar la localización para España
-    locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')  # En sistemas basados en Unix
-    # Para Windows, puedes intentar con 'Spanish_Spain.1252'
+    try:
+        locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')  # En sistemas basados en Unix
+    except:
+        locale.setlocale(locale.LC_ALL, 'Spanish_Spain.1252')  # Para Windows
 
-    # Botón para predecir
-    if st.button("Predicción con Machine Learning"):
+    # Función para predicción con Machine Learning
+    def prediccion_ml():
         try:
             # Realizar la predicción
             prediction = model.predict(x)
-            prediction_unescaled = escalador_y.inverse_transform(np.array(prediction).reshape(-1, 1)).ravel()
-            prediccion_valor = prediction_unescaled[0] 
+            prediction_unscaled = escalador_y.inverse_transform(np.array(prediction).reshape(-1, 1)).ravel()
+            prediccion_valor = prediction_unscaled[0]
 
             # Formatear el valor con separadores de miles y decimales
             prediccion_formateada = locale.format_string("%.2f €", prediccion_valor, grouping=True)
-            
-            # Mostrar el resultado
-            st.success(f"El precio al contado predicho es: {prediccion_formateada}")
+
+            # Guardar el resultado en session_state
+            st.session_state.prediccion_ml = prediccion_formateada
         except Exception as e:
             st.error(f"Ocurrió un error durante la predicción: {e}")
 
-
-    if st.button("Predicción con Red Neuronal"):
+    # Función para predicción con Red Neuronal
+    def prediccion_rn():
         try:
             # Realizar la predicción con 'red_neuronal'
             prediction = red_neuronal.predict(x)
-            prediction_unescaled = escalador_y.inverse_transform(np.array(prediction).reshape(-1, 1)).ravel()
-            prediccion_valor = prediction_unescaled[0]  
+            prediction_unscaled = escalador_y.inverse_transform(np.array(prediction).reshape(-1, 1)).ravel()
+            prediccion_valor = prediction_unscaled[0]
 
             # Formatear el valor con separadores de miles y decimales
             prediccion_formateada = locale.format_string("%.2f €", prediccion_valor, grouping=True)
-            
-            # Mostrar el resultado
-            st.success(f"El precio al contado predicho es: {prediccion_formateada}")
+
+            # Guardar el resultado en session_state
+            st.session_state.prediccion_rn = prediccion_formateada
         except Exception as e:
             st.error(f"Ocurrió un error durante la predicción: {e}")
+
+    # Botón para predicción con Machine Learning
+    if st.session_state.datos_guardados:
+        st.button("Predicción con Machine Learning", on_click=prediccion_ml)
+
+        # Mostrar resultado si existe
+        if st.session_state.prediccion_ml:
+            st.success(f"El precio al contado predicho con ML es de:   {st.session_state.prediccion_ml}")
+
+        # Botón para predicción con Red Neuronal
+        st.button("Predicción con Red Neuronal", on_click=prediccion_rn)
+
+        # Mostrar resultado si existe
+        if st.session_state.prediccion_rn:
+            st.success(f"El precio al contado predicho con RN es de:   {st.session_state.prediccion_rn}")
+    else:
+        st.warning("Por favor, guarda los datos antes de realizar una predicción.")
+
+
+
+if st.session_state.datos_guardados:
+    st.markdown("---")
+    st.header("Datos Guardados")
+    st.dataframe(st.session_state.df)
+
+
+
+#Mostrar Feature importance del modelo de ML importado
+
+st.markdown("---")
+
+st.markdown("<h1 style='text-align: center;'>Feature Importance ML</h1>", unsafe_allow_html=True)
+
+importances = model.feature_importances_
+
+x_columns = ["modelo", "potencia_cv", "antiguedad_coche", "log_kilometraje",
+             "tipo_cambio", "marca", "distintivo_ambiental_ECO", "distintivo_ambiental_C",
+             "combustible_Gasolina", "combustible_Híbrido Enchufable", "combustible_Eléctrico",
+             "distintivo_ambiental_B", "combustible_Gasolina/gas", "combustible_Gas"]
+
+# Crear un DataFrame de importancias con las columnas finales y convertir a porcentaje
+df_importances = pd.DataFrame(data=zip(x_columns, importances),
+                              columns=["Columnas", "Importancia"])
+df_importances["Importancia"] = df_importances["Importancia"] * 100  # Convertir a porcentaje
+df_importances = df_importances.sort_values("Importancia", ascending=False)
+
+# Establecer el orden de las categorías para la gráfica
+df_importances["Columnas"] = pd.Categorical(df_importances["Columnas"],
+                                            categories=df_importances["Columnas"],
+                                            ordered=True)
+
+# Gráfico interactivo con Plotly en orden descendente y eje X en formato porcentaje
+import plotly.express as px
+fig = px.bar(df_importances, x="Importancia", y="Columnas", orientation="h",)
+
+# Actualizar etiquetas mostradas al pasar el cursor
+fig.update_traces(
+    hovertemplate="<b>%{y}</b>: %{x:.2f}%"  # Mostrar dos decimales como porcentaje
+)
+
+fig.update_layout(
+    height=600,
+    margin=dict(l=100, r=40, t=50, b=40),
+    xaxis=dict(
+        tickformat=".0f",
+        title="Importancia (%)",
+        title_font=dict(size=18),
+        tickfont=dict(size=14)
+    ),
+    yaxis=dict(
+        categoryorder='total ascending',
+        title="Columnas",
+        title_font=dict(size=18),
+        tickfont=dict(size=14)
+    ))
+
+
+st.plotly_chart(fig, use_container_width=True)
+
+
+
+#Mostrar Métricas de la red neuronal
+
+st.markdown("---")
+
+st.markdown("<h1 style='text-align: center;'>Feature Importance ML</h1>", unsafe_allow_html=True)
+
+importances = model.feature_importances_
+
+x_columns = ["modelo", "potencia_cv", "antiguedad_coche", "log_kilometraje",
+             "tipo_cambio", "marca", "distintivo_ambiental_ECO", "distintivo_ambiental_C",
+             "combustible_Gasolina", "combustible_Híbrido Enchufable", "combustible_Eléctrico",
+             "distintivo_ambiental_B", "combustible_Gasolina/gas", "combustible_Gas"]
+
+# Crear un DataFrame de importancias con las columnas finales y convertir a porcentaje
+df_importances = pd.DataFrame(data=zip(x_columns, importances),
+                              columns=["Columnas", "Importancia"])
+df_importances["Importancia"] = df_importances["Importancia"] * 100  # Convertir a porcentaje
+df_importances = df_importances.sort_values("Importancia", ascending=False)
+
+# Establecer el orden de las categorías para la gráfica
+df_importances["Columnas"] = pd.Categorical(df_importances["Columnas"],
+                                            categories=df_importances["Columnas"],
+                                            ordered=True)
+
+# Gráfico interactivo con Plotly en orden descendente y eje X en formato porcentaje
+import plotly.express as px
+fig = px.bar(df_importances, x="Importancia", y="Columnas", orientation="h",)
+
+# Actualizar etiquetas mostradas al pasar el cursor
+fig.update_traces(
+    hovertemplate="<b>%{y}</b>: %{x:.2f}%"  # Mostrar dos decimales como porcentaje
+)
+
+fig.update_layout(
+    height=600,
+    margin=dict(l=100, r=40, t=50, b=40),
+    xaxis=dict(
+        tickformat=".0f",
+        title="Importancia (%)",
+        title_font=dict(size=18),
+        tickfont=dict(size=14)
+    ),
+    yaxis=dict(
+        categoryorder='total ascending',
+        title="Columnas",
+        title_font=dict(size=18),
+        tickfont=dict(size=14)
+    ))
+
+
+st.plotly_chart(fig, use_container_width=True)
