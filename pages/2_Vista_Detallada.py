@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import mysql.connector as mc
 
+st.set_page_config(layout="wide")
+
 # Cargar los datos
 @st.cache_data
 def load_data():
@@ -25,7 +27,7 @@ def obtener_datos_vista():
     return df
 
 # Título de la aplicación
-st.title("Visualización de Coches de Segunda Mano")
+st.markdown("<h1 style='text-align: center;'>Visualización de Coches de Segunda Mano</h1>", unsafe_allow_html=True)
 
 # Filtros
 st.sidebar.header("Filtros")
@@ -66,7 +68,7 @@ filtered_data = df_vista_prestaciones[
 ]
 
 # Filtrar marcas
-marcas_unicas = filtered_data['nombre_marca'].str.upper().dropna().unique()
+marcas_unicas = filtered_data['marca'].str.upper().dropna().unique()
 marcas_unicas = [str(marca) for marca in marcas_unicas]
 marcas = st.sidebar.multiselect(
     "Selecciona Marca",
@@ -77,10 +79,10 @@ marcas = st.sidebar.multiselect(
 # Filtrar modelos dinámicamente en función de las marcas seleccionadas
 if marcas:
     # Si se seleccionan marcas, mostrar los modelos que coincidan con esas marcas
-    modelos_disponibles = filtered_data[filtered_data['nombre_marca'].str.upper().isin(marcas)]['nombre_modelo'].dropna().unique()
+    modelos_disponibles = filtered_data[filtered_data['marca'].str.upper().isin(marcas)]['modelo'].dropna().unique()
 else:
     # Si no se selecciona ninguna marca, mostrar todos los modelos disponibles
-    modelos_disponibles = filtered_data['nombre_modelo'].dropna().unique()
+    modelos_disponibles = filtered_data['modelo'].dropna().unique()
 
 # Asegúrate de que modelos_disponibles no esté vacío
 if len(modelos_disponibles) > 0:
@@ -95,7 +97,7 @@ else:
 
 # Filtrar los modelos
 if modelos:
-    filtered_data = filtered_data[filtered_data['nombre_modelo'].isin(modelos)]
+    filtered_data = filtered_data[filtered_data['modelo'].isin(modelos)]
 
 # Filtrar por tipo de cambio
 tipo_cambio_unico = filtered_data['tipo_cambio'].str.upper().dropna().unique()
@@ -108,7 +110,7 @@ tipo_cambio = st.sidebar.multiselect(
 # Filtrar por provincias disponibles
 provincias = st.sidebar.multiselect(
     "Selecciona Provincias",
-    options=filtered_data['nombre_provincia'].unique(),
+    options=filtered_data['provincia'].unique(),
     default=[]
 )
 
@@ -129,7 +131,7 @@ puertas = st.sidebar.multiselect(
 
 # Aplicar los filtros a los datos
 filtered_data = filtered_data[
-    (filtered_data['nombre_provincia'].isin(provincias) if provincias else True) &
+    (filtered_data['provincia'].isin(provincias) if provincias else True) &
     (filtered_data['distintivo_ambiental'].isin(distintivos) if distintivos else True) &
     (filtered_data['tipo_cambio'].str.upper().isin(tipo_cambio) if tipo_cambio else True) &
     (filtered_data['num_puertas'].isin(puertas) if puertas else True)
@@ -140,5 +142,5 @@ st.write(f"Mostrando {len(filtered_data)} resultados:")
 st.dataframe(filtered_data)
 
 # Estadísticas básicas
-st.header("Estadísticas Básicas")
+st.markdown("<h2 style='text-align: center;'>Estadísticas Básicas</h2>", unsafe_allow_html=True)
 st.write(filtered_data.describe())
