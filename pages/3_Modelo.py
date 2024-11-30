@@ -9,6 +9,8 @@ import locale
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 import plotly.express as px
+import plotly.graph_objects as go
+from tensorflow.keras.models import load_model
 
 st.set_page_config(layout="wide")
 
@@ -38,8 +40,9 @@ def cargar_modelo(file_name, directory='notebooks/modelo/'):
     else:
         raise ValueError(f"Extensión de archivo no reconocida. Se esperaban '.pkl' o '.keras'.")
 
+
 model = cargar_modelo(file_name='mejor_modelo.pkl')
-red_neuronal = cargar_modelo(file_name='red_neuronal.keras')
+red_neuronal = cargar_modelo(file_name='neural_mse.keras')
 
 # Cargar encoders
 def load_pickles(directory='notebooks/encoders'):
@@ -350,56 +353,102 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
-
-
-#Mostrar Métricas de la red neuronal
-
 st.markdown("---")
 
-st.markdown("<h1 style='text-align: center;'>Feature Importance ML</h1>", unsafe_allow_html=True)
+# Métricas Redes Neuronales
 
-importances = model.feature_importances_
+# Directorio de los archivos
+directory = "notebooks/modelo/"
 
-x_columns = ["modelo", "potencia_cv", "antiguedad_coche", "log_kilometraje",
-             "tipo_cambio", "marca", "distintivo_ambiental_ECO", "distintivo_ambiental_C",
-             "combustible_Gasolina", "combustible_Híbrido Enchufable", "combustible_Eléctrico",
-             "distintivo_ambiental_B", "combustible_Gasolina/gas", "combustible_Gas"]
+# Diccionario con la información de las redes neuronales
+redes_neuronales = {
+    "MAE 1": {
+        "historial": "historial_neural_mae_1.pkl",
+        "resultados": "resultados_neural_mae_1.pkl",
+        "modelo": "neural_mae_1.keras"
+    },
+    "MAE 2": {
+        "historial": "historial_neural_mae_2.pkl",
+        "resultados": "resultados_neural_mae_2.pkl",
+        "modelo": "neural_mae_2.keras"
+    },
+    "MAE 3": {
+        "historial": "historial_neural_mae_3.pkl",
+        "resultados": "resultados_neural_mae_3.pkl",
+        "modelo": "neural_mae_3.keras"
+    },
+    "MSE 1": {
+        "historial": "historial_neural_mse.pkl",
+        "resultados": "resultados_neural_mse.pkl",
+        "modelo": "neural_mse.keras"
+    },
+    "MSE 2": {
+        "historial": "historial_neural_mse_2.pkl",
+        "resultados": "resultados_neural_mse_2.pkl",
+        "modelo": "neural_mse_2.keras"
+    },
+    "MSE 3": {
+        "historial": "historial_neural_mse_3.pkl",
+        "resultados": "resultados_neural_mse_3.pkl",
+        "modelo": "neural_mse_3.keras"
+    }
+}
 
-# Crear un DataFrame de importancias con las columnas finales y convertir a porcentaje
-df_importances = pd.DataFrame(data=zip(x_columns, importances),
-                              columns=["Columnas", "Importancia"])
-df_importances["Importancia"] = df_importances["Importancia"] * 100  # Convertir a porcentaje
-df_importances = df_importances.sort_values("Importancia", ascending=False)
+# Funciones para cargar archivos
+@st.cache_resource
+def cargar_archivo_pkl(file_name):
+    with open(os.path.join(directory, file_name), 'rb') as file:
+        return pickle.load(file)
 
-# Establecer el orden de las categorías para la gráfica
-df_importances["Columnas"] = pd.Categorical(df_importances["Columnas"],
-                                            categories=df_importances["Columnas"],
-                                            ordered=True)
+@st.cache_resource
+def cargar_modelo_keras(file_name):
+    return load_model(os.path.join(directory, file_name))
 
-# Gráfico interactivo con Plotly en orden descendente y eje X en formato porcentaje
-import plotly.express as px
-fig = px.bar(df_importances, x="Importancia", y="Columnas", orientation="h",)
+# Visualización en Streamlit
+st.title("Comparativa de Redes Neuronales")
+st.markdown("Este dashboard compara la evolución de la pérdida y los resultados de predicción de seis redes neuronales.")
 
-# Actualizar etiquetas mostradas al pasar el cursor
-fig.update_traces(
-    hovertemplate="<b>%{y}</b>: %{x:.2f}%"  # Mostrar dos decimales como porcentaje
-)
+col1, col2 = st.columns(2)
 
-fig.update_layout(
-    height=600,
-    margin=dict(l=100, r=40, t=50, b=40),
-    xaxis=dict(
-        tickformat=".0f",
-        title="Importancia (%)",
-        title_font=dict(size=18),
-        tickfont=dict(size=14)
-    ),
-    yaxis=dict(
-        categoryorder='total ascending',
-        title="Columnas",
-        title_font=dict(size=18),
-        tickfont=dict(size=14)
-    ))
+# Contadores para alternar entre las columnas
+for i, (key, value) in enumerate(redes_neuronales.items()):
+    # Alternar entre las columnas
+    current_col = col1 if i % 2 == 0 else col2
+    
+    with current_col:
+        # Mostrar el historial de pérdida
+        st.markdown(f"### Historial y Resultados de {key}")
+        historial = cargar_archivo_pkl(value["historial"])
+        loss = historial["loss"]
+        val_loss = historial.get("val_loss", None)
+        epochs = range(1, len(loss) + 1)
+
+        # Gráfica de la pérdida
+        fig_loss = go.Figure()
+        fig_loss.add_trace(go.Scatter(x=list(epochs), y=loss, mode='lines', name='Pérdida de Entrenamiento'))
+        if val_loss:
+            fig_loss.add_trace(go.Scatter(x=list(epochs), y=val_loss, mode='lines', name='Pérdida de Validación'))
+
+        fig_loss.update_layout(
+            title=f"Evolución de la Pérdida - {key}",
+            xaxis_title='Épocas',
+            yaxis_title='Pérdida',
+            height=400,
+            margin=dict(l=50, r=50, t=50, b=50),
+            xaxis=dict(tickmode='linear', tick0=1, dtick=1),
+            legend=dict(font=dict(size=10))
+        )
+        st.plotly_chart(fig_loss, use_container_width=True)
+
+        # Mostrar los resultados de predicción debajo de la gráfica
+        st.markdown("#### Resultados:")
+        resultados = cargar_archivo_pkl(value["resultados"])
+        st.dataframe(resultados)
+
+        # Separador visual entre secciones
+        st.markdown("---")
 
 
-st.plotly_chart(fig, use_container_width=True)
+
+
+
