@@ -270,6 +270,7 @@ with coche1_col:
             )
         else:
             st.write("No hay imagen disponible para el Coche 1.")
+
     else:
         st.write("No se encontraron datos para el Coche 1 con los filtros seleccionados.")
 
@@ -300,77 +301,91 @@ with coche2_col:
             )
         else:
             st.write("No hay imagen disponible para el Coche 2.")
+
     else:
         st.write("No se encontraron datos para el Coche 2 con los filtros seleccionados.")
 
+columnas_seleccionadas = [
+    "precio_contado", "precio_nuevo", "kilometraje", "potencia_cv", 
+    "velocidad_max", "aceleracion", "consumo_medio", "peso", 
+    "num_plazas", "num_puertas", "capacidad_maletero", "largo", 
+    "ancho", "alto"
+]
 
-
-
+if not df_filtrado1.empty and not df_filtrado2.empty:
+    # Eliminar la columna 'foto_binaria' y combinar los dos DataFrames
+    df_combinado = pd.concat([ df_filtrado1[columnas_seleccionadas],df_filtrado2[columnas_seleccionadas]], ignore_index=True)
+    
+    # Mostrar el DataFrame combinado en la interfaz
+    st.markdown("<h3 style='text-align: center;'>Comparación de Coches</h3>", unsafe_allow_html=True)
+    st.dataframe(df_combinado)
+else:
+    st.write("No se encontraron datos para ambos coches seleccionados.")
 
 
 
 
 # Función para crear el gráfico de radar
-def crear_grafico_radar(coche1, coche2):
-    # Define las características a comparar
-    categorias = ["Potencia (CV)", "Kilometraje", "Año de matriculación"]
-    valores_coche1 = [
-        coche1["potencia_cv"],
-        coche1["kilometraje"],
-        coche1["ano_matriculacion"],
-    ]
-    valores_coche2 = [
-        coche2["potencia_cv"],
-        coche2["kilometraje"],
-        coche2["ano_matriculacion"],
-    ]
+# def crear_grafico_radar(coche1, coche2):
+#     # Define las características a comparar
+#     categorias = ["Potencia (CV)", "Kilometraje", "Año de matriculación"]
+#     valores_coche1 = [
+#         coche1["potencia_cv"],
+#         coche1["kilometraje"],
+#         coche1["ano_matriculacion"],
+#     ]
+#     valores_coche2 = [
+#         coche2["potencia_cv"],
+#         coche2["kilometraje"],
+#         coche2["ano_matriculacion"],
+#     ]
 
-    # Normalizar los valores para el gráfico de radar
-    maximos = [200, 200000, 2023]  # Ajusta los máximos según tus datos
-    valores_coche1 = [v / m for v, m in zip(valores_coche1, maximos)]
-    valores_coche2 = [v / m for v, m in zip(valores_coche2, maximos)]
+#     # Normalizar los valores para el gráfico de radar
+#     maximos = [200, 200000, 2023]  # Ajusta los máximos según tus datos
+#     valores_coche1 = [v / m for v, m in zip(valores_coche1, maximos)]
+#     valores_coche2 = [v / m for v, m in zip(valores_coche2, maximos)]
 
-    # Añadir el primer valor al final para cerrar el gráfico
-    valores_coche1 += valores_coche1[:1]
-    valores_coche2 += valores_coche2[:1]
-    categorias += categorias[:1]
+#     # Añadir el primer valor al final para cerrar el gráfico
+#     valores_coche1 += valores_coche1[:1]
+#     valores_coche2 += valores_coche2[:1]
+#     categorias += categorias[:1]
 
-    # Crear el gráfico
-    angulos = np.linspace(0, 2 * np.pi, len(categorias), endpoint=True)
-    fig, ax = plt.subplots(figsize=(2, 2), subplot_kw={"projection": "polar"})  # Tamaño reducido
+#     # Crear el gráfico
+#     angulos = np.linspace(0, 2 * np.pi, len(categorias), endpoint=True)
+#     fig, ax = plt.subplots(figsize=(2, 2), subplot_kw={"projection": "polar"})  # Tamaño reducido
 
-    # Dibujar las líneas del radar para cada coche
-    ax.plot(angulos, valores_coche1, label="Coche 1", linewidth=2)
-    ax.fill(angulos, valores_coche1, alpha=0.25)
+#     # Dibujar las líneas del radar para cada coche
+#     ax.plot(angulos, valores_coche1, label="Coche 1", linewidth=2)
+#     ax.fill(angulos, valores_coche1, alpha=0.25)
 
-    ax.plot(angulos, valores_coche2, label="Coche 2", linewidth=2, linestyle="dashed")
-    ax.fill(angulos, valores_coche2, alpha=0.25)
+#     ax.plot(angulos, valores_coche2, label="Coche 2", linewidth=2, linestyle="dashed")
+#     ax.fill(angulos, valores_coche2, alpha=0.25)
 
-    # Configuración de los ticks
-    ax.set_yticks([])
-    ax.set_xticks(angulos)
-    ax.set_xticklabels(categorias, fontsize=10)
+#     # Configuración de los ticks
+#     ax.set_yticks([])
+#     ax.set_xticks(angulos)
+#     ax.set_xticklabels(categorias, fontsize=10)
 
-    # Leyenda y título
-    ax.legend(loc="upper right", bbox_to_anchor=(1.3, 1.1))
-    plt.title("Comparación de Características", size=12, pad=20)
+#     # Leyenda y título
+#     ax.legend(loc="upper right", bbox_to_anchor=(1.3, 1.1))
+#     plt.title("Comparación de Características", size=12, pad=20)
 
-    return fig
+#     return fig
 
-# Crear el gráfico de radar y mostrarlo debajo de las imágenes solo si hay datos disponibles
-if not df_filtrado1.empty and not df_filtrado2.empty:
-    datos_coche1 = df_filtrado1.iloc[0]
-    datos_coche2 = df_filtrado2.iloc[0]
+# # Crear el gráfico de radar y mostrarlo debajo de las imágenes solo si hay datos disponibles
+# if not df_filtrado1.empty and not df_filtrado2.empty:
+#     datos_coche1 = df_filtrado1.iloc[0]
+#     datos_coche2 = df_filtrado2.iloc[0]
     
-    grafico_radar = crear_grafico_radar(datos_coche1, datos_coche2)
+#     grafico_radar = crear_grafico_radar(datos_coche1, datos_coche2)
     
-    # Posicionamiento del gráfico
-    st.markdown("<h3 style='text-align: center;'>Gráfico Comparativo</h3>", unsafe_allow_html=True)
-    col1, col2, col3 = st.columns([4, 4, 4])
-    with col2:
-        st.pyplot(grafico_radar)
-else:
-    st.warning("Por favor, selecciona ambos coches para comparar.")
+#     # Posicionamiento del gráfico
+#     st.markdown("<h3 style='text-align: center;'>Gráfico Comparativo</h3>", unsafe_allow_html=True)
+#     col1, col2, col3 = st.columns([4, 4, 4])
+#     with col2:
+#         st.pyplot(grafico_radar)
+# else:
+#     st.warning("Por favor, selecciona ambos coches para comparar.")
 
 
 

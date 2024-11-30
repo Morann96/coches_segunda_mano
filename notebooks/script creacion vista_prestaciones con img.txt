@@ -37,6 +37,7 @@ SELECT
     p.par,
     p.velocidad_max,
     p.aceleracion,
+    lc.id_coche,
     lc.foto_binaria
 FROM 
     prestaciones p
