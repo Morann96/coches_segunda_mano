@@ -106,6 +106,7 @@ df[columnas_categoricas] = df[columnas_categoricas].fillna('Desconocido')
 # Asegurar que las columnas numéricas son de tipo numérico
 columnas_numericas = ['precio_contado', 'kilometraje', 'potencia_cv', 'velocidad_max', 'aceleracion', 'consumo_medio', 'peso', 'capacidad_maletero']
 df[columnas_numericas] = df[columnas_numericas].apply(pd.to_numeric, errors='coerce')
+df[columnas_numericas] = df[columnas_numericas].fillna(0)
 
 # Título de la página
 st.markdown("<h1 style='text-align: center;'>Comparador de coches</h1>", unsafe_allow_html=True)
@@ -174,7 +175,7 @@ with col2:
         if len(combustibles_disponibles) > 0:
             combustible1 = st.selectbox("Combustible", combustibles_disponibles, key="combustible1", label_visibility="collapsed", index=0)
         else:
-            combustible1 = 'Desconocido'  # Asignar valor por defecto
+            combustible1 = 'Desconocido'  
     with fila2_coche1[1]:
         st.markdown("<p class='titulo-select'>Distintivo</p>", unsafe_allow_html=True)
         distintivos_disponibles = df[
@@ -187,7 +188,7 @@ with col2:
         if len(distintivos_disponibles) > 0:
             distintivo1 = st.selectbox("Distintivo", distintivos_disponibles, key="distintivo1", label_visibility="collapsed", index=0)
         else:
-            distintivo1 = 'Desconocido'  # Asignar valor por defecto
+            distintivo1 = 'Desconocido'  
     with fila2_coche1[2]:
         st.markdown("<p class='titulo-select'>Potencia (CV)</p>", unsafe_allow_html=True)
         potencias_disponibles = df[
@@ -222,6 +223,33 @@ with col2:
 
     # Actualizar el título con la marca y modelo seleccionados
     title_placeholder1.markdown(f"<h3 style='text-align: center;'>{marca1} {modelo1}</h3>", unsafe_allow_html=True)
+
+    # Mostrar imagen debajo de los filtros
+    df_filtrado1 = df[
+        (df["marca"] == marca1)
+        & (df["modelo"] == modelo1)
+        & (df["ano_matriculacion"] == ano1)
+        & (df["tipo_cambio"] == tipo_cambio1)
+        & (df["combustible"] == combustible1)
+        & (df["distintivo_ambiental"] == distintivo1)
+        & (df["potencia_cv"] == potencia1)
+        & (df["kilometraje"] == kilometraje1)
+    ].copy()  # Crear una copia explícita
+
+    if not df_filtrado1.empty:
+        datos_coche1 = df_filtrado1.iloc[0]
+        foto_binaria = datos_coche1["foto_binaria"]
+
+        try: 
+            imagen1 = convertir_binario_a_imagen(foto_binaria)
+        except Exception as e:
+            print(f"Error al cargar la imagen del coche 1: {e}")
+            imagen1 = None
+
+        mostrar_coche(imagen1)
+        
+    else:
+        st.write(f"No se encontraron datos para el {marca1} {modelo1} ({ano1}) con los filtros seleccionados.")
 
 # Columna vacía (espacio entre los coches)
 with col3:
@@ -333,50 +361,6 @@ with col4:
     # Actualizar el título con la marca y modelo seleccionados
     title_placeholder2.markdown(f"<h3 style='text-align: center;'>{marca2} {modelo2}</h3>", unsafe_allow_html=True)
 
-# Columna vacía (espacio a la derecha)
-with col5:
-    st.empty()
-
-# Dividir en dos columnas principales para Coche 1 y Coche 2
-col1, col2, col3, col4, col5 = st.columns([1, 10, 1, 10, 1])
-
-# Configuración para Coche 1
-with col1:
-    st.empty()
-
-with col2:
-    # Mostrar imagen debajo de los filtros
-    df_filtrado1 = df[
-        (df["marca"] == marca1)
-        & (df["modelo"] == modelo1)
-        & (df["ano_matriculacion"] == ano1)
-        & (df["tipo_cambio"] == tipo_cambio1)
-        & (df["combustible"] == combustible1)
-        & (df["distintivo_ambiental"] == distintivo1)
-        & (df["potencia_cv"] == potencia1)
-        & (df["kilometraje"] == kilometraje1)
-    ].copy()  # Crear una copia explícita
-
-    if not df_filtrado1.empty:
-        datos_coche1 = df_filtrado1.iloc[0]
-        foto_binaria = datos_coche1["foto_binaria"]
-
-        try: 
-            imagen1 = convertir_binario_a_imagen(foto_binaria)
-        except Exception as e:
-            print(f"Error al cargar la imagen del coche 1: {e}")
-            imagen1 = None
-
-        mostrar_coche(imagen1)
-        
-    else:
-        st.write(f"No se encontraron datos para el {marca1} {modelo1} ({ano1}) con los filtros seleccionados.")
-
-with col3:
-    st.empty()
-
-# Configuración para Coche 2
-with col4:
     # Mostrar imagen debajo de los filtros
     df_filtrado2 = df[
         (df["marca"] == marca2)
@@ -404,8 +388,10 @@ with col4:
     else:
         st.write(f"No se encontraron datos para el {marca2} {modelo2} ({ano2}) con los filtros seleccionados.")
 
+# Columna vacía (espacio a la derecha)
 with col5:
     st.empty()
+
 
 columnas_seleccionadas = [
     "precio_contado", "kilometraje", "potencia_cv", 
@@ -446,7 +432,7 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
             min_val = min_vals[col]
             max_val = max_vals[col]
             if max_val - min_val != 0:
-                if col != 'aceleracion':
+                if col not in ['aceleracion', 'consumo_medio']:
                     df_normalized[col] = (df_normalized[col] - min_val) / (max_val - min_val)
                 else:
                     df_normalized[col] = (max_val - df_normalized[col]) / (max_val - min_val)
@@ -464,7 +450,7 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
     # Combinar los DataFrames originales (no normalizados) para verificar columnas válidas
     df_combinado = pd.concat([df_filtrado1[columnas_seleccionadas], df_filtrado2[columnas_seleccionadas]], ignore_index=True).copy()
 
-    columnas_validas = [col for col in columnas_seleccionadas if df_combinado[col].notnull().all()]
+    columnas_validas = [col for col in columnas_seleccionadas if (df_combinado[col] != 0).all()]
 
     if columnas_validas:
         # Crear un DataFrame con solo las columnas válidas y hacer una copia
@@ -478,7 +464,7 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
             "aceleracion": "Aceleración",
             "consumo_medio": "Consumo Medio",
             "peso": "Peso",
-            "capacidad_maletero": "Capacidad del Maletero"
+            "capacidad_maletero": "Capacidad Maletero"
         }
 
         # Renombrar las columnas para que sean más legibles
@@ -499,7 +485,7 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
         nombre_coche2 = f"{df_filtrado2['marca'].iloc[0]} {df_filtrado2['modelo'].iloc[0]}"
 
         # Crear cinco columnas de igual ancho
-        col2, col4 = st.columns([2, 3])
+        col2, col4 = st.columns([3, 3])
 
         with col4:
             inner_col1, inner_col2, inner_col3 = st.columns([1, 5, 1])
@@ -511,6 +497,7 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
 
                 # Combinar los datos de los coches seleccionados y crear una copia explícita
                 df_combinado = pd.concat([df_filtrado1[columnas_seleccionadas], df_filtrado2[columnas_seleccionadas]], ignore_index=True).copy()
+                df_combinado = df_combinado.replace(0,'Desconocido')
 
                 # Obtener los nombres personalizados para las columnas (marca y modelo de los coches)
                 if (df_filtrado1['marca'].iloc[0] == df_filtrado2['marca'].iloc[0]) and (df_filtrado1['modelo'].iloc[0] == df_filtrado2['modelo'].iloc[0]):
@@ -543,14 +530,14 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
             # Crear un marcador de posición para el gráfico
             graph_placeholder = st.empty()
 
-            slider_col1, slider_col2, slider_col3 = st.columns([1, 2, 1]) 
+            slider_col1, slider_col2, slider_col3 = st.columns([1, 1, 1]) 
 
             with slider_col1:
                 st.empty()  # Espacio vacío a la izquierda
 
             with slider_col2:
                 # Añadir espacio superior para mover el slider hacia abajo
-                st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)  # Ajusta la altura según necesidad
+                #st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)  
 
                 # Colocar el slider dentro de la columna central
                 radial_min, radial_max = st.slider(
@@ -563,7 +550,7 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
                 )
 
                 # Opcional: Añadir espacio inferior para mover el slider hacia arriba
-                st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)  # Ajusta la altura según necesidad
+                st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)  
 
             with slider_col3:
                 st.empty()  # Espacio vacío a la derecha
@@ -610,7 +597,7 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
                     orientation="h",
                     x=0.5,
                     xanchor="center",
-                    y=1.12,
+                    y=1.20,
                     yanchor='top',
                     font=dict(size=12)
                 ),
