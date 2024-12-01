@@ -77,16 +77,21 @@ def mostrar_coche(imagen):
 
 st.markdown("""
     <style>
-    /* Reducir márgenes de los selectores */
+    /* Reducir márgenes de los selectores y centrarlos */
     div[data-baseweb="select"] {
         width: 135px !important; /* Mantener ancho uniforme */
-        margin: 5px 10px !important; /* Ajustar márgenes generales */
+        margin: 5px auto !important; /* Centrar selectores */
     }
 
-    /* Reducir espacio entre el título y el selector */
+    /* Reducir espacio entre el título y el selector y centrar títulos */
     p.titulo-select {
         margin-bottom: 1px !important; /* Controlar el margen inferior del título */
-        text-align: center; /* Centrar texto del título */
+        text-align: center !important; /* Centrar texto del título */
+    }
+
+    /* Centrar otros elementos dentro de las columnas */
+    [data-testid="stVerticalBlock"] .stColumn > div {
+        align-items: center;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -114,7 +119,8 @@ with col1:
 
 # Filtros para el Coche 1
 with col2:
-    st.markdown(f"<h3 style='text-align: center;'>Coche 1</h3>", unsafe_allow_html=True)
+    # Crear un marcador de posición para el título
+    title_placeholder1 = st.empty()
 
     # Primera fila de filtros
     fila1_coche1 = st.columns(4)
@@ -122,7 +128,7 @@ with col2:
         st.markdown("<p class='titulo-select'>Marca</p>", unsafe_allow_html=True)
         marcas_disponibles = df["marca"].sort_values().unique()
         if len(marcas_disponibles) > 0:
-            marca1 = st.selectbox("Marca", marcas_disponibles, key="marca1", label_visibility="collapsed")
+            marca1 = st.selectbox("Marca", marcas_disponibles, key="marca1", label_visibility="collapsed", index=0)
         else:
             st.write("No hay marcas disponibles.")
             st.stop()
@@ -130,7 +136,7 @@ with col2:
         st.markdown("<p class='titulo-select'>Modelo</p>", unsafe_allow_html=True)
         modelos_disponibles = df[df["marca"] == marca1]["modelo"].sort_values().unique()
         if len(modelos_disponibles) > 0:
-            modelo1 = st.selectbox("Modelo", modelos_disponibles, key="modelo1", label_visibility="collapsed")
+            modelo1 = st.selectbox("Modelo", modelos_disponibles, key="modelo1", label_visibility="collapsed", index=0)
         else:
             st.write("No hay modelos disponibles para esta marca.")
             st.stop()
@@ -138,7 +144,7 @@ with col2:
         st.markdown("<p class='titulo-select'>Año</p>", unsafe_allow_html=True)
         anos_disponibles = df[(df["marca"] == marca1) & (df["modelo"] == modelo1)]["ano_matriculacion"].sort_values().unique()
         if len(anos_disponibles) > 0:
-            ano1 = st.selectbox("Año", anos_disponibles, key="ano1", label_visibility="collapsed")
+            ano1 = st.selectbox("Año", anos_disponibles, key="ano1", label_visibility="collapsed", index=0)
         else:
             st.write("No hay años disponibles para este modelo.")
             st.stop()
@@ -150,7 +156,7 @@ with col2:
             (df["ano_matriculacion"] == ano1)
         ]["tipo_cambio"].sort_values().unique()
         if len(cambios_disponibles) > 0:
-            tipo_cambio1 = st.selectbox("Tipo cambio", cambios_disponibles, key="tipo_cambio1", label_visibility="collapsed")
+            tipo_cambio1 = st.selectbox("Tipo cambio", cambios_disponibles, key="tipo_cambio1", label_visibility="collapsed", index=0)
         else:
             st.write("No hay tipos de cambio disponibles para este año.")
             st.stop()
@@ -166,7 +172,7 @@ with col2:
             (df["tipo_cambio"] == tipo_cambio1)
         ]["combustible"].sort_values().unique()
         if len(combustibles_disponibles) > 0:
-            combustible1 = st.selectbox("Combustible", combustibles_disponibles, key="combustible1", label_visibility="collapsed")
+            combustible1 = st.selectbox("Combustible", combustibles_disponibles, key="combustible1", label_visibility="collapsed", index=0)
         else:
             combustible1 = 'Desconocido'  # Asignar valor por defecto
     with fila2_coche1[1]:
@@ -179,7 +185,7 @@ with col2:
             (df["combustible"] == combustible1)
         ]["distintivo_ambiental"].sort_values().unique()
         if len(distintivos_disponibles) > 0:
-            distintivo1 = st.selectbox("Distintivo", distintivos_disponibles, key="distintivo1", label_visibility="collapsed")
+            distintivo1 = st.selectbox("Distintivo", distintivos_disponibles, key="distintivo1", label_visibility="collapsed", index=0)
         else:
             distintivo1 = 'Desconocido'  # Asignar valor por defecto
     with fila2_coche1[2]:
@@ -193,7 +199,7 @@ with col2:
             (df["distintivo_ambiental"] == distintivo1)
         ]["potencia_cv"].sort_values().unique()
         if len(potencias_disponibles) > 0:
-            potencia1 = st.selectbox("Potencia", potencias_disponibles, key="potencia1", label_visibility="collapsed")
+            potencia1 = st.selectbox("Potencia", potencias_disponibles, key="potencia1", label_visibility="collapsed", index=0)
         else:
             st.write("No hay potencias disponibles para este distintivo.")
             st.stop()
@@ -209,10 +215,13 @@ with col2:
             (df["potencia_cv"] == potencia1)
         ]["kilometraje"].sort_values().unique()
         if len(kilometrajes_disponibles) > 0:
-            kilometraje1 = st.selectbox("Kilometraje", kilometrajes_disponibles, key="kilometraje1", label_visibility="collapsed")
+            kilometraje1 = st.selectbox("Kilometraje", kilometrajes_disponibles, key="kilometraje1", label_visibility="collapsed", index=0)
         else:
             st.write("No hay kilometrajes disponibles para esta potencia.")
             st.stop()
+
+    # Actualizar el título con la marca y modelo seleccionados
+    title_placeholder1.markdown(f"<h3 style='text-align: center;'>{marca1} {modelo1}</h3>", unsafe_allow_html=True)
 
 # Columna vacía (espacio entre los coches)
 with col3:
@@ -220,7 +229,8 @@ with col3:
 
 # Filtros para el Coche 2
 with col4:
-    st.markdown(f"<h3 style='text-align: center;'>Coche 2</h3>", unsafe_allow_html=True)
+    # Crear un marcador de posición para el título
+    title_placeholder2 = st.empty()
 
     # Primera fila de filtros
     fila1_coche2 = st.columns(4)
@@ -228,7 +238,7 @@ with col4:
         st.markdown("<p class='titulo-select'>Marca</p>", unsafe_allow_html=True)
         marcas_disponibles = df["marca"].sort_values().unique()
         if len(marcas_disponibles) > 0:
-            marca2 = st.selectbox("Marca", marcas_disponibles, key="marca2", label_visibility="collapsed")
+            marca2 = st.selectbox("Marca", marcas_disponibles, key="marca2", label_visibility="collapsed", index=0)
         else:
             st.write("No hay marcas disponibles.")
             st.stop()
@@ -236,7 +246,7 @@ with col4:
         st.markdown("<p class='titulo-select'>Modelo</p>", unsafe_allow_html=True)
         modelos_disponibles = df[df["marca"] == marca2]["modelo"].sort_values().unique()
         if len(modelos_disponibles) > 0:
-            modelo2 = st.selectbox("Modelo", modelos_disponibles, key="modelo2", label_visibility="collapsed")
+            modelo2 = st.selectbox("Modelo", modelos_disponibles, key="modelo2", label_visibility="collapsed", index=0)
         else:
             st.write("No hay modelos disponibles para esta marca.")
             st.stop()
@@ -244,7 +254,7 @@ with col4:
         st.markdown("<p class='titulo-select'>Año</p>", unsafe_allow_html=True)
         anos_disponibles = df[(df["marca"] == marca2) & (df["modelo"] == modelo2)]["ano_matriculacion"].sort_values().unique()
         if len(anos_disponibles) > 0:
-            ano2 = st.selectbox("Año", anos_disponibles, key="ano2", label_visibility="collapsed")
+            ano2 = st.selectbox("Año", anos_disponibles, key="ano2", label_visibility="collapsed", index=0)
         else:
             st.write("No hay años disponibles para este modelo.")
             st.stop()
@@ -256,7 +266,7 @@ with col4:
             (df["ano_matriculacion"] == ano2)
         ]["tipo_cambio"].sort_values().unique()
         if len(cambios_disponibles) > 0:
-            tipo_cambio2 = st.selectbox("Tipo cambio", cambios_disponibles, key="tipo_cambio2", label_visibility="collapsed")
+            tipo_cambio2 = st.selectbox("Tipo cambio", cambios_disponibles, key="tipo_cambio2", label_visibility="collapsed", index=0)
         else:
             st.write("No hay tipos de cambio disponibles para este año.")
             st.stop()
@@ -272,7 +282,7 @@ with col4:
             (df["tipo_cambio"] == tipo_cambio2)
         ]["combustible"].sort_values().unique()
         if len(combustibles_disponibles) > 0:
-            combustible2 = st.selectbox("Combustible", combustibles_disponibles, key="combustible2", label_visibility="collapsed")
+            combustible2 = st.selectbox("Combustible", combustibles_disponibles, key="combustible2", label_visibility="collapsed", index=0)
         else:
             combustible2 = 'Desconocido'  # Asignar valor por defecto
     with fila2_coche2[1]:
@@ -285,7 +295,7 @@ with col4:
             (df["combustible"] == combustible2)
         ]["distintivo_ambiental"].sort_values().unique()
         if len(distintivos_disponibles) > 0:
-            distintivo2 = st.selectbox("Distintivo", distintivos_disponibles, key="distintivo2", label_visibility="collapsed")
+            distintivo2 = st.selectbox("Distintivo", distintivos_disponibles, key="distintivo2", label_visibility="collapsed", index=0)
         else:
             distintivo2 = 'Desconocido'  # Asignar valor por defecto
     with fila2_coche2[2]:
@@ -299,7 +309,7 @@ with col4:
             (df["distintivo_ambiental"] == distintivo2)
         ]["potencia_cv"].sort_values().unique()
         if len(potencias_disponibles) > 0:
-            potencia2 = st.selectbox("Potencia", potencias_disponibles, key="potencia2", label_visibility="collapsed")
+            potencia2 = st.selectbox("Potencia", potencias_disponibles, key="potencia2", label_visibility="collapsed", index=0)
         else:
             st.write("No hay potencias disponibles para este distintivo.")
             st.stop()
@@ -315,17 +325,20 @@ with col4:
             (df["potencia_cv"] == potencia2)
         ]["kilometraje"].sort_values().unique()
         if len(kilometrajes_disponibles) > 0:
-            kilometraje2 = st.selectbox("Kilometraje", kilometrajes_disponibles, key="kilometraje2", label_visibility="collapsed")
+            kilometraje2 = st.selectbox("Kilometraje", kilometrajes_disponibles, key="kilometraje2", label_visibility="collapsed", index=0)
         else:
             st.write("No hay kilometrajes disponibles para esta potencia.")
             st.stop()
+
+    # Actualizar el título con la marca y modelo seleccionados
+    title_placeholder2.markdown(f"<h3 style='text-align: center;'>{marca2} {modelo2}</h3>", unsafe_allow_html=True)
 
 # Columna vacía (espacio a la derecha)
 with col5:
     st.empty()
 
 # Dividir en dos columnas principales para Coche 1 y Coche 2
-col1, col2, col3, col4, col5 = st.columns([1, 4, 1, 4, 1])
+col1, col2, col3, col4, col5 = st.columns([1, 10, 1, 10, 1])
 
 # Configuración para Coche 1
 with col1:
@@ -486,7 +499,7 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
         nombre_coche2 = f"{df_filtrado2['marca'].iloc[0]} {df_filtrado2['modelo'].iloc[0]}"
 
         # Crear cinco columnas de igual ancho
-        col1, col2, col3, col4, col5 = st.columns([1, 7, 1, 7, 1])
+        col2, col4 = st.columns([2, 3])
 
         with col4:
             inner_col1, inner_col2, inner_col3 = st.columns([1, 5, 1])
@@ -519,7 +532,7 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
                 # Añadir espacio vertical antes del DataFrame
                 st.markdown("<div style='height: 100px;'></div>", unsafe_allow_html=True)
 
-                st.dataframe(df_combinado_transpuesto)
+                st.dataframe(df_combinado_transpuesto, use_container_width=True)
 
             with inner_col3: 
                 st.empty()
@@ -601,8 +614,7 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
                     yanchor='top',
                     font=dict(size=12)
                 ),
-                height=600,
-                width=600,
+                autosize=True,
                 margin=dict(l=40, r=40, t=100, b=40)
             )
 
@@ -613,4 +625,3 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
         st.write("No hay columnas válidas para crear el gráfico de radar.")
 else:
     st.write("No se encontraron datos para ambos coches seleccionados.")
-
