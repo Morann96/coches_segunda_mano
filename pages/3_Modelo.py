@@ -300,12 +300,59 @@ if st.session_state.datos_guardados:
     st.dataframe(st.session_state.df)
 
 
+# Mostrar métricas de todos los modelos
+
+# Cargar el DataFrame de resultados de los modelos
+@st.cache_resource
+def cargar_resultados_modelos(file_name, directory='notebooks/modelo/'):
+    file_path = os.path.join(directory, file_name)
+    with open(file_path, 'rb') as file:
+        return pickle.load(file)
+
+resultados_modelos = cargar_resultados_modelos('resultados_modelos.pkl')
+
+# Mostrar el DataFrame en la aplicación
+st.markdown("---")
+st.markdown("<h1 style='text-align: center;'>Resultados Comparativos de Modelos</h1>", unsafe_allow_html=True)
+st.dataframe(resultados_modelos)
+
+
+mejor_modelo = resultados_modelos.loc[resultados_modelos['MAE'].idxmin()]
+
+# Extraer y mostrar las métricas
+nombre_modelo = mejor_modelo['Nombre_modelo']
+mae = mejor_modelo['MAE']
+mse = mejor_modelo['MSE']
+r2 = mejor_modelo['R2_score']
+
+# Mostrar las métricas del mejor modelo
+st.markdown("### Métricas del Mejor Modelo")
+st.write(f"- **Nombre del Modelo:** Random Forest")
+st.write(f"- **MAE:** {mae:.2f}")
+st.write(f"- **MSE:** {mse:.2e}")
+st.write(f"- **R²:** {r2:.2f}")
+
+# Explicar las métricas
+st.markdown("""
+## Explicación de las Métricas de los Modelos Ponderados
+
+En la evaluación de modelos de regresión, utilizamos varias métricas para medir el rendimiento:
+
+- **MAE (Error Absoluto Medio):** Representa el promedio de los errores absolutos entre las predicciones y los valores reales. Un valor menor indica mejores predicciones.
+
+- **MSE (Error Cuadrático Medio):** Es el promedio de los cuadrados de los errores. Penaliza más los errores grandes debido al cuadrado.
+
+- **R² (Coeficiente de Determinación):** Indica la proporción de la varianza de la variable dependiente que es explicada por el modelo. Un valor cercano a 1 indica un buen ajuste.
+
+""")
+
+
 
 #Mostrar Feature importance del modelo de ML importado
 
 st.markdown("---")
 
-st.markdown("<h1 style='text-align: center;'>Feature Importance ML</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>Feature Importance Mejor Modelo</h1>", unsafe_allow_html=True)
 
 importances = model.feature_importances_
 
@@ -353,12 +400,26 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
+
+
+
+# Métricas mejor modelo ya entrenado
+
+resultados_mejor_modelo = cargar_resultados_modelos('resultados_mejor_modelo.pkl')
+
+# Mostrar el DataFrame en la aplicación
+
+st.markdown("<h1 style='text-align: center;'>Resultados del mejor modelo entrenado de nuevo</h1>", unsafe_allow_html=True)
+st.dataframe(resultados_mejor_modelo)
+
 st.markdown("---")
+
 
 # Métricas Redes Neuronales
 
 # Directorio de los archivos
 directory = "notebooks/modelo/"
+
 
 # Diccionario con la información de las redes neuronales
 redes_neuronales = {
@@ -406,7 +467,10 @@ def cargar_modelo_keras(file_name):
 
 # Visualización en Streamlit
 st.title("Comparativa de Redes Neuronales")
-st.markdown("Este dashboard compara la evolución de la pérdida y los resultados de predicción de seis redes neuronales.")
+st.markdown("""
+Este dashboard compara la evolución de la pérdida y los resultados de predicción de seis redes neuronales. 
+\nLa escogida fue la llamada MSE 1, que tiene menos pérdida que el resto de alternativas.
+""")
 
 col1, col2 = st.columns(2)
 
