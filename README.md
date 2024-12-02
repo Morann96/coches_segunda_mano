@@ -82,7 +82,7 @@ Sigue los pasos a continuación para configurar y ejecutar el proyecto:
 
 4. Iniciar aplicacion en streamlit con Visual Studio :  
    ```bash
-   streamlit run app.py
+   streamlit run Home.py
 
 Este proyecto se ha realizado con Jupyter Lab y Visual Studio (Streamlit).
 
@@ -96,7 +96,7 @@ Para visualizarlo y trabajar en el debera de tener instalado Anaconda Navigator 
  ┣ 📂 lib            # (Vacio).
  ┣ 📂 notebooks      # Notebooks con todo el codigo del proyecto.
  ┣ 📂 pages          # Código de las paginas de streamlit.
- ┣ app.py             # Pagina principal de streamlit.
+ ┣ Home.py             # Pagina principal de streamlit.
  ┣ requirements.txt   # Dependencias
  ┣ README.md          # Documentación
  ┗ secrets.toml       # Archivo de configuración sensible.(Oculto)
