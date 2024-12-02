@@ -10,7 +10,6 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 import plotly.express as px
 import plotly.graph_objects as go
-from tensorflow.keras.models import load_model
 
 st.set_page_config(layout="wide")
 
@@ -71,7 +70,9 @@ escalador_X = escaladores["x_scaler"]
 escalador_y = escaladores["y_scaler"]
 
 # Título de la aplicación
-st.markdown("<h1 style='text-align: center;'>Predicción de Precio al Contado</h1>", unsafe_allow_html=True)
+st.markdown("""
+<h1 style='text-align: center; font-size: 3.5em;'>Predicción de Precio al Contado</h1>
+""", unsafe_allow_html=True)
 
 
 tabla = "vista_prestaciones"
@@ -127,7 +128,7 @@ if st.session_state.selected_modelo and st.session_state.selected_marca:
 col1, col2 = st.columns([2, 3])
 
 with col1:
-    st.header("Características coche")
+    st.markdown("<h2 style='text-align: center;'>Características coche</h2>", unsafe_allow_html=True)
 
     # Primera fila de filtros
     filtro_col1, filtro_col2 = st.columns(2)
@@ -196,7 +197,7 @@ with col1:
 
 
 with col2:
-    st.header("Resultados")
+    st.markdown("<h2 style='text-align: center;'>Resultados</h2>", unsafe_allow_html=True)
 
     # Mostrar los datos guardados
     if st.session_state.datos_guardados:
@@ -277,6 +278,7 @@ with col2:
 
     # Botón para predicción con Machine Learning
     if st.session_state.datos_guardados:
+
         st.button("Predicción con Machine Learning", on_click=prediccion_ml)
 
         # Mostrar resultado si existe
@@ -292,16 +294,12 @@ with col2:
     else:
         st.warning("Por favor, guarda los datos antes de realizar una predicción.")
 
-
-
 if st.session_state.datos_guardados:
-    st.markdown("---")
-    st.header("Datos Guardados")
-    st.dataframe(st.session_state.df)
-
+    #st.markdown("---")
+        st.header("Datos Guardados")
+        st.dataframe(st.session_state.df)
 
 # Mostrar métricas de todos los modelos
-
 # Cargar el DataFrame de resultados de los modelos
 @st.cache_resource
 def cargar_resultados_modelos(file_name, directory='notebooks/modelo/'):
@@ -313,11 +311,12 @@ resultados_modelos = cargar_resultados_modelos('resultados_modelos.pkl')
 
 # Mostrar el DataFrame en la aplicación
 st.markdown("---")
-st.markdown("<h1 style='text-align: center;'>Resultados Comparativos de Modelos</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: left;'>Comparativa entre distintos modelos</h1>", unsafe_allow_html=True)
+
 st.dataframe(resultados_modelos)
 
 
-mejor_modelo = resultados_modelos.loc[resultados_modelos['MAE'].idxmin()]
+mejor_modelo = resultados_modelos.loc[resultados_modelos['R2_score'].idxmax()]
 
 # Extraer y mostrar las métricas
 nombre_modelo = mejor_modelo['Nombre_modelo']
@@ -326,7 +325,10 @@ mse = mejor_modelo['MSE']
 r2 = mejor_modelo['R2_score']
 
 # Mostrar las métricas del mejor modelo
-st.markdown("### Métricas del Mejor Modelo")
+st.markdown("""
+            ## Métricas del mejor modelo
+            Consideramos el mejor modelo aquél con el mayor R2_score
+            """)
 st.write(f"- **Nombre del Modelo:** Random Forest")
 st.write(f"- **MAE:** {mae:.2f}")
 st.write(f"- **MSE:** {mse:.2e}")
@@ -334,15 +336,15 @@ st.write(f"- **R²:** {r2:.2f}")
 
 # Explicar las métricas
 st.markdown("""
-## Explicación de las Métricas de los Modelos Ponderados
+## Explicación de las métricas de los distintintos modelos
 
 En la evaluación de modelos de regresión, utilizamos varias métricas para medir el rendimiento:
 
-- **MAE (Error Absoluto Medio):** Representa el promedio de los errores absolutos entre las predicciones y los valores reales. Un valor menor indica mejores predicciones.
+- **MAE (Error Absoluto Medio):** Nos dice, en promedio, cuánto se equivoca el modelo en sus predicciones.
 
-- **MSE (Error Cuadrático Medio):** Es el promedio de los cuadrados de los errores. Penaliza más los errores grandes debido al cuadrado.
+- **MSE (Error Cuadrático Medio):** Es otra forma de medir el error, pero en lugar de tomar el promedio de los errores directamente, los eleva al cuadrado. Esto significa que los errores grandes tienen más peso. Es útil para detectar si el modelo comete errores grandes con frecuencia, pero puede ser un número muy alto y difícil de interpretar.
 
-- **R² (Coeficiente de Determinación):** Indica la proporción de la varianza de la variable dependiente que es explicada por el modelo. Un valor cercano a 1 indica un buen ajuste.
+- **R² (Coeficiente de Determinación):** Este número nos dice qué tan bien el modelo entiende los datos. Va de 0 a 1, donde 1 significa que el modelo es perfecto. Por ejemplo, si el R² es 0.90, eso quiere decir que el modelo explica el 90% de la variación en los precios de los coches.
 
 """)
 
@@ -352,14 +354,25 @@ En la evaluación de modelos de regresión, utilizamos varias métricas para med
 
 st.markdown("---")
 
-st.markdown("<h1 style='text-align: center;'>Feature Importance Mejor Modelo</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: left;'>Feature importance del mejor modelo</h1>", unsafe_allow_html=True)
+
+st.markdown("""
+Cuando entrenamos un modelo de Machine Learning, hay distintas características (o "features") en los datos que usamos para hacer predicciones. **Feature Importance** es una métrica que nos dice qué tan importantes son estas características para el modelo.
+En otras palabras, indica cuánto contribuye cada característica a la capacidad del modelo para hacer predicciones precisas.
+
+### Utilidad:
+- **Entender el modelo**: Nos ayuda a interpretar qué factores influyen más en las decisiones del modelo.
+- **Optimización de datos**: Si algunas características tienen muy poca importancia, podemos eliminarlas para simplificar el modelo y reducir el tiempo de entrenamiento.
+- **Toma de decisiones**: Nos permite identificar los factores clave en los datos y enfocarnos en ellos para optimizar el rendimiento del modelo.
+""")
 
 importances = model.feature_importances_
 
-x_columns = ["modelo", "potencia_cv", "antiguedad_coche", "log_kilometraje",
-             "tipo_cambio", "marca", "distintivo_ambiental_ECO", "distintivo_ambiental_C",
-             "combustible_Gasolina", "combustible_Híbrido Enchufable", "combustible_Eléctrico",
-             "distintivo_ambiental_B", "combustible_Gasolina/gas", "combustible_Gas"]
+x_columns = ['marca', 'modelo', 'potencia_cv', 'antiguedad_coche', 'log_kilometraje',
+       'tipo_cambio', 'combustible_Eléctrico', 'combustible_Gas',
+       'combustible_Gasolina', 'combustible_Gasolina/gas',
+       'combustible_Híbrido Enchufable', 'distintivo_ambiental_B',
+       'distintivo_ambiental_C', 'distintivo_ambiental_ECO']
 
 # Crear un DataFrame de importancias con las columnas finales y convertir a porcentaje
 df_importances = pd.DataFrame(data=zip(x_columns, importances),
@@ -400,16 +413,14 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
-
-
-
 # Métricas mejor modelo ya entrenado
 
 resultados_mejor_modelo = cargar_resultados_modelos('resultados_mejor_modelo.pkl')
 
 # Mostrar el DataFrame en la aplicación
 
-st.markdown("<h1 style='text-align: center;'>Resultados del mejor modelo entrenado de nuevo</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: left;'>Resultados del mejor modelo optimizado</h1>", unsafe_allow_html=True)
+
 st.dataframe(resultados_mejor_modelo)
 
 st.markdown("---")
@@ -426,32 +437,38 @@ redes_neuronales = {
     "MAE 1": {
         "historial": "historial_neural_mae_1.pkl",
         "resultados": "resultados_neural_mae_1.pkl",
-        "modelo": "neural_mae_1.keras"
+        "modelo": "neural_mae_1.keras",
+        'learning_rate' : '0.50%'
     },
     "MAE 2": {
         "historial": "historial_neural_mae_2.pkl",
         "resultados": "resultados_neural_mae_2.pkl",
-        "modelo": "neural_mae_2.keras"
+        "modelo": "neural_mae_2.keras",
+        'learning_rate' : '0.30%'
     },
     "MAE 3": {
         "historial": "historial_neural_mae_3.pkl",
         "resultados": "resultados_neural_mae_3.pkl",
-        "modelo": "neural_mae_3.keras"
+        "modelo": "neural_mae_3.keras",
+        'learning_rate' : '0.35%'
     },
     "MSE 1": {
         "historial": "historial_neural_mse.pkl",
         "resultados": "resultados_neural_mse.pkl",
-        "modelo": "neural_mse.keras"
+        "modelo": "neural_mse.keras",
+        'learning_rate' : '0.50%'
     },
     "MSE 2": {
         "historial": "historial_neural_mse_2.pkl",
         "resultados": "resultados_neural_mse_2.pkl",
-        "modelo": "neural_mse_2.keras"
+        "modelo": "neural_mse_2.keras",
+        'learning_rate' : '0.30%'
     },
     "MSE 3": {
         "historial": "historial_neural_mse_3.pkl",
         "resultados": "resultados_neural_mse_3.pkl",
-        "modelo": "neural_mse_3.keras"
+        "modelo": "neural_mse_3.keras",
+        'learning_rate' : '0.35%'
     }
 }
 
@@ -468,8 +485,24 @@ def cargar_modelo_keras(file_name):
 # Visualización en Streamlit
 st.title("Comparativa de Redes Neuronales")
 st.markdown("""
-Este dashboard compara la evolución de la pérdida y los resultados de predicción de seis redes neuronales. 
-\nLa escogida fue la llamada MSE 1, que tiene menos pérdida que el resto de alternativas.
+### ¿Qué representan los gráficos?
+Los gráficos muestran la evolución de la función de pérdida durante el entrenamiento de una red neuronal, evaluando cómo mejora el modelo con cada época. Las líneas indican lo siguiente:
+
+- **Pérdida de Entrenamiento (línea naranja):** Muestra qué tan bien el modelo está ajustándose a los datos con los que se está entrenando.
+- **Pérdida de Validación (línea azul):** Indica el rendimiento del modelo en datos que no ha visto antes (datos de validación).
+
+### ¿Diferencias entre MAE y MSE como función de pérdida?
+- **MAE:** Es menos sensible a los errores grandes (outliers). Esto lo hace más robusto si existen datos extremos en el conjunto de entrenamiento.
+- **MSE:** Penaliza más los errores grandes porque eleva al cuadrado las diferencias. Es ideal cuando quieres que el modelo sea más preciso con predicciones cercanas a los valores reales, pero puede ser influido negativamente por outliers.
+
+Elegir entre MAE y MSE depende de la importancia de los outliers en el problema que estás resolviendo.
+
+### ¿Cómo influye el learning rate?
+El learning rate es un parámetro clave que controla qué tan grandes son los pasos que el modelo da al ajustar sus pesos durante el entrenamiento. En una red neuronal, los pesos son números que determinan la importancia de cada conexión entre las neuronas. Durante el entrenamiento, estos pesos se ajustan para que la red pueda aprender de los datos y hacer mejores predicciones.
+
+Un learning rate bajo implica que los pasos de ajuste son pequeños. Esto permite que el modelo encuentre una solución más precisa, pero puede hacer que el entrenamiento sea lento e incluso quedar atrapado en mínimos locales, impidiendo encontrar el mejor ajuste.
+
+Por otro lado, un learning rate alto significa que los pasos de ajuste son grandes. Esto permite entrenar más rápido, pero puede causar que el modelo se salte la mejor solución y no logre converger adecuadamente. Además, un learning rate alto puede provocar fluctuaciones en la pérdida o incluso que esta no disminuya.
 """)
 
 col1, col2 = st.columns(2)
@@ -478,10 +511,11 @@ col1, col2 = st.columns(2)
 for i, (key, value) in enumerate(redes_neuronales.items()):
     # Alternar entre las columnas
     current_col = col1 if i % 2 == 0 else col2
+    lr = value['learning_rate']
     
     with current_col:
         # Mostrar el historial de pérdida
-        st.markdown(f"### Historial y Resultados de {key}")
+        st.markdown(f"### Evolución entrenamiento de {key} con learning rate de {lr}")
         historial = cargar_archivo_pkl(value["historial"])
         loss = historial["loss"]
         val_loss = historial.get("val_loss", None)
@@ -489,9 +523,16 @@ for i, (key, value) in enumerate(redes_neuronales.items()):
 
         # Gráfica de la pérdida
         fig_loss = go.Figure()
-        fig_loss.add_trace(go.Scatter(x=list(epochs), y=loss, mode='lines', name='Pérdida de Entrenamiento'))
+        fig_loss.add_trace(go.Scatter(
+            x=list(epochs), y=loss,
+            mode='lines', name='Pérdida de Entrenamiento',
+            line = dict(color = 'orange')
+            ))
         if val_loss:
-            fig_loss.add_trace(go.Scatter(x=list(epochs), y=val_loss, mode='lines', name='Pérdida de Validación'))
+            fig_loss.add_trace(go.Scatter(
+                x=list(epochs), y=val_loss, 
+                mode='lines', name='Pérdida de Validación')
+                )
 
         fig_loss.update_layout(
             title=f"Evolución de la Pérdida - {key}",
