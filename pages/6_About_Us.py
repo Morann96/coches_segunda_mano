@@ -2,7 +2,7 @@ import streamlit as st
 
 # Configuración de la página
 st.set_page_config(
-    page_title="About Us",
+    page_title="About_Us",
     page_icon="👥",
     layout="wide"
 )
@@ -23,42 +23,36 @@ team_members = [
     {
         "name": "Miguel Garcia",
         "role": "Dev",
-        "linkedin": "https://www.linkedin.com/in/juan-perez",
-        "github": "https://github.com/juanperez"
+        "linkedin": "https://www.linkedin.com/in/miguelgarciadelvalle-516677145",
+        "github": "https://github.com/juanperez",
+        "photo": "https://via.placeholder.com/150"
     },
     {
         "name": "Carlos Moreno",
         "role": "Dev",
-        "linkedin": "https://www.linkedin.com/in/ana-lopez",
-        "github": "https://github.com/analop"
+        "linkedin": "https://www.linkedin.com/in/carlos-moreno-valero-595ba013a/",
+        "github": "https://github.com/cmv28061996",
+        "photo": "bin/imagenes/Foto_carlos.jpeg"
     },
     {
         "name": "Jorge Morandeira",
         "role": "Dev",
-        "linkedin": "https://www.linkedin.com/in/carlos-garcia",
-        "github": "https://github.com/carlosgarcia"
+        "linkedin": "https://www.linkedin.com/in/jorge-morandeira-rodr%C3%ADguez-49b0b9170/",
+        "github": "https://github.com/Morann96",
+        "photo": "bin/imagenes/Foto_jorge.jpg"
     }
   
 ]
 
 # Mostrar la información de cada integrante
 for member in team_members:
-    st.subheader(f"👤 {member['name']}")
-    st.write(f"**Rol:** {member['role']}")
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([1, 3])  # Primera columna para la foto, segunda para los detalles
     with col1:
-        st.markdown(f"[![LinkedIn](https://img.shields.io/badge/LinkedIn-{member['name'].replace(' ', '%20')}-blue)]({member['linkedin']})")
+        st.image(member["photo"], caption=member["name"], use_container_width=True)
     with col2:
+        st.subheader(f"👤 {member['name']}")
+        st.write(f"**Rol:** {member['role']}")
+        st.markdown(f"[![LinkedIn](https://img.shields.io/badge/LinkedIn-{member['name'].replace(' ', '%20')}-blue)]({member['linkedin']})")
         st.markdown(f"[![GitHub](https://img.shields.io/badge/GitHub-{member['name'].replace(' ', '%20')}-black)]({member['github']})")
     st.markdown("---")  # Línea separadora entre miembros
 
-# Agradecimientos
-st.header("**Agradecimientos**")
-st.write("""
-Queremos agradecer a todos los que contribuyeron a este proyecto, desde nuestros profesores y mentores hasta la comunidad de desarrolladores. Sin su apoyo y recursos, este proyecto no habría sido posible.  
-""")
-
-# Footer con mensaje final
-st.write("""
-Si tienes alguna duda o quieres saber más sobre nuestro trabajo, no dudes en ponerte en contacto con nosotros a través de nuestras redes sociales o nuestros perfiles de GitHub y LinkedIn.
-""")
