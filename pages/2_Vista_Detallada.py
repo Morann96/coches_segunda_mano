@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import mysql.connector as mc
 
-st.set_page_config(layout="wide")
+
 
 # Cargar los datos
 @st.cache_data

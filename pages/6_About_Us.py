@@ -1,12 +1,5 @@
 import streamlit as st
 
-# Configuración de la página
-st.set_page_config(
-    page_title="About_Us",
-    page_icon="👥",
-    layout="wide"
-)
-
 # Título principal
 st.title("👥 **About Us**")
 

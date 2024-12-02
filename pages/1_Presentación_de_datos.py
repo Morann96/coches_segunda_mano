@@ -10,8 +10,6 @@ import plotly.graph_objects as go
 import numpy as np
 
 
-st.set_page_config(page_title="Análisis de Datos de Coches", layout="wide")
-
 # Función para conectar a la base de datos
 def conectar_base_datos():
     conn = st.connection('mysql', type='sql')
