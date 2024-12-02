@@ -318,22 +318,6 @@ st.dataframe(resultados_modelos)
 
 mejor_modelo = resultados_modelos.loc[resultados_modelos['R2_score'].idxmax()]
 
-# Extraer y mostrar las métricas
-nombre_modelo = mejor_modelo['Nombre_modelo']
-mae = mejor_modelo['MAE']
-mse = mejor_modelo['MSE']
-r2 = mejor_modelo['R2_score']
-
-# Mostrar las métricas del mejor modelo
-st.markdown("""
-            ## Métricas del mejor modelo
-            Consideramos el mejor modelo aquél con el mayor R2_score
-            """)
-st.write(f"- **Nombre del Modelo:** Random Forest")
-st.write(f"- **MAE:** {mae:.2f}")
-st.write(f"- **MSE:** {mse:.2e}")
-st.write(f"- **R²:** {r2:.2f}")
-
 # Explicar las métricas
 st.markdown("""
 ## Explicación de las métricas de los distintintos modelos
@@ -348,6 +332,30 @@ En la evaluación de modelos de regresión, utilizamos varias métricas para med
 
 """)
 
+# Extraer y mostrar las métricas
+nombre_modelo = mejor_modelo['Nombre_modelo']
+mae = mejor_modelo['MAE']
+mse = mejor_modelo['MSE']
+r2 = mejor_modelo['R2_score']
+
+# Mostrar las métricas del mejor modelo
+# st.markdown("""
+#             ### Métricas del mejor modelo
+#             Consideramos el mejor modelo aquél con el mayor R2_score
+#             """)
+# st.write(f"- **Nombre del Modelo:** Random Forest")
+# st.write(f"- **MAE:** {mae:.2f}")
+# st.write(f"- **MSE:** {mse:.2e}")
+# st.write(f"- **R²:** {r2:.2f}")
+
+st.write(f"""
+Consideramos el mejor modelo aquél con el mayor R². Estas son sus métricas:
+
+- **Nombre del Modelo:** Random Forest  
+- **MAE:** {mae:.2f}  
+- **MSE:** {mse:.2e}  
+- **R²:** {r2:.2f}  
+""")
 
 
 #Mostrar Feature importance del modelo de ML importado
