@@ -12,7 +12,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from tensorflow.keras.models import load_model
 
-st.set_page_config(layout="wide")
+
 
 # Función para conectar a la base de datos
 def conectar_base_datos():

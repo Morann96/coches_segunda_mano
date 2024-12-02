@@ -3,12 +3,6 @@
 import streamlit as st
 from PIL import Image
 
-# Configuración de la página
-st.set_page_config(
-    page_title="Documentación del Proyecto",
-    page_icon="🚗",
-    layout="wide"
-)
 
 # Título principal
 st.title("📚 **GUÍA DEL USUARIO Y DOCUMENTACIÓN**")

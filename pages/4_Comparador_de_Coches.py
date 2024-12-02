@@ -8,8 +8,6 @@ import plotly.graph_objects as go
 import io
 import streamlit.components.v1 as components
 
-st.set_page_config(layout="wide")
-
 # Conexión a la base de datos
 def conectar_base_datos():
     conn = st.connection('mysql', type='sql')
