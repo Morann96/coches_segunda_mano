@@ -44,7 +44,7 @@ st.markdown("""
 4. **⚖️ Comparador de Coches**  
    Compara dos coches de segunda mano en función de características clave como el precio, kilometraje, y potencia, a través de gráficos comparativos.
 
-5. **📚 Arquitectura de la Base de Datos**  
+5. **📚 Arquitectura de la Base de Datos (Documentación)**  
    Aquí podrás entender la estructura de la base de datos que respalda toda la aplicación, con información detallada sobre las tablas y relaciones entre ellas.
 """)
 
@@ -76,6 +76,14 @@ st.markdown("""
 - **👨‍💻 Miguel García**
 - **👨‍💻 Jorge Morandeira**
 """)
+
+# Fuente de los datos
+st.markdown("""
+<hr style="border: 1px solid #2F4F4F;">
+<p style="text-align: center; color: #2F4F4F; font-size: 14px;">
+    Los datos utilizados en esta aplicación provienen de <a href="https://www.autocasion.com" target="_blank" style="color: #1E88E5; font-weight: bold;">www.autocasion.com</a>.
+</p>
+""", unsafe_allow_html=True)
 
 # Pie de página con estilo
 st.markdown("""
