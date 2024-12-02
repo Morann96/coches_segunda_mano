@@ -31,7 +31,7 @@ st.title("Análisis Visual de Coches de Segunda Mano")
 
 st.markdown("---")
 
-st.title("Relación entre Kilometraje y Precio Contado por Año de Matriculación")
+#st.markdown("""### Relación entre kilometraje y precio al contado según el año de matriculación""")
 
 # Crear gráfico con Plotly
 fig = px.scatter(
@@ -43,10 +43,10 @@ fig = px.scatter(
     opacity=0.6,  # Puntos traslúcidos
     labels={
         "kilometraje": "Kilometraje",
-        "precio_contado": "Precio Contado",
-        "ano_matriculacion": "Año de Matriculación"
+        "precio_contado": "Precio contado",
+        "ano_matriculacion": "Año de matriculación"
     },
-    title="Relación entre Kilometraje y Precio Contado por Año de Matriculación",
+    title="Relación entre kilometraje y precio al contado según el año de matriculación",
     log_y=True
 )
 
@@ -66,7 +66,7 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.markdown("---")
 
-st.title("Distribución del Precio Contado por Distintivo Ambiental")
+#st.title("Distribución del Precio Contado por Distintivo Ambiental")
 
 # Crear gráfico con Plotly
 fig = px.box(
@@ -75,10 +75,10 @@ fig = px.box(
     y="precio_contado",
     color="distintivo_ambiental",
     labels={
-        "distintivo_ambiental": "Distintivo Ambiental",
+        "distintivo_ambiental": "Distintivo ambiental",
         "precio_contado": "Precio Contado"
     },
-    title="Distribución del Precio Contado por Distintivo Ambiental",
+    title="Distribución del precio por distintivo ambiental",
     log_y=True,  # Escala logarítmica en el eje Y
     color_discrete_sequence=px.colors.qualitative.Set2
 )
@@ -88,8 +88,8 @@ fig.update_layout(
     height=800,
     font=dict(size=20),
     title_font=dict(size=26),
-    xaxis_title="Distintivo Ambiental",
-    yaxis_title="Precio Contado",
+    xaxis_title="Distintivo ambiental",
+    yaxis_title="Precio contado",
     xaxis=dict(tickfont=dict(size=18)),
     yaxis=dict(tickfont=dict(size=18))
 )
@@ -110,7 +110,7 @@ precio_medio = (
 )
 
 # Configuración de Streamlit
-st.title("Comparación del Precio Nuevo y Precio Contado por Marca")
+#st.title("Comparación del Precio Nuevo y Precio Contado por Marca")
 
 # Crear gráfico de barras con Plotly
 fig = go.Figure()
@@ -133,7 +133,7 @@ fig.add_trace(go.Bar(
 
 # Personalizar diseño
 fig.update_layout(
-    title="Comparación del Precio Nuevo y Precio Contado por Marca",
+    title="Precio coche nuevo vs precio coche segunda mano por marca",
     xaxis_title="Marca",
     yaxis_title="Precio Medio",
     barmode="group",  # Barras agrupadas
@@ -154,7 +154,7 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.markdown("---")
 
-st.title("Relación entre Precio y Potencia por Tipo de Combustible")
+#st.title("Relación entre Precio y Potencia por Tipo de Combustible")
 
 # Paleta de colores personalizada con colores vivos
 colores_vivos = [
@@ -175,7 +175,7 @@ fig = px.scatter(
     color_discrete_sequence=colores_vivos,
     opacity=0.6,
     labels={"potencia_cv": "Potencia (cv)", "precio_contado": "Precio"},
-    title="Relación entre Precio y Potencia por Tipo de Combustible",
+    title="Relación entre precio y potencia según el combustible",
     log_y=True
 )
 
@@ -197,7 +197,7 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.markdown("---")
 
-st.title("Mapa Coroplético: Distribución de Coches por Provincia")
+#st.title("Mapa Coroplético: Distribución de Coches por Provincia")
 
 # Cargar los datos geográficos
 mapa_provincias = gpd.read_file('bin/limites provinciales/recintos_provinciales_inspire_peninbal_etrs89.shp')
@@ -242,14 +242,14 @@ fig = px.choropleth_mapbox(
     zoom=5.5,
     center={"lat": 40.4168, "lon": -3.7038},
     labels={"cantidad_log": "Cantidad (Log)"},
-    title="Distribución de Coches por Provincia"
+    title="Distribución de coches por provincia"
 )
 
 # Ajustar diseño del gráfico
 fig.update_layout(
     height=700,
     margin={"r": 0, "t": 50, "l": 0, "b": 0},
-    coloraxis_colorbar={"title": "Cantidad de Coches (Log)"}
+    coloraxis_colorbar={"title": "Cantidad de coches (Log)"}
 )
 
 # Mostrar el mapa en Streamlit
@@ -261,10 +261,9 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.markdown("---")
 
-st.title("Mapa Coroplético: Precio Medio de Coches por Provincia")
+#st.title("Mapa Coroplético: Precio Medio de Coches por Provincia")
 
 # Cargar el GeoDataFrame con datos geográficos
-# `mapa_provincias` debería estar definido previamente como un GeoDataFrame.
 
 # Crear el DataFrame con el precio medio por provincia
 precio_medio_por_provincia = df.groupby('provincia')['precio_contado'].mean().reset_index()
@@ -287,8 +286,8 @@ fig = px.choropleth_mapbox(
     mapbox_style="carto-positron",  # Estilo del mapa base
     zoom=5.5,  # Nivel de zoom inicial
     center={"lat": 40.4168, "lon": -3.7038},  # Centro del mapa en España
-    labels={"precio_medio": "Precio Medio (€)"},  # Etiquetas de la leyenda
-    title="Precio Medio de Coches por Provincia"
+    labels={"precio_medio": "Precio medio (€)"},  # Etiquetas de la leyenda
+    title="Precio medio de coches por provincia"
 )
 
 # Ajustar diseño del gráfico
