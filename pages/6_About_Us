@@ -1,0 +1,64 @@
+import streamlit as st
+
+# Configuración de la página
+st.set_page_config(
+    page_title="About Us",
+    page_icon="👥",
+    layout="wide"
+)
+
+# Título principal
+st.title("👥 **About Us**")
+
+# Introducción general
+st.write("""
+¡Bienvenido a la sección **About Us**! Somos un equipo apasionado por la tecnología, la ciencia de datos y el desarrollo de herramientas prácticas que aporten valor a la sociedad. Este proyecto es el resultado de un esfuerzo colaborativo que combina experiencia en análisis de datos, machine learning y desarrollo web.
+""")
+
+# Información de los integrantes
+st.header("**Nuestro Equipo**")
+
+# Define los integrantes del equipo con sus datos
+team_members = [
+    {
+        "name": "Miguel Garcia",
+        "role": "Dev",
+        "linkedin": "https://www.linkedin.com/in/juan-perez",
+        "github": "https://github.com/juanperez"
+    },
+    {
+        "name": "Carlos Moreno",
+        "role": "Dev",
+        "linkedin": "https://www.linkedin.com/in/ana-lopez",
+        "github": "https://github.com/analop"
+    },
+    {
+        "name": "Jorge Morandeira",
+        "role": "Dev",
+        "linkedin": "https://www.linkedin.com/in/carlos-garcia",
+        "github": "https://github.com/carlosgarcia"
+    }
+  
+]
+
+# Mostrar la información de cada integrante
+for member in team_members:
+    st.subheader(f"👤 {member['name']}")
+    st.write(f"**Rol:** {member['role']}")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f"[![LinkedIn](https://img.shields.io/badge/LinkedIn-{member['name'].replace(' ', '%20')}-blue)]({member['linkedin']})")
+    with col2:
+        st.markdown(f"[![GitHub](https://img.shields.io/badge/GitHub-{member['name'].replace(' ', '%20')}-black)]({member['github']})")
+    st.markdown("---")  # Línea separadora entre miembros
+
+# Agradecimientos
+st.header("**Agradecimientos**")
+st.write("""
+Queremos agradecer a todos los que contribuyeron a este proyecto, desde nuestros profesores y mentores hasta la comunidad de desarrolladores. Sin su apoyo y recursos, este proyecto no habría sido posible.  
+""")
+
+# Footer con mensaje final
+st.write("""
+Si tienes alguna duda o quieres saber más sobre nuestro trabajo, no dudes en ponerte en contacto con nosotros a través de nuestras redes sociales o nuestros perfiles de GitHub y LinkedIn.
+""")
