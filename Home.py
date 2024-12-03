@@ -9,7 +9,7 @@ st.set_page_config(
 )
 
 # Título principal (centrado y en grande)
-st.markdown('<h1 style="text-align:center; font-size: 3rem; color: white;">🚗 Coches de Segunda Mano 🚗</h1>', unsafe_allow_html=True)
+st.markdown('<h1 style="text-align:center; font-size: 3rem;">🚗 Coches de Segunda Mano 🚗</h1>', unsafe_allow_html=True)
 
 # Imagen centrada y ajustada
 image = Image.open("bin/imagenes/Imagen inicial.webp")
