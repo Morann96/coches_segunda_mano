@@ -137,6 +137,51 @@ filtered_data = filtered_data[
     (filtered_data['num_puertas'].isin(puertas) if puertas else True)
 ]
 
+# Cambiar nombres de las columnas
+nuevos_nombres_columnas = {
+    'marca': 'Marca',
+    'modelo': 'Modelo',
+    'mes_matriculacion': 'Mes de Matriculación',
+    'ano_matriculacion': 'Año de Matriculación',
+    'kilometraje': 'Kilometraje',
+    'distintivo_ambiental': 'Distintivo Ambiental',
+    'garantia': 'Garantía',
+    'precio_nuevo': 'Precio nuevo',
+    'precio_contado': 'Precio Contado',
+    'concesionario': 'Concesionario',
+    'provincia': 'Provincia',
+    'comunidad_autonoma': 'Comunidad Autónoma',
+    'tipo_traccion': 'Tipo de tracción',
+    'largo': 'Largo',
+    'ancho': 'Ancho',
+    'alto': 'Alto',
+    'capacidad_maletero': 'Capacidad del maletero',
+    'num_plazas': 'Número de plazas',
+    'num_puertas': 'Número de Puertas',
+    'batalla': 'Batalla',
+    'peso': 'Peso',
+    'consumo_medio': 'Consumo medio',
+    'consumo_carretera': 'Consumo por carretera',
+    'consumo_urbano': 'Consumo urbano',
+    'co2': 'Consumo de CO²',
+    'deposito': 'Capacidad depósito',
+    'combustible': 'Combustible',
+    'num_cilindros': 'Número de cilindros',
+    'cilindrada': 'Cilindrada',
+    'sobrealimentacion': 'Sobrealimentación',
+    'tipo_cambio': 'Tipo de cambio',
+    'num_marchas': 'Número de machas',
+    'potencia_kw': 'Potencia (kW)',
+    'potencia_cv': 'Potencia (cv)',
+    'par': 'Par',
+    'velocidad_max': 'Velocidad Máxima',
+    'aceleracion': 'Aceleración'
+}
+
+# Renombrar las columnas del DataFrame filtrado
+filtered_data.rename(columns=nuevos_nombres_columnas, inplace=True)
+
+
 # Mostrar los datos filtrados
 st.write(f"Mostrando {len(filtered_data)} resultados:")
 st.dataframe(filtered_data)
