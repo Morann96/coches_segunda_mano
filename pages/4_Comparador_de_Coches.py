@@ -232,7 +232,9 @@ with col2:
         & (df["distintivo_ambiental"] == distintivo1)
         & (df["potencia_cv"] == potencia1)
         & (df["kilometraje"] == kilometraje1)
-    ].copy()  # Crear una copia explícita
+    ].copy().head(1)
+
+    
 
     if not df_filtrado1.empty:
         datos_coche1 = df_filtrado1.iloc[0]
@@ -369,7 +371,7 @@ with col4:
         & (df["distintivo_ambiental"] == distintivo2)
         & (df["potencia_cv"] == potencia2)
         & (df["kilometraje"] == kilometraje2)
-    ].copy()  # Crear una copia explícita
+    ].copy().head(1)  
 
     if not df_filtrado2.empty:
         datos_coche2 = df_filtrado2.iloc[0]

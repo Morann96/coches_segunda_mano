@@ -71,7 +71,7 @@ escalador_y = escaladores["y_scaler"]
 
 # Título de la aplicación
 st.markdown("""
-<h1 style='text-align: center; font-size: 3.5em;'>Predicción de Precio al Contado</h1>
+<h1 style='text-align: center; font-size: 3em;'>Predicción de Precio al Contado</h1>
 """, unsafe_allow_html=True)
 
 
