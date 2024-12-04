@@ -204,7 +204,7 @@ This chart is useful for:
         "choropleth_map_hovertemplate": '<b>Province</b>: %{location}<br>' + \
                                          '<b>Quantity</b>: %{customdata[0]:,}<br>' + \
                                          '<extra></extra>',
-        "choropleth_map_colorbar_title": "Quantity of Cars (Log)",
+        "choropleth_map_colorbar_title": "Quantity of Cars",
         "choropleth_map_description": """
 ### Choropleth Map: Distribution of Cars by Province
 
@@ -430,7 +430,7 @@ Este gráfico es útil para:
         "choropleth_map_hovertemplate": '<b>Provincia</b>: %{location}<br>' + \
                                          '<b>Cantidad</b>: %{customdata[0]:,}<br>' + \
                                          '<extra></extra>',
-        "choropleth_map_colorbar_title": "Cantidad de coches (Log)",
+        "choropleth_map_colorbar_title": "Cantidad de coches",
         "choropleth_map_description": """
 ### Mapa Coroplético: Distribución de Coches por Provincia
 
@@ -730,15 +730,12 @@ fig = px.choropleth_mapbox(
     zoom=5.5,
     center={"lat": 40.4168, "lon": -3.7038},
     labels={"cantidad_log": "Cantidad (Log)"},
-    title="Distribución de coches por provincia"
+    title=f'{texts[lang]["choropleth_map_title"]}'
 )
 
 # Personalizar el tooltip
 fig.update_traces(
-    hovertemplate=
-        '<b>Provincia</b>: %{location}<br>' +  # Mostrar el nombre de la provincia
-        '<b>Cantidad</b>: %{customdata[0]:,}<br>' +  # Valor con separadores de miles SIN LOGARITMO
-        '<extra></extra>',
+    hovertemplate= texts[lang]["choropleth_map_hovertemplate"],
     customdata=np.expand_dims(mapa_provincias['cantidad'], axis=1)  # Añadir la cantidad original al tooltip
 )
 
@@ -746,27 +743,13 @@ fig.update_traces(
 fig.update_layout(
     height=700,
     margin={"r": 0, "t": 50, "l": 0, "b": 0},
-    coloraxis_colorbar={"title": "Cantidad de coches (Log)"}
+    coloraxis_colorbar=dict(title = texts[lang]["choropleth_map_colorbar_title"])
 )
 
 # Mostrar el mapa en Streamlit
 st.plotly_chart(fig, use_container_width=True)
 
-st.markdown("""
-### Mapa Coroplético: Precio Medio de Coches por Provincia
-
-Este mapa muestra la cantidad de coches en cada provincia de España. 
-
-- **Color más intenso** indica **mayor cantidad de coches**.
-- Las provincias con **color más claro** tienen menor cantidad de coches.
-- Al pasar el cursor sobre una provincia, se puede observar la **cantidad exacta de coches**.
-
-Apreciamos que las provincias más pobladas son las que más coches tienen. Sobresalen Madrid y Barcelona.            
-
-""")
-
-
-
+st.markdown(texts[lang]['choropleth_map_description'])
 
 st.markdown("---")
 
@@ -794,38 +777,22 @@ fig = px.choropleth_mapbox(
     zoom=5.5,  # Nivel de zoom inicial
     center={"lat": 40.4168, "lon": -3.7038},  # Centro del mapa en España
     labels={"precio_medio": "Precio medio (€)"},  # Etiquetas de la leyenda
-    title="Precio medio de coches por provincia"
+    title=f"{texts[lang]['choropleth_map_price_title']}"
 )
 
 # Personalizar el tooltip
 fig.update_traces(
-    hovertemplate=
-        '<b>Provincia</b>: %{location}<br>' +  # Mostrar el nombre de la provincia
-        '<b>Precio medio</b>: %{z:,.2f}€<br>' +  # Precio medio con separadores de miles y símbolo €
-        '<extra></extra>'
+    hovertemplate= texts[lang]["choropleth_map_price_hovertemplate"]
 )
 
 # Ajustar diseño del gráfico
 fig.update_layout(
     height=700,  # Altura del gráfico
     margin={"r": 0, "t": 50, "l": 0, "b": 0},  # Márgenes
-    coloraxis_colorbar={"title": "Precio Medio (€)"}  # Título de la barra de colores
+    coloraxis_colorbar=dict(title = texts[lang]["choropleth_map_price_colorbar_title"])  # Título de la barra de colores
 )
 
 # Mostrar el mapa en Streamlit
 st.plotly_chart(fig, use_container_width=True)
 
-st.markdown("""
-### Mapa Coroplético: Precio Medio de Coches por Provincia
-
-Este mapa muestra la distribución geográfica del precio medio de coches en cada provincia de España. 
-
-- **Color más intenso** indica un **precio medio más alto**.
-- Las provincias con **color más claro** tienen un precio medio más bajo.
-- Al pasar el cursor sobre una provincia, se puede observar el **precio medio exacto en euros**.
-
-La información está basada en el precio al contado promedio calculado a partir de los datos disponibles.
-
-Sorprende que destaque Almería como provincia con coches más caros que el resto. No se aprecia ningún patrón.            
-
-""")
+st.markdown(texts[lang]['choropleth_map_price_description'])
