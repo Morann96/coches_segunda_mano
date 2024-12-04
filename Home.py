@@ -118,12 +118,12 @@ st.set_page_config(
 
 # 3. Inicializar el estado del idioma
 if 'lang' not in st.session_state:
-    st.session_state.lang = "en"  # Idioma por defecto
+    st.session_state.lang = "en" 
 
 # 4. Selector de idioma
-idioma = st.radio(
-    texts["en"]["language_label"],  # Etiqueta en inglés por defecto
-    ("English", "Español")
+idioma = st.sidebar.radio(
+    'Language',  # Título del selector
+    ("English", "Español")  # Opciones disponibles
 )
 
 # 5. Actualizar el estado del idioma según la selección

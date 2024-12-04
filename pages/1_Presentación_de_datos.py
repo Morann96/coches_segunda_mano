@@ -21,6 +21,7 @@ texts = {
         },
         "scatter_plot_hovertemplate": '<b>Mileage (km)</b>: %{x:,}<br>' + \
                                        '<b>Cash Price (€)</b>: %{y:,}€<br>' + \
+                                       '<b>Year</b>: %{customdata[0]}<br>' + \
                                        '<extra></extra>',
         "scatter_plot_colorbar_title": "Year of Registration",
         "scatter_plot_description": """
@@ -114,9 +115,9 @@ This chart allows you to:
         "price_comparison_yaxis_title": "Average Price (€)",
         "price_comparison_hover_marca": "Brand",
         "price_comparison_hover_precio_nuevo": "New Price",
-        "price_comparison_hover_precio_contado": "Cash Price",
+        "price_comparison_hover_precio_contado": "2nd Hand Price",
         "price_comparison_legend_new": "New Price",
-        "price_comparison_legend_contado": "Cash Price",
+        "price_comparison_legend_contado": "2nd Hand Price",
         "price_comparison_description": """
 ### Comparison of New Car Price vs. Second Hand Car Price by Brand
 
@@ -157,7 +158,7 @@ This chart is useful for:
         },
         "power_price_relation_hovertemplate": '<b>Power (HP)</b>: %{x:,}<br>' + \
                                                '<b>Price (€)</b>: %{y:,.2f} €<br>' + \
-                                               '<b>Fuel Type</b>: %{marker.color}<br>' + \
+                                               '<b>Fuel Type</b>: %{customdata[0]}<br>' + \
                                                '<extra></extra>',
         "power_price_relation_description": """
 ### Relationship between Price and Power by Fuel Type
@@ -246,6 +247,7 @@ Interestingly, Almería stands out as the province with the most expensive cars 
         },
         "scatter_plot_hovertemplate": '<b>Kilometraje</b>: %{x:,}<br>' + \
                                        '<b>Precio Contado (€)</b>: %{y:,}€<br>' + \
+                                       '<b>Año</b>: %{customdata[0]}<br>' + \
                                        '<extra></extra>',
         "scatter_plot_colorbar_title": "Año de Matriculación",
         "scatter_plot_description": """
@@ -339,9 +341,9 @@ Este gráfico permite:
         "price_comparison_yaxis_title": "Precio Medio (€)",
         "price_comparison_hover_marca": "Marca",
         "price_comparison_hover_precio_nuevo": "Precio Nuevo",
-        "price_comparison_hover_precio_contado": "Precio Contado",
+        "price_comparison_hover_precio_contado": "Precio 2ª Mano",
         "price_comparison_legend_new": "Precio Nuevo",
-        "price_comparison_legend_contado": "Precio Contado",
+        "price_comparison_legend_contado": "Precio 2ª Mano",
         "price_comparison_description": """
 ### Precio coche nuevo vs precio coche de segunda mano por marca
 
@@ -382,7 +384,7 @@ Este gráfico es útil para:
         },
         "power_price_relation_hovertemplate": '<b>Potencia (cv)</b>: %{x:,}<br>' + \
                                                '<b>Precio contado</b>: %{y:,.2f} €<br>' + \
-                                               '<b>Combustible</b>: %{marker.color}<br>' + \
+                                               '<b>Combustible</b>: %{customdata[0]}<br>' + \
                                                '<extra></extra>',
         "power_price_relation_description": """
 ### Relación entre precio y potencia según el combustible
@@ -469,8 +471,8 @@ if 'lang' not in st.session_state:
 
 # 4. Selector de idioma
 idioma = st.sidebar.radio(
-    'Language',  # Título del selector
-    ("English", "Español")  # Opciones disponibles
+    'Language',  
+    ("English", "Español") 
 )
 
 # 5. Actualizar el estado del idioma según la selección
@@ -514,14 +516,14 @@ fig = px.scatter(
     opacity=0.6,  # Puntos traslúcidos
     labels= texts[lang]['scatter_plot_labels'],
     title=f'{texts[lang]["scatter_plot_title"]}',
-    log_y=True
+    log_y=True,
+    custom_data=['ano_matriculacion']
 )
 
 # Personalizar diseño del gráfico y tooltip
 fig.update_traces(
     marker=dict(size=10),
-    hovertemplate=
-        f'{texts[lang]["scatter_plot_hovertemplate"]}'
+    hovertemplate= f'{texts[lang]["scatter_plot_hovertemplate"]}'
 )
 
 fig.update_layout(
@@ -555,13 +557,7 @@ fig = px.box(
 
 # Personalizar diseño y formato del tooltip
 fig.update_traces(
-    hovertemplate=
-        '<b>Distintivo Ambiental</b>: %{x}<br>' +
-        '<b>Precio contado</b>: %{y:,.2f} €<br>' +  # Formato con separador de miles y símbolo €
-        '<b>Máximo</b>: %{hoverinfo.max}<br>' +
-        '<b>Mínimo</b>: %{hoverinfo.min}<br>' +
-        '<b>Mediana</b>: %{hoverinfo.median}<br>' +
-        '<extra></extra>'
+    hovertemplate= f'{texts[lang]["box_plot_hovertemplate"]}'
 )
 
 # Personalizar diseño
@@ -569,8 +565,8 @@ fig.update_layout(
     height=800,
     font=dict(size=20),
     title_font=dict(size=26),
-    xaxis_title="Distintivo ambiental",
-    yaxis_title="Precio contado",
+    xaxis_title=f'{texts[lang]["box_plot_xaxis_title"]}',
+    yaxis_title=f'{texts[lang]["box_plot_yaxis_title"]}',
     xaxis=dict(tickfont=dict(size=18)),
     yaxis=dict(tickfont=dict(size=18))
 )
@@ -578,46 +574,7 @@ fig.update_layout(
 # Mostrar gráfico en Streamlit
 st.plotly_chart(fig, use_container_width=True)
 
-st.markdown("""
-### Distribución del precio por distintivo ambiental
-
-Este gráfico de caja y bigotes (boxplot) muestra la distribución del precio al contado de los coches según su distintivo ambiental.
-
-#### Detalles del gráfico:
-- **Eje X (Distintivo ambiental)**: Representa las diferentes categorías de distintivo ambiental otorgadas a los coches:
-  - **C**: Vehículos modernos de gasolina o diésel con bajas emisiones.
-  - **B**: Vehículos algo más antiguos con un nivel de emisiones mayor que los de categoría C.
-  - **ECO**: Vehículos híbridos o de bajas emisiones.
-  - **0 EMISIONES**: Vehículos completamente eléctricos o de hidrógeno, con cero emisiones.
-
-- **Eje Y (Precio contado)**: Muestra el precio al contado de los coches en euros (€), representado en escala logarítmica para incluir tanto precios bajos como altos de manera proporcional.
-
-- **Colores**: Cada distintivo ambiental tiene un color diferente para facilitar la comparación.
-
-#### Observaciones clave:
-1. **Coches con distintivo 0 EMISIONES**:
-   - Tienen una mayor dispersión de precios, pero su mediana se encuentra por encima de las demás categorías, reflejando que son, en promedio, los más caros.
-
-2. **Coches con distintivo ECO**:
-   - Presentan precios intermedios entre los coches con distintivo C y 0 EMISIONES.
-   - Tienen una distribución amplia, lo que indica la presencia de vehículos tanto accesibles como de gama alta.
-
-3. **Coches con distintivo C y B**:
-   - Los coches con distintivo C tienen precios más altos que los de distintivo B, lo que refleja la modernidad de los vehículos.
-   - Los coches con distintivo B suelen ser los más asequibles, con una mediana de precio notablemente más baja.
-
-4. **Valores atípicos (outliers)**:
-   - En todas las categorías, especialmente en las de mayor precio, se observan valores atípicos (puntos fuera de los bigotes), que representan coches de precio significativamente superior al resto.
-
-#### Uso del gráfico:
-Este gráfico permite:
-- Comparar los precios medios y rangos entre distintas categorías de distintivo ambiental.
-- Identificar patrones de precios en función de las emisiones y tecnologías asociadas.
-- Ayudar a compradores a decidir qué categoría de coche se adapta mejor a su presupuesto.
-
-**Nota**: La escala logarítmica en el eje Y permite visualizar tanto precios bajos como altos sin que los extremos dominen el gráfico.
-
-""")
+st.markdown(texts[lang]['box_plot_description'])
 
 
 
@@ -638,11 +595,11 @@ fig = go.Figure()
 fig.add_trace(go.Bar(
     x=precio_medio.index,  # Marcas
     y=precio_medio["precio_nuevo"],  # Precio nuevo promedio
-    name="Precio Nuevo",
+    name=f'{texts[lang]["price_comparison_legend_new"]}',
     marker_color="blue",  # Color de las barras
-    hovertemplate=
-        '<b>Marca</b>: %{x}<br>' +
-        '<b>Precio Nuevo</b>: %{y:,.2f} €<br>' +  # Formato con separadores de miles y símbolo €
+    hovertemplate= 
+        f'<b>{texts[lang]["price_comparison_hover_marca"]}</b>: %{{x}}<br>' +
+        f'<b>{texts[lang]["price_comparison_hover_precio_nuevo"]}</b>: %{{y:,.2f}} €<br>' +
         '<extra></extra>'
 ))
 
@@ -650,19 +607,19 @@ fig.add_trace(go.Bar(
 fig.add_trace(go.Bar(
     x=precio_medio.index,  # Marcas
     y=precio_medio["precio_contado"],  # Precio contado promedio
-    name="Precio Contado",
+    name=f'{texts[lang]["price_comparison_legend_contado"]}',
     marker_color="orange",  # Color de las barras
     hovertemplate=
-        '<b>Marca</b>: %{x}<br>' +
-        '<b>Precio Contado</b>: %{y:,.2f} €<br>' +  # Formato con separadores de miles y símbolo €
+        f'<b>{texts[lang]["price_comparison_hover_marca"]}</b>: %{{x}}<br>' +
+        f'<b>{texts[lang]["price_comparison_hover_precio_contado"]}</b>: %{{y:,.2f}} €<br>' +
         '<extra></extra>'
 ))
 
 # Personalizar diseño
 fig.update_layout(
-    title="Precio coche nuevo vs precio coche segunda mano por marca",
-    xaxis_title="Marca",
-    yaxis_title="Precio Medio",
+    title=f'{texts[lang]["price_comparison_title"]}',
+    xaxis_title=f'{texts[lang]["price_comparison_xaxis_title"]}',
+    yaxis_title=f'{texts[lang]["price_comparison_yaxis_title"]}',
     barmode="group",  # Barras agrupadas
     height=800,  # Altura del gráfico
     font=dict(size=18),  # Tamaño del texto general
@@ -675,41 +632,7 @@ fig.update_layout(
 # Mostrar gráfico en Streamlit
 st.plotly_chart(fig, use_container_width=True)
 
-st.markdown("""
-### Precio coche nuevo vs precio coche de segunda mano por marca
-
-Este gráfico de barras compara el precio medio de coches nuevos frente al precio medio de coches de segunda mano, categorizados por marca.
-
-#### Detalles del gráfico:
-- **Eje X (Marca)**: Muestra las diferentes marcas de coches disponibles en el mercado.
-- **Eje Y (Precio Medio)**: Representa el precio medio de los coches en euros (€).
-- **Barras Azules**: Indican el precio medio de coches nuevos para cada marca.
-- **Barras Naranjas**: Indican el precio medio de coches de segunda mano (precio al contado) para cada marca.
-
-#### Observaciones clave:
-1. **Diferencias de precios**:
-   - Las marcas de lujo como **Aston Martin**, **Ferrari** y **Lamborghini** tienen una diferencia significativa entre el precio de coches nuevos y de segunda mano, siendo el precio nuevo considerablemente mayor.
-   - Marcas más accesibles, como **Dacia**, **Fiat** y **Citroën**, muestran diferencias más pequeñas entre los precios.
-
-2. **Patrón general**:
-   - En todas las marcas, el precio medio de los coches nuevos es mayor que el de los coches de segunda mano, lo que refleja la depreciación habitual de los vehículos al pasar a ser usados.
-   - Las marcas de alta gama presentan precios mucho más altos en comparación con marcas generalistas.
-
-3. **Comparación entre marcas**:
-   - **Tesla** destaca con precios más elevados para coches nuevos en comparación con marcas generalistas, pero con una diferencia más reducida entre el precio nuevo y de segunda mano.
-   - Marcas como **Mercedes-Benz** y **BMW** tienen precios nuevos más altos en comparación con el precio al contado de los coches usados.
-
-#### Uso del gráfico:
-Este gráfico es útil para:
-- Analizar cómo varía el precio medio de coches nuevos frente al de segunda mano según la marca.
-- Identificar marcas con menor depreciación en el precio.
-- Ayudar a compradores y vendedores a entender las diferencias de valor entre coches nuevos y usados.
-
-**Nota**: La escala de precios está en euros (€), y cada barra representa el precio promedio para esa categoría.
-
-""")
-
-
+st.markdown(texts[lang]['price_comparison_description'])
 
 st.markdown("---")
 
@@ -733,20 +656,17 @@ fig = px.scatter(
     color="combustible",
     color_discrete_sequence=colores_vivos,
     opacity=0.6,
-    labels={"potencia_cv": "Potencia (cv)", "precio_contado": "Precio"},
-    title="Relación entre precio y potencia según el combustible",
-    log_y=True
+    labels=texts[lang]["power_price_relation_labels"],
+    title=f'{texts[lang]["power_price_relation_title"]}',
+    log_y=True,
+    custom_data=['combustible']
 )
 
 # Personalizar el tamaño de los puntos y el formato del tooltip
 fig.update_traces(
     marker=dict(size=15),
-    hovertemplate=
-        '<b>Potencia (cv)</b>: %{x:,}<br>' +  # Potencia con separadores de miles
-        '<b>Precio contado</b>: %{y:,.2f} €<br>' +  # Precio con formato y símbolo €
-        '<b>Combustible</b>: %{marker.color}<br>' +  # Tipo de combustible
-        '<extra></extra>'
-)
+    hovertemplate= texts[lang]["power_price_relation_hovertemplate"]
+    )
 
 # Personalizar diseño
 fig.update_layout(
@@ -760,44 +680,7 @@ fig.update_layout(
 # Mostrar gráfico en Streamlit
 st.plotly_chart(fig, use_container_width=True)
 
-st.markdown("""
-### Relación entre precio y potencia según el combustible
-
-Este gráfico de dispersión muestra cómo se relacionan el precio de los coches y su potencia (en caballos de fuerza, CV), categorizados según el tipo de combustible que utilizan.
-
-#### Detalles del gráfico:
-- **Eje X (Potencia)**: Representa la potencia del coche en caballos (CV). A medida que aumenta la potencia, se observan coches de mayor precio.
-- **Eje Y (Precio)**: Muestra el precio de los coches en escala logarítmica, lo que permite visualizar tanto coches con precios bajos como altos en una misma escala.
-- **Colores**: Cada punto está coloreado de acuerdo con el tipo de combustible del coche:
-  - **Gasolina**: Naranja
-  - **Diésel**: Verde
-  - **Gasolina/Gas**: Azul
-  - **Eléctrico**: Rosa
-  - **Híbrido Enchufable**: Amarillo
-  - **Gas**: Naranja
-
-#### Observaciones clave:
-1. **Tendencia general**:
-   - A mayor potencia, el precio tiende a aumentar, lo que sugiere una correlación positiva entre estas variables.
-   
-2. **Distribución por combustible**:
-   - Los coches **eléctricos** y **híbridos enchufables** suelen estar en el rango de precios más altos, incluso con potencias moderadas.
-   - Los coches **de gasolina** y **diésel** abarcan un rango más amplio de precios y potencias.
-   - Los coches **de gas** están principalmente en el rango de potencias y precios más bajos.
-
-3. **Puntos notables**:
-   - Existen algunos coches con alta potencia (más de 500 CV) y precios excepcionalmente altos.
-   - La mayoría de los puntos están agrupados en potencias menores a 200 CV y precios menores a 100.000 €.
-
-#### Uso del gráfico:
-Este gráfico es útil para:
-- Identificar tendencias en el mercado de coches según el tipo de combustible.
-- Ayudar a los compradores a entender cómo varía el precio según la potencia y el combustible.
-- Explorar diferencias entre tecnologías como eléctricos, híbridos y combustibles tradicionales.
-
-**Nota**: Al pasar el cursor sobre un punto, se puede ver el precio exacto, la potencia y el tipo de combustible del coche correspondiente.            
-
-""")
+st.markdown(texts[lang]['power_price_relation_description'])
 
 
 st.markdown("---")
