@@ -1,18 +1,8 @@
 import streamlit as st
 import pandas as pd
 import mysql.connector as mc
+import plotly.express as px
 
-
-
-# Cargar los datos
-@st.cache_data
-def load_data():
-    data = pd.read_csv('bin/data_preprocess.csv')
-    marcas_data = pd.read_csv('bin/listado_marcas.csv')
-    modelos_data = pd.read_csv('bin/listado_modelos.csv')
-    return data, marcas_data, modelos_data
-
-data, marcas_data, modelos_data = load_data()
 
 # Función para conectar a la base de datos
 def conectar_base_datos():
@@ -23,8 +13,10 @@ def conectar_base_datos():
 def obtener_datos_vista():
     conn = conectar_base_datos()
     query = "SELECT * FROM vista_prestaciones"
-    df = conn.query(query)  # Ejecutar consulta y obtener datos como DataFrame
-    return df
+    data = conn.query(query)  # Ejecutar consulta y obtener datos como DataFrame
+    return data
+
+data = obtener_datos_vista()
 
 # Título de la aplicación
 st.markdown("<h1 style='text-align: center;'>Visualización de Coches de Segunda Mano</h1>", unsafe_allow_html=True)
@@ -186,6 +178,93 @@ filtered_data.rename(columns=nuevos_nombres_columnas, inplace=True)
 st.write(f"Mostrando {len(filtered_data)} resultados:")
 st.dataframe(filtered_data)
 
-# Estadísticas básicas
-st.markdown("<h2 style='text-align: center;'>Estadísticas Básicas</h2>", unsafe_allow_html=True)
-st.write(filtered_data.describe())
+# # Estadísticas básicas
+# st.markdown("<h2 style='text-align: center;'>Estadísticas Básicas</h2>", unsafe_allow_html=True)
+# st.write(filtered_data.describe())
+
+# Dividir la visualización en dos columnas
+col1, col2 = st.columns(2)
+
+# Gráfico 1: Distribución de Precios
+with col1:
+    st.markdown("<h2 style='text-align: center;'>Distribución de Precios</h2>", unsafe_allow_html=True)
+    fig1 = px.histogram(
+        filtered_data, 
+        x='Precio Contado', 
+        nbins=30, 
+        labels={'Precio Contado': 'Precio Contado'},
+        template='plotly_white'
+    )
+    fig1.update_traces(
+        hovertemplate='Precio Contado (€): %{x:,.0f}€<br>Cantidad: %{y}'
+    )
+    fig1.update_layout(
+        title='',
+        xaxis_title='Precio Contado (€)', 
+        yaxis_title='Frecuencia',
+        title_x=0.5
+    )
+    st.plotly_chart(fig1, use_container_width=True)
+
+
+# Gráfico 2: Relación Precio vs Año de Matriculación
+with col2:
+    st.markdown("<h2 style='text-align: center;'>Relación Precio vs Año de Matriculación</h2>", unsafe_allow_html=True)
+    fig2 = px.scatter(
+        filtered_data, 
+        x='Año de Matriculación', 
+        y='Precio Contado', 
+        labels={'Año de Matriculación': 'Año de Matriculación', 'Precio Contado': 'Precio Contado (€)'},
+        template='plotly_white',
+        opacity=0.6
+    )
+    # Actualizar diseño para formatear el tooltip
+    fig2.update_traces(
+        hovertemplate='Año de Matriculación: %{x}<br>Precio Contado (€): %{y:,.0f}€'
+    )
+    fig2.update_layout(
+        title='',
+        xaxis_title='Año de Matriculación', 
+        yaxis_title='Precio Contado (€)',
+        title_x=0.5
+    )
+    st.plotly_chart(fig2, use_container_width=True)
+
+# Nueva fila con dos columnas para los siguientes gráficos
+col3, col4 = st.columns(2)
+
+# Gráfico: Distribución por Tipo de Combustible
+with col3:
+    st.markdown("<h2 style='text-align: center;'>Distribución por Tipo de Combustible</h2>", unsafe_allow_html=True)
+    combustible_count = filtered_data['Combustible'].value_counts().reset_index()
+    combustible_count.columns = ['Combustible', 'Cantidad']
+    fig3_alt = px.bar(
+        combustible_count, 
+        x='Combustible', 
+        y='Cantidad', 
+        labels={'Combustible': 'Tipo de Combustible', 'Cantidad': 'Cantidad de Coches'},
+        template='plotly_white'
+    )
+    fig3_alt.update_layout(
+        title='',
+        xaxis_title='Tipo de Combustible', 
+        yaxis_title='Cantidad de Coches',
+        title_x=0.5
+    )
+    st.plotly_chart(fig3_alt, use_container_width=True)
+
+
+# Gráfico 4: Comparación entre Comunidades Autónomas
+with col4:
+    st.markdown("<h2 style='text-align: center;'>Distribución por Comunidad Autónoma</h2>", unsafe_allow_html=True)
+    comunidades_count = filtered_data['Comunidad Autónoma'].value_counts().reset_index()
+    comunidades_count.columns = ['Comunidad Autónoma', 'Cantidad']
+    fig4 = px.pie(
+        comunidades_count, 
+        values='Cantidad', 
+        names='Comunidad Autónoma', 
+        template='plotly_white'
+    )
+    fig4.update_layout(title_x=0.5)
+    title='',
+    st.plotly_chart(fig4, use_container_width=True)
