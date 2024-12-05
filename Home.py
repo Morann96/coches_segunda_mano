@@ -48,27 +48,6 @@ st.markdown("""
    Aquí podrás entender la estructura de la base de datos que respalda toda la aplicación, con información detallada sobre las tablas y relaciones entre ellas.
 """)
 
-# Botón que redirige a la documentación con estilo mejorado
-st.markdown("""
-<div style="text-align: center; margin-top: 30px;">
-    <a href="pages/5_Documentación.py" target="_self">
-        <button style="
-            background-color: #1E88E5;
-            color: white;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        ">
-            📑 Ir a la Documentación
-        </button>
-    </a>
-</div>
-""", unsafe_allow_html=True)
-
 # Desarrolladores con iconos
 st.markdown("### Desarrollado por:")
 st.markdown("""

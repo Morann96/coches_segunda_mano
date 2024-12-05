@@ -24,12 +24,12 @@ El objetivo es facilitar la comprensión del mercado de coches de segunda mano p
 # Índice de la documentación
 st.header("**Índice**")
 st.markdown("""
-1. [Descripción del Proyecto](#descripcion-del-proyecto)
-2. [Presentación de Datos](#presentacion-de-datos)
-3. [Vista Detallada](#vista-detallada)
-4. [Modelo](#modelo)
-5. [Comparador de Coches](#comparador-de-coches)
-6. [Arquitectura Base de Datos](#arquitectura-base-de-datos)
+1. Descripción del Proyecto
+2. Presentación de Datos
+3. Vista Detallada
+4. Modelo
+5. Comparador de Coches
+6. Arquitectura Base de Datos
 """)
 
 # Sección: Presentación de Datos - Análisis Visual de Coches de Segunda Mano
