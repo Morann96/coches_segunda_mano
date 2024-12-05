@@ -226,7 +226,8 @@ with col2:
     fila1_coche1 = st.columns(4)
     with fila1_coche1[0]:
         st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_brand']}</p>", unsafe_allow_html=True)
-        marcas_disponibles = df["marca"].sort_values().unique()
+        marcas_disponibles = df["marca"].unique()
+        marcas_disponibles = sorted([marca for marca in marcas_disponibles if str(marca).lower() != "desconocido"])
         if len(marcas_disponibles) > 0:
             marca1 = st.selectbox("Marca", marcas_disponibles, key="marca1", label_visibility="collapsed", index=0)
         else:
