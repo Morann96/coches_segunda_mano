@@ -3,308 +3,357 @@
 import streamlit as st
 from PIL import Image
 
+# Verificar si existe el estado de idioma, si no, se inicializa en inglés
+if 'lang' not in st.session_state:
+    st.session_state.lang = "en" 
 
-# Título principal
-st.title("📚 **GUÍA DEL USUARIO Y DOCUMENTACIÓN**")
+# Selector de idioma
+idioma = st.sidebar.radio(
+    'Language',  
+    ("English", "Español") 
+)
 
+# Actualizar el idioma del estado según la selección del usuario
+if idioma == "Español":
+    st.session_state.lang = "es"
+else:
+    st.session_state.lang = "en"
 
-# Descripción breve del proyecto
-st.header("**Descripción del Proyecto**")
-st.write("""
-Esta aplicación web está diseñada para explorar y analizar datos del mercado de coches de segunda mano.
-Con esta herramienta, puedes:
-- Navegar por diferentes opciones de coches.
-- Visualizar estadísticas clave.
-- Filtrar información según tus intereses.
-- Predecir el precio de un coche segun sus caracteristicas.
+lang = st.session_state.lang
 
-El objetivo es facilitar la comprensión del mercado de coches de segunda mano para ayudarte a tomar decisiones ¡Es fácil de usar y visualmente intuitiva!
-""")
+# Diccionarios con las traducciones
+texts = {
+    "title": {
+        "es": "📚 **GUÍA DEL USUARIO Y DOCUMENTACIÓN**",
+        "en": "📚 **USER GUIDE AND DOCUMENTATION**"
+    },
+    "tech_header": {
+        "es": "**TECNOLOGÍAS EMPLEADAS**",
+        "en": "**TECHNOLOGIES USED**"
+    },
+    "tech_col1": {
+        "es": """
+- **Lenguaje de Programación:** Python 🐍
+- **Framework de Interfaz:** [**Streamlit** 🚀](https://streamlit.io/)  
+  Permite crear interfaces web interactivas de manera rápida y sencilla, sin necesidad de profundos conocimientos de frontend. Actualiza los resultados según la interacción del usuario.
 
-# Índice de la documentación
-st.header("**Índice**")
-st.markdown("""
-1. Descripción del Proyecto
-2. Presentación de Datos
-3. Vista Detallada
-4. Modelo
-5. Comparador de Coches
-6. Arquitectura Base de Datos
-""")
+- **Visualizaciones Interactivas:** [**Plotly** 📊](https://plotly.com/python/)  
+  Ofrece gráficos dinámicos y mapas coropléticos. Sus componentes interactivos (zoom, hover, filtrado) facilitan un análisis detallado.
 
-# Sección: Presentación de Datos - Análisis Visual de Coches de Segunda Mano
+- **Tratamiento de Datos Geoespaciales:** [**GeoPandas** 🗺️](https://geopandas.org/)  
+  Permite manejar datos geográficos, unir información espacial y crear mapas que muestran la distribución y precios de coches por región.
+         
+- **PIL (Pillow) para Imágenes** 🖼️  
+  Para cargar, procesar y mostrar imágenes de los vehículos, enriqueciendo la experiencia y facilitando comparaciones visuales entre coches.
 
-st.header("**PRESENTACIÓN DE DATOS**")
-st.write("""
-En este apartado se muestran gráficos interactivos y mapas diseñados para que puedas explorar 
-la información clave sobre el mercado de coches de segunda mano. 
-Cada visualización incluye una breve descripción para ayudarte a entender los datos de forma sencilla.
-""")
+Estas tecnologías se aplican a lo largo de todo el proyecto: desde la extracción y procesamiento de datos, pasando por su análisis y visualización, hasta la predicción y comparación de precios de coches de segunda mano.
+        """,
+        "en": """
+- **Programming Language:** Python 🐍
+- **Interface Framework:** [**Streamlit** 🚀](https://streamlit.io/)  
+  Allows you to quickly and easily create interactive web interfaces without extensive frontend knowledge. It updates results based on user interaction.
 
-# Descripción de los gráficos
-st.subheader("**1. Kilometraje vs Precio**")
-st.write("""
-Este gráfico te muestra cómo el precio de los coches baja a medida que aumenta el kilometraje.
-Ideal para analizar tendencias generales.
-""")
+- **Interactive Visualizations:** [**Plotly** 📊](https://plotly.com/python/)  
+  Offers dynamic graphs and choropleth maps. Its interactive components (zoom, hover, filtering) facilitate detailed analysis.
 
-st.subheader("**2. Precio por Tipo Distintivo**")
-st.write("""
-Aquí puedes observar cómo varían los precios según los distintivos de los coches, destacando diferencias significativas entre categorías.
-""")
+- **Geospatial Data Processing:** [**GeoPandas** 🗺️](https://geopandas.org/)  
+  Enables handling of geographic data, merging spatial information, and creating maps that show the distribution and pricing of cars by region.
+         
+- **PIL (Pillow) for Images** 🖼️  
+  Used to load, process, and display vehicle images, enhancing the user experience and enabling visual comparisons between cars.
 
-st.subheader("**3. Distribución de Precios**")
-st.write("""
-Un histograma que muestra cómo se distribuyen los precios de los coches en diferentes rangos.
-Te ayudará a identificar patrones en los precios del mercado.
-""")
+These technologies are applied throughout the project: from data extraction and processing, through analysis and visualization, to predicting and comparing used car prices.
+        """
+    },
+    "tech_col2": {
+        "es": """
+- **Extracción de Datos:** [**Selenium** 🕸️](https://www.selenium.dev/) y [**Beautiful Soup** 🍜](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)  
+  Empleados para la automatización de tareas web y el raspado (scraping) de datos de páginas, permitiendo extraer información actualizada de forma automatizada.
 
-st.subheader("**4. Relación entre Potencia y Precio**")
-st.write("""
-Este gráfico muestra que los coches con más potencia suelen tener precios más altos.
-Ideal para quienes buscan potencia en su vehículo.
-""")
+- **Manipulación y Análisis de Datos:** [**Pandas** 🐼](https://pandas.pydata.org/) y [**NumPy** 🔢](https://numpy.org/)  
+  Para cargar, limpiar y transformar datos. Pandas facilita la conexión a la base de datos, el filtrado por criterios y la preparación del dataset para el modelado.
 
-st.subheader("**5. Mapa de Coches disponibles por Provincia**")
-st.write("""
-Un mapa que visualiza cuántos coches están disponibles en cada provincia.
-Puedes identificar rápidamente las regiones con más opciones.
-""")
+- **Base de Datos:** MySQL 💿  
+  Almacena la información sobre coches, precios, especificaciones técnicas y localización. Se emplean vistas y consultas SQL para extraer datos siempre actualizados.
 
-st.subheader("**6. Mapa de Precios por Provincia**")
-st.write("""
-Un mapa que muestra el precio medio de los coches por provincia.
-Útil para comparar los precios promedio en distintas áreas geográficas.
-""")
+- **Machine Learning y Deep Learning:**  
+  - [**scikit-learn** 🤖](https://scikit-learn.org/): Para el modelado clásico (regresión) y la evaluación de métricas (MAE, MSE, R²).  
+  - [**TensorFlow/Keras** 🧠](https://www.tensorflow.org/): Para el entrenamiento, carga e inferencia de redes neuronales que predicen el precio según las características del coche.
+        """,
+        "en": """
+- **Data Extraction:** [**Selenium** 🕸️](https://www.selenium.dev/) and [**Beautiful Soup** 🍜](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)  
+  Used for automating web tasks and scraping data from pages, allowing for the extraction of up-to-date information in an automated manner.
 
-# Sección: Vista Detallada
+- **Data Manipulation and Analysis:** [**Pandas** 🐼](https://pandas.pydata.org/) and [**NumPy** 🔢](https://numpy.org/)  
+  For loading, cleaning, and transforming data. Pandas facilitates database connections, filtering by criteria, and preparing datasets for modeling.
 
-st.header("**VISTA DETALLADA**")
-st.write("""
-En este apartado, puedes explorar en profundidad los datos de coches de segunda mano. 
-Se incluyen múltiples filtros para personalizar la información que deseas visualizar.
-""")
+- **Database:** MySQL 💿  
+  Stores information about cars, prices, technical specifications, and locations. Views and SQL queries are used to retrieve always up-to-date data.
 
-# Descripción de los filtros
-st.subheader("**1. Filtros Disponibles**")
-st.write("""
-Utiliza los filtros en el panel lateral para ajustar los datos según tus necesidades. 
-Puedes filtrar por:
-- Rango de precio.
-- Año de matriculación.
-- Marca y modelo.
-- Tipo de cambio.
-- Provincia.
-- Distintivo ambiental.
-- Número de puertas.
-""")
+- **Machine Learning and Deep Learning:**  
+  - [**scikit-learn** 🤖](https://scikit-learn.org/): For classic modeling (regression) and evaluating metrics (MAE, MSE, R²).  
+  - [**TensorFlow/Keras** 🧠](https://www.tensorflow.org/): For training, loading, and inference of neural networks that predict prices based on car characteristics.
+        """
+    },
+    "db_arch_header": {
+        "es": "**ARQUITECTURA BASE DE DATOS**",
+        "en": "**DATABASE ARCHITECTURE**"
+    },
+    "db_diagram_subheader": {
+        "es": "Diagrama de la Base de Datos",
+        "en": "Database Diagram"
+    },
+    "db_tables_subheader": {
+        "es": "Descripción de las Tablas y Columnas",
+        "en": "Description of Tables and Columns"
+    },
+    "db_markdown": {
+        "es": """
+# Documentación de la Base de Datos
 
-# Descripción de la tabla de resultados
-st.subheader("**2. Resultados Filtrados**")
-st.write("""
-La tabla muestra los coches que cumplen con los criterios seleccionados. 
-Incluye información como el precio, el año de matriculación y la provincia donde está disponible.
-""")
+---
 
-# Estadísticas básicas
-st.subheader("**3. Estadísticas Básicas**")
-st.write("""
-Al final de la página, puedes ver estadísticas básicas que resumen los datos filtrados, 
-como el precio promedio o la potencia promedio, para facilitar el análisis.
-""")
+## **Diagrama de la Base de Datos**
+El diagrama de la base de datos ilustra las relaciones entre las tablas principales que conforman el sistema. Cada tabla contiene información específica y se conecta a otras tablas mediante claves foráneas, lo que permite gestionar eficientemente la información del mercado de coches de segunda mano.
 
-# Sección: Modelo
-st.header("**MODELO**")
-st.write("""
-En este apartado, puedes predecir el precio al contado de un coche de segunda mano 
-utilizando un modelo de machine learning y redes neuronales. La herramienta permite personalizar la predicción 
-según las características específicas del coche.
-""")
+---
 
-# Descripción del formulario de entrada
-st.subheader("**1. Introducción de Características**")
-st.write("""
-Introduce la información del coche para realizar la predicción. 
-Se incluyen las siguientes características:
-- Marca
-- Modelo
-- Antigüedad
-- Kilometraje
-- Potencia
-- Combustible
-- Tipo de Cambio
-    
-Cada una de estas características es clave para obtener una predicción precisa del precio del coche.
-""")
+## **Descripción de las Tablas**
 
-# Proceso de guardado de datos
-st.subheader("**2. Guardar Datos**")
-st.write("""
-Una vez rellenados los campos con las características del coche, guarda los datos para que puedan ser utilizados por el modelo.
-Esto asegura que las características introducidas se procesen correctamente y estén disponibles para la predicción.
-""")
+### **1. Links_coches**
+Esta tabla almacena enlaces y representaciones visuales de los coches en la base de datos.
+- **id_coche (PK):** Identificador único del coche.
+- **link_anuncio:** URL del anuncio donde se detalla información adicional del coche.
+- **foto_binaria:** Imagen del coche almacenada como un blob binario.
 
-# Predicción
-st.subheader("**3. Realizar Predicción**")
-st.write("""
-Tras guardar los datos, puedes pulsar el botón de predicción para obtener el precio estimado. 
-El modelo utiliza técnicas de Machine Learning y Redes Neuronales para ofrecer resultados precisos y confiables.
-El sistema analizará los datos introducidos y calculará un precio aproximado basado en patrones aprendidos de coches similares en el mercado de segunda mano.
-""")
+---
 
-# Sección de Gráficas
-st.subheader("**4. Gráficas de Evaluación del Modelo**")
-st.write("""
-Una vez realizada la predicción, puedes visualizar algunas gráficas que ayudan a evaluar la precisión del modelo. Estas métricas son fundamentales para comprender qué tan bien se está comportando el modelo en relación con los datos reales.
-
-- **Error Absoluto Medio (MAE)**: Representa la diferencia promedio entre los valores reales y las predicciones del modelo. Un MAE más bajo indica un mejor rendimiento del modelo. 
-  
-- **Error Cuadrático Medio (MSE)**: Mide el promedio de los cuadrados de los errores. A diferencia del MAE, el MSE da más peso a los errores más grandes, lo que puede ayudar a identificar problemas significativos en las predicciones. 
-
-- **Coeficiente de Determinación (R²)**: Mide la proporción de la varianza en los datos que es explicada por el modelo. Un valor de R² cercano a 1 indica que el modelo es muy preciso, mientras que valores cercanos a 0 indican que el modelo no está explicando bien los datos. 
-
-Estas gráficas te permiten entender cómo el modelo está haciendo las predicciones y cómo se puede mejorar su rendimiento en futuros ajustes.
-""")
-
-# Feature Importance
-st.subheader("**5. Importancia de las Características (Feature Importance)**")
-st.write("""
-En esta sección, se muestra una tabla que resalta la importancia relativa de cada una de las características introducidas para predecir el precio del coche. 
-Esta tabla te permitirá ver qué variables tienen mayor influencia en el modelo y, por lo tanto, son las más determinantes a la hora de calcular el precio.
-
-""")
-
-# Comparativa de Redes Neuronales
-st.subheader("**6. Comparativa de Redes Neuronales**")
-st.write("""
-En esta sección, se presentan las gráficas que comparan el rendimiento del modelo de redes neuronales con otros enfoques utilizados. Las gráficas te ayudarán a visualizar cómo se comporta el modelo de redes neuronales en comparación con otros modelos, como la regresión lineal, en términos de precisión y rendimiento.
-""")
-
-# Notas adicionales
-st.subheader("**7. Notas Importantes**")
-st.write("""
-- Asegúrate de que los valores introducidos son correctos y coherentes con las características reales del coche.
-- En caso de que haya errores o inconsistencias, revisa las entradas y corrígelas antes de realizar la predicción.
-- La calidad de la predicción depende de la precisión de los datos proporcionados. Cuanto más precisos sean los datos, más exacto será el resultado.
-- Ten en cuenta que este modelo es una aproximación y los resultados pueden variar dependiendo de factores adicionales no considerados en el modelo.
-""")
-# Sección: Comparador de coches
-
-st.header("**COMPARADOR DE COCHES**")
-
-# Descripción general
-st.markdown("""
-En este apartado podrás seleccionar dos vehículos y compararlos en función de características clave como el precio, el kilometraje, la potencia, entre otras.
-""")
-
-# Paso 1: Selección de los coches
-st.subheader("**1. Selecciona dos coches**")
-st.markdown("""
-Elige dos coches de la lista para compararlos. Las características que podrás comparar incluyen:
-- Precio
-- Kilometraje
-- Potencia
-- Consumo
-- Número de puertas
-- Año de fabricación
-  
-Solo tienes que seleccionar un coche para cada opción y presionar 'Comparar'.
-""")
-
-# Paso 2: Visualización de los detalles
-st.subheader("**2. Visualiza los detalles**")
-st.markdown("""
-Verás las características principales de los coches seleccionados, como el precio, kilometraje, potencia y consumo.
-""")
-
-# Paso 3: Comparación visual
-st.subheader("**3. Compara con gráficos**")
-st.markdown("""
-La herramienta genera un gráfico de radar para comparar visualmente los coches en base a sus características.
-""")
-
-# Consejos
-st.subheader("**4. Consejos**")
-st.markdown("""
-- Elige coches que realmente te interesen para una comparación útil.
-- Usa el gráfico de radar para ver las diferencias de manera visual.
-""")
-
-
-# Sección: Comparador de coches
-
-st.header("**ARQUITECTURA BASE DE DATOS**")
-
-# Mostrar la imagen
-st.subheader("Diagrama de la Base de Datos")
-st.image("bin/imagenes/esquema_bbdd.png", use_container_width=True)
-
-st.subheader("Descripción de las Tablas y Columnas")
-
-st.markdown("""
-La base de datos del proyecto está compuesta por varias tablas relacionadas, que permiten gestionar la información de concesionarios, vehículos, características técnicas, y su localización. A continuación, se describe la utilidad de cada tabla y el significado de sus columnas principales:
-
-### 1. **Concesionarios**
+### **2. Concesionarios**
+Registra la información básica sobre los concesionarios.
 - **id_concesionario (PK):** Identificador único del concesionario.
 - **nombre_concesionario:** Nombre del concesionario.
 
-### 2. **Marcas**
-- **id_marca (PK):** Identificador único de la marca.
-- **nombre_marca:** Nombre de la marca del vehículo (por ejemplo, Toyota, Ford).
+---
 
-### 3. **Modelos**
-- **id_modelo (PK):** Identificador único del modelo del vehículo.
+### **3. Marcas**
+Contiene información sobre las diferentes marcas de coches.
+- **id_marca (PK):** Identificador único de la marca.
+- **nombre_marca:** Nombre de la marca (por ejemplo, Toyota, Ford).
+
+---
+
+### **4. Modelos**
+Guarda detalles sobre los modelos específicos asociados a una marca.
+- **id_modelo (PK):** Identificador único del modelo.
 - **nombre_modelo:** Nombre del modelo (por ejemplo, Corolla, Fiesta).
 
-### 4. **Tipo_traccion**
+---
+
+### **5. Tipo_traccion**
+Define los tipos de tracción disponibles en los coches.
 - **id_traccion (PK):** Identificador único del tipo de tracción.
 - **nombre_traccion:** Descripción del tipo de tracción (por ejemplo, tracción delantera, trasera, 4x4).
 
-### 5. **Links_coches**
-- **id_coche (PK):** Identificador único del coche.
-- **link_anuncio:** URL del anuncio donde se encuentra más información del coche.
-- **foto_binaria:** Imagen del coche almacenada como un blob binario.
+---
 
-### 6. **Prestaciones**
-Esta tabla es el núcleo de la base de datos, ya que almacena información técnica y características detalladas de cada coche:
-- **id_provincia, id_concesionario, id_distintivo, etc.:** Claves foráneas que relacionan esta tabla con otras.
-- **mes_matriculacion, ano_matriculacion:** Mes y año de matriculación del coche.
-- **kilometraje:** Distancia recorrida por el coche (en kilómetros).
-- **precio_nuevo, precio_contado:** Precios del coche (nuevo y contado).
-- **largo, ancho, alto, peso:** Dimensiones y peso del vehículo.
-- **capacidad_maletero:** Capacidad del maletero (en litros).
-- **num_plazas, num_puertas:** Número de plazas y puertas del vehículo.
-- **consumo_medio, consumo_carretera, consumo_urbano:** Valores de consumo de combustible (en litros/100 km).
-- **co2:** Emisiones de dióxido de carbono (en g/km).
-- **potencia_kw, potencia_cv:** Potencia del coche en kilovatios y caballos de vapor.
-- **velocidad_max:** Velocidad máxima alcanzable (en km/h).
-- **fecha_extraccion:** Fecha de registro de los datos.
+### **6. Prestaciones**
+La tabla más importante, donde se consolida la información técnica y características específicas de cada coche.
+- **id_coche (PK):** Identificador único del coche (relacionado con otras tablas).
+- **id_provincia (FK):** Relación con la tabla Provincias.
+- **id_concesionario (FK):** Relación con la tabla Concesionarios.
+- **id_distintivo (FK):** Relación con la tabla Distintivos_ambientales.
+- **id_marca (FK):** Relación con la tabla Marcas.
+- **id_combustible (FK):** Relación con la tabla Combustibles.
+- **id_modelo (FK):** Relación con la tabla Modelos.
+- **id_tipo_cambio (FK):** Relación con la tabla Tipos_cambio.
+- **id_traccion (FK):** Relación con la tabla Tipo_traccion.
+- **id_sobrealimentacion (FK):** Relación con la tabla Sobrealimentaciones.
+- **Mes y año de matriculación:** Registra cuándo se matriculó el coche.
+- **Kilometraje:** Indica la distancia total recorrida por el coche.
+- **Precio:** Contiene los precios del coche nuevo y de segunda mano.
+- **Dimensiones:** Largo, ancho, alto y capacidad del maletero.
+- **Especificaciones técnicas:** Número de plazas, número de puertas, tipo de combustible, potencia (en kW y CV), velocidad máxima, emisiones de CO2, etc.
 
-### 7. **Provincias**
+---
+
+### **7. Provincias**
+Almacena información geográfica relacionada con la ubicación de los coches.
 - **id_provincia (PK):** Identificador único de la provincia.
 - **nombre_provincia:** Nombre de la provincia.
 - **comunidad_autonoma:** Comunidad autónoma a la que pertenece la provincia.
 
-### 8. **Distintivos_ambientales**
+---
+
+### **8. Distintivos_ambientales**
+Incluye los distintivos ambientales asignados a los coches.
 - **id_distintivo (PK):** Identificador único del distintivo ambiental.
 - **nombre_distintivo:** Descripción del distintivo (por ejemplo, ECO, Cero Emisiones).
 
-### 9. **Combustibles**
+---
+
+### **9. Combustibles**
+Define los tipos de combustible utilizados por los coches.
 - **id_combustible (PK):** Identificador único del tipo de combustible.
 - **nombre_combustible:** Nombre del tipo de combustible (por ejemplo, Gasolina, Diésel, Eléctrico).
 
-### 10. **Tipos_cambio**
+---
+
+### **10. Tipos_cambio**
+Describe los tipos de cambio (transmisión) disponibles en los coches.
 - **id_tipo_cambio (PK):** Identificador único del tipo de cambio.
 - **nombre_tipo_cambio:** Descripción del tipo de cambio (por ejemplo, manual, automático).
 
-### 11. **Sobrealimentaciones**
+---
+
+### **11. Sobrealimentaciones**
+Detalla los sistemas de sobrealimentación de los motores.
 - **id_sobrealimentacion (PK):** Identificador único del tipo de sobrealimentación.
-- **nombre_sobrealimentacion:** Tipo de sobrealimentación (por ejemplo, turbo, compresor).
+- **nombre_sobrealimentacion:** Descripción del tipo de sobrealimentación (por ejemplo, turbo, compresor).
 
-### Relaciones entre Tablas
-Las relaciones entre las tablas están establecidas mediante claves foráneas (FK) presentes en la tabla **Prestaciones**, que actúa como la tabla principal para consolidar la información de los coches.
+---
 
-""")
+## **Relaciones entre Tablas**
+La tabla **Prestaciones** actúa como el núcleo de la base de datos, conectando la información de las tablas secundarias mediante claves foráneas, lo que conforma un modelo de estrella. Esto permite:
+- Un acceso eficiente a los datos relacionados.
+- La capacidad de realizar consultas complejas combinando varias tablas.
+- La gestión centralizada de las especificaciones y características de cada coche.
 
+---
+""",
+        "en": """
+# Database Documentation
 
+---
 
+## **Database Diagram**
+The database diagram illustrates the relationships between the main tables that make up the system. Each table contains specific information and is connected to other tables through foreign keys, allowing efficient management of the used car market data.
+
+---
+
+## **Description of the Tables**
+
+### **1. Links_coches**
+This table stores links and visual representations of the cars in the database.
+- **id_coche (PK):** Unique identifier for the car.
+- **link_anuncio:** URL of the ad where additional car details are provided.
+- **foto_binaria:** Image of the car stored as a binary blob.
+
+---
+
+### **2. Concesionarios** (Dealerships)
+Stores basic information about dealerships.
+- **id_concesionario (PK):** Unique identifier for the dealership.
+- **nombre_concesionario:** Name of the dealership.
+
+---
+
+### **3. Marcas** (Brands)
+Contains information about different car brands.
+- **id_marca (PK):** Unique identifier for the brand.
+- **nombre_marca:** Name of the brand (e.g., Toyota, Ford).
+
+---
+
+### **4. Modelos** (Models)
+Stores details about specific models associated with a brand.
+- **id_modelo (PK):** Unique identifier for the model.
+- **nombre_modelo:** Model name (e.g., Corolla, Fiesta).
+
+---
+
+### **5. Tipo_traccion** (Traction Types)
+Defines the types of traction available in cars.
+- **id_traccion (PK):** Unique identifier for the traction type.
+- **nombre_traccion:** Description of the traction type (e.g., front-wheel drive, rear-wheel drive, 4x4).
+
+---
+
+### **6. Prestaciones** (Specifications)
+The most important table, where technical information and specific characteristics of each car are consolidated.
+- **id_coche (PK):** Unique car identifier (related to other tables).
+- **id_provincia (FK):** Relationship with Provincias table.
+- **id_concesionario (FK):** Relationship with Concesionarios table.
+- **id_distintivo (FK):** Relationship with Distintivos_ambientales table.
+- **id_marca (FK):** Relationship with Marcas table.
+- **id_combustible (FK):** Relationship with Combustibles table.
+- **id_modelo (FK):** Relationship with Modelos table.
+- **id_tipo_cambio (FK):** Relationship with Tipos_cambio table.
+- **id_traccion (FK):** Relationship with Tipo_traccion table.
+- **id_sobrealimentacion (FK):** Relationship with Sobrealimentaciones table.
+- **Mes y año de matriculación (Month and Year of Registration):** Records when the car was registered.
+- **Kilometraje (Mileage):** Indicates the total distance traveled by the car.
+- **Precio (Price):** Contains the new and used car prices.
+- **Dimensiones (Dimensions):** Length, width, height, and trunk capacity.
+- **Especificaciones técnicas (Technical Specifications):** Number of seats, number of doors, fuel type, power (kW and HP), top speed, CO2 emissions, etc.
+
+---
+
+### **7. Provincias** (Provinces)
+Stores geographical information related to car locations.
+- **id_provincia (PK):** Unique identifier for the province.
+- **nombre_provincia:** Name of the province.
+- **comunidad_autonoma:** Autonomous community to which the province belongs.
+
+---
+
+### **8. Distintivos_ambientales** (Environmental Badges)
+Includes the environmental badges assigned to cars.
+- **id_distintivo (PK):** Unique identifier for the environmental badge.
+- **nombre_distintivo:** Description of the badge (e.g., ECO, Zero Emissions).
+
+---
+
+### **9. Combustibles** (Fuels)
+Defines the types of fuel used by cars.
+- **id_combustible (PK):** Unique identifier for the fuel type.
+- **nombre_combustible:** Name of the fuel type (e.g., Gasoline, Diesel, Electric).
+
+---
+
+### **10. Tipos_cambio** (Transmission Types)
+Describes the types of transmission available in cars.
+- **id_tipo_cambio (PK):** Unique identifier for the transmission type.
+- **nombre_tipo_cambio:** Description of the transmission (e.g., manual, automatic).
+
+---
+
+### **11. Sobrealimentaciones** (Forced Inductions)
+Details engine forced induction systems.
+- **id_sobrealimentacion (PK):** Unique identifier for the forced induction type.
+- **nombre_sobrealimentacion:** Description of the forced induction (e.g., turbo, supercharger).
+
+---
+
+## **Relationships Between Tables**
+The **Prestaciones** table acts as the core of the database, connecting information from secondary tables through foreign keys, forming a star schema. This allows:
+- Efficient access to related data.
+- The ability to perform complex queries combining multiple tables.
+- Centralized management of each car's specifications and characteristics.
+
+---
+"""
+    }
+}
+
+# Mostrar el título principal
+st.title(texts["title"][lang])
+
+# Tecnologías empleadas / Technologies used
+st.header(texts["tech_header"][lang])
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.write(texts["tech_col1"][lang])
+
+with col2:
+    st.write(texts["tech_col2"][lang])
+
+# Arquitectura base de datos / Database architecture
+st.header(texts["db_arch_header"][lang])
+
+st.subheader(texts["db_diagram_subheader"][lang])
+st.image("bin/imagenes/esquema_bbdd.png", use_container_width=True)
+
+st.subheader(texts["db_tables_subheader"][lang])
+st.markdown(texts["db_markdown"][lang])
