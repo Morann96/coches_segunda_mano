@@ -85,7 +85,7 @@ When evaluating regression models, we use various metrics to measure performance
         "best_model_metrics_explanation": """
 We consider the best model to be the one with the highest R². Here are its metrics:
 
-- **Model Name:** Random Forest  
+- **Model Name:** {nombre_modelo}  
 - **MAE:** {mae:.2f}
 - **MSE:** {mse:.2e}
 - **R²:** {r2:.2f}
@@ -100,6 +100,9 @@ In other words, it indicates how much each feature contributes to the model's ab
 - **Data Optimization:** If some features have very low importance, we can remove them to simplify the model and reduce training time.
 - **Decision Making:** Allows us to identify key factors in the data and focus on them to optimize model performance.
 """,
+        # Feature importance
+        "feature_importance_x" : 'Importance (%)',
+        'feature_importance_y': 'Columns',
         
         # Gráficas entrenamiento
         "training_evolution_title": "Training Evolution of {key} with learning rate {lr}",
@@ -146,7 +149,39 @@ In other words, it indicates how much each feature contributes to the model's ab
         "neural_network_comparison_header": "Comparativa de Redes Neuronales",
         
         # Descripciones y explicaciones
-        "neural_network_comparison_description": """
+        
+        
+        "model_metrics_explanation": """
+## Explicación de las métricas de los distintos modelos de ML
+
+En la evaluación de modelos de regresión, utilizamos varias métricas para medir el rendimiento:
+
+- **MAE (Error Absoluto Medio):** Nos dice, en promedio, cuánto se equivoca el modelo en sus predicciones.
+
+- **MSE (Error Cuadrático Medio):** Es otra forma de medir el error, pero en lugar de tomar el promedio de los errores directamente, los eleva al cuadrado. Esto significa que los errores grandes tienen más peso. Es útil para detectar si el modelo comete errores grandes con frecuencia, pero puede ser un número muy alto y difícil de interpretar.
+
+- **R² (Coeficiente de Determinación):** Este número nos dice qué tan bien el modelo entiende los datos. Va de 0 a 1, donde 1 significa que el modelo es perfecto. Por ejemplo, si el R² es 0.90, eso quiere decir que el modelo explica el 90% de la variación en los precios de los coches.
+""",
+        
+        "best_model_metrics_explanation": """
+Consideramos el mejor modelo aquél con el mayor R². Estas son sus métricas:
+
+- **Nombre del Modelo:** {nombre_modelo} 
+- **MAE:** {mae:.2f}  
+- **MSE:** {mse:.2e}  
+- **R²:** {r2:.2f}  
+""",
+        
+        "feature_importance_explanation": """
+Cuando entrenamos un modelo de Machine Learning, hay distintas características (o "features") en los datos que usamos para hacer predicciones. **Feature Importance** es una métrica que nos dice qué tan importantes son estas características para el modelo.
+En otras palabras, indica cuánto contribuye cada característica a la capacidad del modelo para hacer predicciones precisas.
+
+### Utilidad:
+- **Entender el modelo:** Nos ayuda a interpretar qué factores influyen más en las decisiones del modelo.
+- **Optimización de datos:** Si algunas características tienen muy poca importancia, podemos eliminarlas para simplificar el modelo y reducir el tiempo de entrenamiento.
+- **Toma de decisiones:** Nos permite identificar los factores clave en los datos y enfocarnos en ellos para optimizar el rendimiento del modelo.
+""",
+"neural_network_comparison_description": """
 ### ¿Qué representan los gráficos?
 Los gráficos muestran la evolución de la función de pérdida durante el entrenamiento de una red neuronal, evaluando cómo mejora el modelo con cada época. Las líneas indican lo siguiente:
 
@@ -166,135 +201,10 @@ Un learning rate bajo implica que los pasos de ajuste son pequeños. Esto permit
 
 Por otro lado, un learning rate alto significa que los pasos de ajuste son grandes. Esto permite entrenar más rápido, pero puede causar que el modelo se salte la mejor solución y no logre converger adecuadamente. Además, un learning rate alto puede provocar fluctuaciones en la pérdida o incluso que esta no disminuya.
 """,
-        
-        "model_metrics_explanation": """
-## Explicación de las métricas de los distintos modelos de ML
+        # Feature importance
+        "feature_importance_x" : 'Importancia (%)',
+        'feature_importance_y': 'Columnas',
 
-En la evaluación de modelos de regresión, utilizamos varias métricas para medir el rendimiento:
-
-- **MAE (Error Absoluto Medio):** Nos dice, en promedio, cuánto se equivoca el modelo en sus predicciones.
-
-- **MSE (Error Cuadrático Medio):** Es otra forma de medir el error, pero en lugar de tomar el promedio de los errores directamente, los eleva al cuadrado. Esto significa que los errores grandes tienen más peso. Es útil para detectar si el modelo comete errores grandes con frecuencia, pero puede ser un número muy alto y difícil de interpretar.
-
-- **R² (Coeficiente de Determinación):** Este número nos dice qué tan bien el modelo entiende los datos. Va de 0 a 1, donde 1 significa que el modelo es perfecto. Por ejemplo, si el R² es 0.90, eso quiere decir que el modelo explica el 90% de la variación en los precios de los coches.
-""",
-        
-        "best_model_metrics_explanation": """
-Consideramos el mejor modelo aquél con el mayor R². Estas son sus métricas:
-
-- **Nombre del Modelo:** Random Forest  
-- **MAE:** {mae:.2f}  
-- **MSE:** {mse:.2e}  
-- **R²:** {r2:.2f}  
-""",
-        
-        "feature_importance_explanation": """
-Cuando entrenamos un modelo de Machine Learning, hay distintas características (o "features") en los datos que usamos para hacer predicciones. **Feature Importance** es una métrica que nos dice qué tan importantes son estas características para el modelo.
-En otras palabras, indica cuánto contribuye cada característica a la capacidad del modelo para hacer predicciones precisas.
-
-### Utilidad:
-- **Entender el modelo:** Nos ayuda a interpretar qué factores influyen más en las decisiones del modelo.
-- **Optimización de datos:** Si algunas características tienen muy poca importancia, podemos eliminarlas para simplificar el modelo y reducir el tiempo de entrenamiento.
-- **Toma de decisiones:** Nos permite identificar los factores clave en los datos y enfocarnos en ellos para optimizar el rendimiento del modelo.
-""",
-        
-        # Gráficas entrenamiento
-        "training_evolution_title": "Training Evolution of {key} with learning rate {lr}",
-        "training_loss": "Training Loss",
-        "validation_loss": "Validation Loss",
-        "epochs_title": "Epochs",
-        "loss_title": "Loss",
-        "neural_network_results_header": "Results:",
-    },
-    "es": {
-        # Títulos y encabezados
-        "title_app": "Predicción de Precio",
-        "car_features_title": "Características coche",
-        
-        # Filtros y entradas
-        "filter_brand": "Marca:",
-        "filter_model": "Modelo:",
-        "filter_age": "Antigüedad (años):",
-        "filter_environmental_distinction": "Distintivo Ambiental:",
-        "filter_mileage": "Kilometraje (km):",
-        "filter_power": "Potencia (CV):",
-        "filter_fuel": "Combustible:",
-        "filter_transmission": "Tipo de Cambio:",
-        
-        # Botones
-        "save_data_button": "Guardar datos",
-        "predict_ml_button": "Predicción con Machine Learning",
-        "predict_rn_button": "Predicción con Red Neuronal",
-        
-        # Mensajes de advertencia
-        "save_data_warning": "Por favor, guarda los datos antes de continuar.",
-        "save_prediction_warning": "Por favor, guarda los datos antes de realizar una predicción.",
-        
-        # Mensajes de éxito
-        "prediction_ml_success": "El precio predicho con ML es de: ",
-        "prediction_rn_success": "El precio predicho con RN es de: ",
-        
-        # Títulos de resultados y tablas
-        "results_title": "Resultados",
-        "saved_data_header": "Datos Guardados",
-        "model_comparison_header": "Comparativa entre distintos modelos",
-        "best_model_results_header": "Resultados del mejor modelo optimizado",
-        "feature_importance_header": "Feature importance del mejor modelo",
-        "neural_network_comparison_header": "Comparativa de Redes Neuronales",
-        
-        # Descripciones y explicaciones
-        "neural_network_comparison_description": """
-### ¿Qué representan los gráficos?
-Los gráficos muestran la evolución de la función de pérdida durante el entrenamiento de una red neuronal, evaluando cómo mejora el modelo con cada época. Las líneas indican lo siguiente:
-
-- **Pérdida de Entrenamiento (línea naranja):** Muestra qué tan bien el modelo está ajustándose a los datos con los que se está entrenando.
-- **Pérdida de Validación (línea azul):** Indica el rendimiento del modelo en datos que no ha visto antes (datos de validación).
-
-### ¿Diferencias entre MAE y MSE como función de pérdida?
-- **MAE (Error Absoluto Medio):** Es menos sensible a los errores grandes (outliers). Esto lo hace más robusto si existen datos extremos en el conjunto de entrenamiento.
-- **MSE (Error Cuadrático Medio):** Penaliza más los errores grandes porque eleva al cuadrado las diferencias. Es ideal cuando quieres que el modelo sea más preciso con predicciones cercanas a los valores reales, pero puede ser influido negativamente por outliers.
-
-Elegir entre MAE y MSE depende de la importancia de los outliers en el problema que estás resolviendo.
-
-### ¿Cómo influye el learning rate?
-El learning rate es un parámetro clave que controla qué tan grandes son los pasos que el modelo da al ajustar sus pesos durante el entrenamiento. En una red neuronal, los pesos son números que determinan la importancia de cada conexión entre las neuronas. Durante el entrenamiento, estos pesos se ajustan para que la red pueda aprender de los datos y hacer mejores predicciones.
-
-Un learning rate bajo implica que los pasos de ajuste son pequeños. Esto permite que el modelo encuentre una solución más precisa, pero puede hacer que el entrenamiento sea lento e incluso quedar atrapado en mínimos locales, impidiendo encontrar el mejor ajuste.
-
-Por otro lado, un learning rate alto significa que los pasos de ajuste son grandes. Esto permite entrenar más rápido, pero puede causar que el modelo se salte la mejor solución y no logre converger adecuadamente. Además, un learning rate alto puede provocar fluctuaciones en la pérdida o incluso que esta no disminuya.
-""",
-        
-        "model_metrics_explanation": """
-## Explicación de las métricas de los distintos modelos de ML
-
-En la evaluación de modelos de regresión, utilizamos varias métricas para medir el rendimiento:
-
-- **MAE (Error Absoluto Medio):** Nos dice, en promedio, cuánto se equivoca el modelo en sus predicciones.
-
-- **MSE (Error Cuadrático Medio):** Es otra forma de medir el error, pero en lugar de tomar el promedio de los errores directamente, los eleva al cuadrado. Esto significa que los errores grandes tienen más peso. Es útil para detectar si el modelo comete errores grandes con frecuencia, pero puede ser un número muy alto y difícil de interpretar.
-
-- **R² (Coeficiente de Determinación):** Este número nos dice qué tan bien el modelo entiende los datos. Va de 0 a 1, donde 1 significa que el modelo es perfecto. Por ejemplo, si el R² es 0.90, eso quiere decir que el modelo explica el 90% de la variación en los precios de los coches.
-""",
-        
-        "best_model_metrics_explanation": """
-Consideramos el mejor modelo aquél con el mayor R². Estas son sus métricas:
-
-- **Nombre del Modelo:** Random Forest  
-- **MAE:** {mae:.2f}  
-- **MSE:** {mse:.2e}  
-- **R²:** {r2:.2f}  
-""",
-        
-        "feature_importance_explanation": """
-Cuando entrenamos un modelo de Machine Learning, hay distintas características (o "features") en los datos que usamos para hacer predicciones. **Feature Importance** es una métrica que nos dice qué tan importantes son estas características para el modelo.
-En otras palabras, indica cuánto contribuye cada característica a la capacidad del modelo para hacer predicciones precisas.
-
-### Utilidad:
-- **Entender el modelo:** Nos ayuda a interpretar qué factores influyen más en las decisiones del modelo.
-- **Optimización de datos:** Si algunas características tienen muy poca importancia, podemos eliminarlas para simplificar el modelo y reducir el tiempo de entrenamiento.
-- **Toma de decisiones:** Nos permite identificar los factores clave en los datos y enfocarnos en ellos para optimizar el rendimiento del modelo.
-""",
-        
         # Gráficas entrenamiento
         "training_evolution_title_es": "Evolución entrenamiento de {key} con learning rate de {lr}",
         "training_evolution_title": "Training Evolution of {key} with learning rate {lr}",
@@ -621,11 +531,33 @@ def cargar_resultados_modelos(file_name, directory='notebooks/modelo/'):
         return pickle.load(file)
 
 resultados_modelos = cargar_resultados_modelos('resultados_modelos.pkl')
+resultados_mejor_modelo = cargar_resultados_modelos('resultados_mejor_modelo.pkl')
+
+if lang == 'es':
+    nuevos_nombres_columnas = {
+        'Nombre_modelo': 'Nombre Modelo',
+        'MAE': 'MAE',
+        'MSE': 'MSE',
+        'R2_score': 'R² Score'
+    }
+
+    resultados_modelos_display = resultados_modelos.rename(columns=nuevos_nombres_columnas)
+    resultados_mejor_modelo_display = resultados_mejor_modelo.rename(columns=nuevos_nombres_columnas)
+
+else: 
+    nuevos_nombres_columnas = {
+        'Nombre_modelo': 'Model Name',
+        'MAE': 'MAE',
+        'MSE': 'MSE',
+        'R2_score': 'R² Score'
+    }
+    resultados_modelos_display = resultados_modelos.rename(columns=nuevos_nombres_columnas)
+    resultados_mejor_modelo_display = resultados_mejor_modelo.rename(columns=nuevos_nombres_columnas)
 
 # Mostrar el DataFrame en la aplicación
 st.markdown("---")
 st.markdown(f'<h1 style="text-align:left; ">{texts[lang]["model_comparison_header"]}</h1>', unsafe_allow_html=True)
-st.dataframe(resultados_modelos)
+st.dataframe(resultados_modelos_display)
 
 
 mejor_modelo = resultados_modelos.loc[resultados_modelos['R2_score'].idxmax()]
@@ -639,7 +571,7 @@ mae = mejor_modelo['MAE']
 mse = mejor_modelo['MSE']
 r2 = mejor_modelo['R2_score']
 
-st.write(texts[lang]['best_model_metrics_explanation'].format (mae = mae, mse = mse, r2 = r2))
+st.write(texts[lang]['best_model_metrics_explanation'].format (nombre_modelo = nombre_modelo, mae = mae, mse = mse, r2 = r2))
 
 
 #Mostrar Feature importance del modelo de ML importado
@@ -683,13 +615,13 @@ fig.update_layout(
     margin=dict(l=100, r=40, t=50, b=40),
     xaxis=dict(
         tickformat=".0f",
-        title="Importancia (%)",
+        title=texts[lang]['feature_importance_x'],
         title_font=dict(size=18),
         tickfont=dict(size=14)
     ),
     yaxis=dict(
         categoryorder='total ascending',
-        title="Columnas",
+        title=texts[lang]['feature_importance_y'],
         title_font=dict(size=18),
         tickfont=dict(size=14)
     ))
@@ -705,7 +637,7 @@ resultados_mejor_modelo = cargar_resultados_modelos('resultados_mejor_modelo.pkl
 
 #st.markdown("<h1 style='text-align: left;'>Resultados del mejor modelo optimizado</h1>", unsafe_allow_html=True)
 st.markdown(f'<h1 style="text-align:left; ">{texts[lang]["best_model_results_header"]}</h1>', unsafe_allow_html=True)
-st.dataframe(resultados_mejor_modelo)
+st.dataframe(resultados_mejor_modelo_display)
 
 st.markdown("---")
 
@@ -847,7 +779,20 @@ for i, (key, value) in enumerate(redes_neuronales.items()):
         
         st.markdown(f"#### {results_header}")
         resultados = cargar_archivo_pkl(value["resultados"])
-        st.dataframe(resultados)
+
+        if lang == 'en':
+            nuevos_nombres_columnas = {
+                'Número de épocas': 'Epochs Number',
+                'MSE final': 'Final MSE',
+                'MAE final': 'Final MAE'
+            }
+
+            resultados_nn_display = resultados.rename(columns=nuevos_nombres_columnas)
+
+        else: 
+            resultados_nn_display = resultados
+
+        st.dataframe(resultados_nn_display)
 
         # Separador visual entre secciones
         st.markdown("---")

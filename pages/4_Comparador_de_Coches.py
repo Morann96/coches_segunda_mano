@@ -8,6 +8,107 @@ import plotly.graph_objects as go
 import io
 import streamlit.components.v1 as components
 
+texts = {
+    "en": {
+        # Page Titles and Headers
+        "page_title": "Car Comparator",
+        "title_select_brand": "Brand",
+        "title_select_model": "Model",
+        "title_select_year": "Year",
+        "title_select_transmission": "Transmission",
+        "title_select_fuel": "Fuel",
+        "title_select_emission": "Emission",
+        "title_select_power": "Power (HP)",
+        "title_select_mileage": "Mileage",
+        "radial_axis_range": "Radial Axis Range",
+        "image_not_available": "Image not available",
+        
+        # No Data Messages
+        "no_brands_available": "No brands available.",
+        "no_models_available": "No models available for this brand.",
+        "no_years_available": "No years available for this model.",
+        "no_transmissions_available": "No transmissions available for this year.",
+        "no_fuels_available": "No fuels available for this transmission.",
+        "no_emissions_available": "No emissions available for this fuel.",
+        "no_powers_available": "No power options available for this emission.",
+        "no_mileages_available": "No mileage options available for this power.",
+        "no_valid_columns_radar_chart": "No valid columns to create the radar chart.",
+        "no_data_for_both_cars": "No data found for both selected cars.",
+        
+        # Radar Chart Labels
+        "price": "Price",
+        "mileage": "Mileage",
+        "power_hp": "Power (HP)",
+        "max_speed": "Max Speed",
+        "acceleration": "Acceleration",
+        "average_consumption": "Average Consumption",
+        "weight": "Weight",
+        "trunk_capacity": "Trunk Capacity",
+        
+        # Other UI Elements
+        "save_cache_button": "Clear Cache",
+        "filter_title": "Filters"
+    },
+    "es": {
+        # Page Titles and Headers
+        "page_title": "Comparador de coches",
+        "title_select_brand": "Marca",
+        "title_select_model": "Modelo",
+        "title_select_year": "Año",
+        "title_select_transmission": "Cambio",
+        "title_select_fuel": "Combustible",
+        "title_select_emission": "Distintivo",
+        "title_select_power": "Potencia (CV)",
+        "title_select_mileage": "Kilometraje",
+        "radial_axis_range": "Rango del eje radial",
+        "image_not_available": "Imagen no disponible",
+        
+        # No Data Messages
+        "no_brands_available": "No hay marcas disponibles.",
+        "no_models_available": "No hay modelos disponibles para esta marca.",
+        "no_years_available": "No hay años disponibles para este modelo.",
+        "no_transmissions_available": "No hay tipos de cambio disponibles para este año.",
+        "no_fuels_available": "No hay combustibles disponibles para este cambio.",
+        "no_emissions_available": "No hay distintivos disponibles para este combustible.",
+        "no_powers_available": "No hay potencias disponibles para este distintivo.",
+        "no_mileages_available": "No hay kilometrajes disponibles para esta potencia.",
+        "no_valid_columns_radar_chart": "No hay columnas válidas para crear el gráfico de radar.",
+        "no_data_for_both_cars": "No se encontraron datos para ambos coches seleccionados.",
+        
+        # Radar Chart Labels
+        "price": "Precio",
+        "mileage": "Kilometraje",
+        "power_hp": "Potencia (CV)",
+        "max_speed": "Velocidad Máxima",
+        "acceleration": "Aceleración",
+        "average_consumption": "Consumo Medio",
+        "weight": "Peso",
+        "trunk_capacity": "Capacidad Maletero",
+        
+        # Other UI Elements
+        "save_cache_button": "Limpiar Caché",
+        "filter_title": "Filtros"
+    }
+}
+
+# Selector de idioma en la barra lateral
+idioma = st.sidebar.radio(
+    'Language',  
+    ("English", "Español") 
+)
+
+# Configuración inicial del idioma
+if 'lang' not in st.session_state:
+    st.session_state.lang = "en" 
+
+# Actualizar el estado del idioma según la selección
+if idioma == "Español":
+    st.session_state.lang = "es"
+else:
+    st.session_state.lang = "en"
+
+lang = st.session_state.lang
+
 # Conexión a la base de datos
 def conectar_base_datos():
     conn = st.connection('mysql', type='sql')
@@ -107,7 +208,7 @@ df[columnas_numericas] = df[columnas_numericas].apply(pd.to_numeric, errors='coe
 df[columnas_numericas] = df[columnas_numericas].fillna(0)
 
 # Título de la página
-st.markdown("<h1 style='text-align: center;'>Comparador de coches</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center;font-size: 3rem;'>{texts[lang]['page_title']}</h1>", unsafe_allow_html=True)
 
 # Dividir en 5 columnas principales
 col1, col2, col3, col4, col5 = st.columns([1, 4, 1, 4, 1])
@@ -124,31 +225,31 @@ with col2:
     # Primera fila de filtros
     fila1_coche1 = st.columns(4)
     with fila1_coche1[0]:
-        st.markdown("<p class='titulo-select'>Marca</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_brand']}</p>", unsafe_allow_html=True)
         marcas_disponibles = df["marca"].sort_values().unique()
         if len(marcas_disponibles) > 0:
             marca1 = st.selectbox("Marca", marcas_disponibles, key="marca1", label_visibility="collapsed", index=0)
         else:
-            st.write("No hay marcas disponibles.")
+            st.write(texts[lang]['no_brands_available'])
             st.stop()
     with fila1_coche1[1]:
-        st.markdown("<p class='titulo-select'>Modelo</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_model']}</p>", unsafe_allow_html=True)
         modelos_disponibles = df[df["marca"] == marca1]["modelo"].sort_values().unique()
         if len(modelos_disponibles) > 0:
             modelo1 = st.selectbox("Modelo", modelos_disponibles, key="modelo1", label_visibility="collapsed", index=0)
         else:
-            st.write("No hay modelos disponibles para esta marca.")
+            st.write(texts[lang]['no_models_available'])
             st.stop()
     with fila1_coche1[2]:
-        st.markdown("<p class='titulo-select'>Año</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_year']}</p>", unsafe_allow_html=True)
         anos_disponibles = df[(df["marca"] == marca1) & (df["modelo"] == modelo1)]["ano_matriculacion"].sort_values().unique()
         if len(anos_disponibles) > 0:
             ano1 = st.selectbox("Año", anos_disponibles, key="ano1", label_visibility="collapsed", index=0)
         else:
-            st.write("No hay años disponibles para este modelo.")
+            st.write(texts[lang]['no_years_available'])
             st.stop()
     with fila1_coche1[3]:
-        st.markdown("<p class='titulo-select'>Cambio</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_transmission']}</p>", unsafe_allow_html=True)
         cambios_disponibles = df[
             (df["marca"] == marca1) &
             (df["modelo"] == modelo1) &
@@ -157,13 +258,13 @@ with col2:
         if len(cambios_disponibles) > 0:
             tipo_cambio1 = st.selectbox("Tipo cambio", cambios_disponibles, key="tipo_cambio1", label_visibility="collapsed", index=0)
         else:
-            st.write("No hay tipos de cambio disponibles para este año.")
+            st.write(texts[lang]['no_transmissions_available'])
             st.stop()
 
     # Segunda fila de filtros
     fila2_coche1 = st.columns(4)
     with fila2_coche1[0]:
-        st.markdown("<p class='titulo-select'>Combustible</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_fuel']}</p>", unsafe_allow_html=True)
         combustibles_disponibles = df[
             (df["marca"] == marca1) &
             (df["modelo"] == modelo1) &
@@ -173,9 +274,9 @@ with col2:
         if len(combustibles_disponibles) > 0:
             combustible1 = st.selectbox("Combustible", combustibles_disponibles, key="combustible1", label_visibility="collapsed", index=0)
         else:
-            combustible1 = 'Desconocido'  
+            st.write(texts[lang]['no_fuels_available']) 
     with fila2_coche1[1]:
-        st.markdown("<p class='titulo-select'>Distintivo</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_emission']}</p>", unsafe_allow_html=True)
         distintivos_disponibles = df[
             (df["marca"] == marca1) &
             (df["modelo"] == modelo1) &
@@ -186,9 +287,9 @@ with col2:
         if len(distintivos_disponibles) > 0:
             distintivo1 = st.selectbox("Distintivo", distintivos_disponibles, key="distintivo1", label_visibility="collapsed", index=0)
         else:
-            distintivo1 = 'Desconocido'  
+            st.write(texts[lang]['no_emissions_available']) 
     with fila2_coche1[2]:
-        st.markdown("<p class='titulo-select'>Potencia (CV)</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_power']}</p>", unsafe_allow_html=True)
         potencias_disponibles = df[
             (df["marca"] == marca1) &
             (df["modelo"] == modelo1) &
@@ -200,10 +301,10 @@ with col2:
         if len(potencias_disponibles) > 0:
             potencia1 = st.selectbox("Potencia", potencias_disponibles, key="potencia1", label_visibility="collapsed", index=0)
         else:
-            st.write("No hay potencias disponibles para este distintivo.")
+            st.write(texts[lang]['no_powers_available']) 
             st.stop()
     with fila2_coche1[3]:
-        st.markdown("<p class='titulo-select'>Kilometraje</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_mileage']}</p>", unsafe_allow_html=True)
         kilometrajes_disponibles = df[
             (df["marca"] == marca1) &
             (df["modelo"] == modelo1) &
@@ -216,7 +317,7 @@ with col2:
         if len(kilometrajes_disponibles) > 0:
             kilometraje1 = st.selectbox("Kilometraje", kilometrajes_disponibles, key="kilometraje1", label_visibility="collapsed", index=0)
         else:
-            st.write("No hay kilometrajes disponibles para esta potencia.")
+            st.write(texts[lang]['no_mileages_available']) 
             st.stop()
 
     # Actualizar el título con la marca y modelo seleccionados
@@ -263,31 +364,31 @@ with col4:
     # Primera fila de filtros
     fila1_coche2 = st.columns(4)
     with fila1_coche2[0]:
-        st.markdown("<p class='titulo-select'>Marca</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_brand']}</p>", unsafe_allow_html=True)
         marcas_disponibles = df["marca"].sort_values().unique()
         if len(marcas_disponibles) > 0:
             marca2 = st.selectbox("Marca", marcas_disponibles, key="marca2", label_visibility="collapsed", index=0)
         else:
-            st.write("No hay marcas disponibles.")
+            st.write(texts[lang]['no_brands_available'])
             st.stop()
     with fila1_coche2[1]:
-        st.markdown("<p class='titulo-select'>Modelo</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_model']}</p>", unsafe_allow_html=True)
         modelos_disponibles = df[df["marca"] == marca2]["modelo"].sort_values().unique()
         if len(modelos_disponibles) > 0:
             modelo2 = st.selectbox("Modelo", modelos_disponibles, key="modelo2", label_visibility="collapsed", index=0)
         else:
-            st.write("No hay modelos disponibles para esta marca.")
+            st.write(texts[lang]['no_models_available'])
             st.stop()
     with fila1_coche2[2]:
-        st.markdown("<p class='titulo-select'>Año</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_year']}</p>", unsafe_allow_html=True)
         anos_disponibles = df[(df["marca"] == marca2) & (df["modelo"] == modelo2)]["ano_matriculacion"].sort_values().unique()
         if len(anos_disponibles) > 0:
             ano2 = st.selectbox("Año", anos_disponibles, key="ano2", label_visibility="collapsed", index=0)
         else:
-            st.write("No hay años disponibles para este modelo.")
+            st.write(texts[lang]['no_years_available'])
             st.stop()
     with fila1_coche2[3]:
-        st.markdown("<p class='titulo-select'>Cambio</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_transmission']}</p>", unsafe_allow_html=True)
         cambios_disponibles = df[
             (df["marca"] == marca2) &
             (df["modelo"] == modelo2) &
@@ -296,13 +397,13 @@ with col4:
         if len(cambios_disponibles) > 0:
             tipo_cambio2 = st.selectbox("Tipo cambio", cambios_disponibles, key="tipo_cambio2", label_visibility="collapsed", index=0)
         else:
-            st.write("No hay tipos de cambio disponibles para este año.")
+            st.write(texts[lang]['no_transmissions_available'])
             st.stop()
 
     # Segunda fila de filtros
     fila2_coche2 = st.columns(4)
     with fila2_coche2[0]:
-        st.markdown("<p class='titulo-select'>Combustible</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_fuel']}</p>", unsafe_allow_html=True)
         combustibles_disponibles = df[
             (df["marca"] == marca2) &
             (df["modelo"] == modelo2) &
@@ -312,9 +413,9 @@ with col4:
         if len(combustibles_disponibles) > 0:
             combustible2 = st.selectbox("Combustible", combustibles_disponibles, key="combustible2", label_visibility="collapsed", index=0)
         else:
-            combustible2 = 'Desconocido'  # Asignar valor por defecto
+            st.write(texts[lang]['no_fuels_available'])
     with fila2_coche2[1]:
-        st.markdown("<p class='titulo-select'>Distintivo</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_emission']}</p>", unsafe_allow_html=True)
         distintivos_disponibles = df[
             (df["marca"] == marca2) &
             (df["modelo"] == modelo2) &
@@ -325,9 +426,9 @@ with col4:
         if len(distintivos_disponibles) > 0:
             distintivo2 = st.selectbox("Distintivo", distintivos_disponibles, key="distintivo2", label_visibility="collapsed", index=0)
         else:
-            distintivo2 = 'Desconocido'  # Asignar valor por defecto
+            st.write(texts[lang]['no_emissions_available'])
     with fila2_coche2[2]:
-        st.markdown("<p class='titulo-select'>Potencia (CV)</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_power']}</p>", unsafe_allow_html=True)
         potencias_disponibles = df[
             (df["marca"] == marca2) &
             (df["modelo"] == modelo2) &
@@ -339,10 +440,10 @@ with col4:
         if len(potencias_disponibles) > 0:
             potencia2 = st.selectbox("Potencia", potencias_disponibles, key="potencia2", label_visibility="collapsed", index=0)
         else:
-            st.write("No hay potencias disponibles para este distintivo.")
+            st.write(texts[lang]['no_powers_available'])
             st.stop()
     with fila2_coche2[3]:
-        st.markdown("<p class='titulo-select'>Kilometraje</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='titulo-select'>{texts[lang]['title_select_mileage']}</p>", unsafe_allow_html=True)
         kilometrajes_disponibles = df[
             (df["marca"] == marca2) &
             (df["modelo"] == modelo2) &
@@ -355,7 +456,7 @@ with col4:
         if len(kilometrajes_disponibles) > 0:
             kilometraje2 = st.selectbox("Kilometraje", kilometrajes_disponibles, key="kilometraje2", label_visibility="collapsed", index=0)
         else:
-            st.write("No hay kilometrajes disponibles para esta potencia.")
+            st.write(texts[lang]['no_mileages_available'])
             st.stop()
 
     # Actualizar el título con la marca y modelo seleccionados
@@ -457,14 +558,14 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
         df_radar = df_normalizado_seleccionados[columnas_validas].copy()
 
         columnas_legibles = {
-            "precio_contado": "Precio",
-            "kilometraje": "Kilometraje",
-            "potencia_cv": "Potencia (CV)",
-            "velocidad_max": "Velocidad Máxima",
-            "aceleracion": "Aceleración",
-            "consumo_medio": "Consumo Medio",
-            "peso": "Peso",
-            "capacidad_maletero": "Capacidad Maletero"
+            "precio_contado": texts[lang]['price'],
+            "kilometraje": texts[lang]['mileage'],
+            "potencia_cv": texts[lang]['power_hp'],
+            "velocidad_max": texts[lang]['max_speed'],
+            "aceleracion": texts[lang]['acceleration'],
+            "consumo_medio": texts[lang]['average_consumption'],
+            "peso": texts[lang]['weight'],
+            "capacidad_maletero": texts[lang]['trunk_capacity']
         }
 
         # Renombrar las columnas para que sean más legibles
@@ -541,7 +642,7 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
 
                 # Colocar el slider dentro de la columna central
                 radial_min, radial_max = st.slider(
-                    'Rango del eje radial', 
+                    texts[lang]['radial_axis_range'], 
                     0.0, 
                     1.0, 
                     (0.0, 1.0), 
@@ -609,6 +710,6 @@ if not df_filtrado1.empty and not df_filtrado2.empty:
             graph_placeholder.plotly_chart(fig, use_container_width=True, config=config)
 
     else:
-        st.write("No hay columnas válidas para crear el gráfico de radar.")
+        st.write(texts[lang]['no_valid_columns_radar_chart'])
 else:
-    st.write("No se encontraron datos para ambos coches seleccionados.")
+    st.write(texts[lang]['no_data_for_both_cars'])
