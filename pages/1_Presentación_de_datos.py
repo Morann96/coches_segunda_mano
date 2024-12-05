@@ -13,25 +13,25 @@ texts = {
     "en": {
         "analysis_title": "Visual Analysis of Second Hand Cars",
         "separator": "---",
-        "scatter_plot_title": "Relationship between Mileage and Cash Price by Year of Registration",
+        "scatter_plot_title": "Relationship between Mileage and Price by Year of Registration",
         "scatter_plot_labels": {
             "kilometraje": "Mileage (km)",
-            "precio_contado": "Cash Price (€)",
+            "precio_contado": "Price (€)",
             "ano_matriculacion": "Year of Registration"
         },
-        "scatter_plot_hovertemplate": '<b>Mileage (km)</b>: %{x:,}<br>' + \
-                                       '<b>Cash Price (€)</b>: %{y:,}€<br>' + \
+        "scatter_plot_hovertemplate": '<b>Mileage</b>: %{x:,}km<br>' + \
+                                       '<b>Price</b>: %{y:,}€<br>' + \
                                        '<b>Year</b>: %{customdata[0]}<br>' + \
                                        '<extra></extra>',
         "scatter_plot_colorbar_title": "Year of Registration",
         "scatter_plot_description": """
-### Relationship between Mileage and Cash Price by Year of Registration
+### Relationship between Mileage Price by Year of Registration
 
-This scatter plot represents the relationship between the mileage of cars and their cash price, categorized by the year of registration.
+This scatter plot represents the relationship between the mileage of cars and their price, categorized by the year of registration.
 
 #### Chart Details:
 - **X-Axis (Mileage)**: Represents the distance traveled by the car in kilometers (km). Higher mileage indicates more usage.
-- **Y-Axis (Cash Price)**: Indicates the cash price of the car in euros (€), displayed on a logarithmic scale to show both low and high prices.
+- **Y-Axis (Price)**: Indicates the second-hand price of the car in euros (€), displayed on a logarithmic scale to show both low and high prices.
 - **Colors**: Points are colored according to the year of registration:
   - **Lighter colors (yellow)**: Represent cars registered more recently (2020 or later).
   - **Darker colors (purple)**: Represent cars registered earlier (2000 or before).
@@ -56,25 +56,22 @@ This chart allows you to:
 - Identify price patterns based on the year of registration.
 - Assist buyers in evaluating cars based on their usage and age.
 
-**Note**: The logarithmic scale on the Y-axis facilitates the visualization of a wide range of cash prices.
+**Note**: The logarithmic scale on the Y-axis facilitates the visualization of a wide range of second-hand prices.
 """,
         "box_plot_title": "Price Distribution by Environmental Label",
         "box_plot_labels": {
             "distintivo_ambiental": "Environmental Label",
-            "precio_contado": "Cash Price (€)"
+            "precio_contado": "Price (€)"
         },
         "box_plot_hovertemplate": '<b>Environmental Label</b>: %{x}<br>' + \
-                                    '<b>Cash Price (€)</b>: %{y:,.2f} €<br>' + \
-                                    '<b>Maximum</b>: %{hoverinfo.max}<br>' + \
-                                    '<b>Minimum</b>: %{hoverinfo.min}<br>' + \
-                                    '<b>Median</b>: %{hoverinfo.median}<br>' + \
+                                    '<b>Price</b>: %{y:,.2f} €<br>' + \
                                     '<extra></extra>',
         "box_plot_xaxis_title": "Environmental Label",
-        "box_plot_yaxis_title": "Cash Price (€)",
+        "box_plot_yaxis_title": "Price (€)",
         "box_plot_description": """
 ### Price Distribution by Environmental Label
 
-This box plot displays the distribution of cash prices for cars based on their environmental labels.
+This box plot displays the distribution prices for cars based on their environmental labels.
 
 #### Chart Details:
 - **X-Axis (Environmental Label)**: Represents different categories of environmental labels assigned to cars:
@@ -83,7 +80,7 @@ This box plot displays the distribution of cash prices for cars based on their e
   - **ECO**: Hybrid or low-emission vehicles.
   - **0 EMISSIONS**: Fully electric or hydrogen vehicles with zero emissions.
 
-- **Y-Axis (Cash Price)**: Shows the cash price of cars in euros (€), displayed on a logarithmic scale to include both low and high prices proportionally.
+- **Y-Axis (Price)**: Shows the second-hand price of cars in euros (€), displayed on a logarithmic scale to include both low and high prices proportionally.
 
 - **Colors**: Each environmental label has a different color for easy comparison.
 
@@ -108,18 +105,18 @@ This chart allows you to:
 - Identify price patterns based on emissions and associated technologies.
 - Assist buyers in deciding which environmental label category fits their budget best.
 
-**Note**: The logarithmic scale on the Y-axis facilitates the visualization of a wide range of cash prices.
+**Note**: The logarithmic scale on the Y-axis facilitates the visualization of a wide range of second-hand prices.
 """,
         "price_comparison_title": "Comparison of New Car Price vs. Second Hand Car Price by Brand",
         "price_comparison_xaxis_title": "Brand",
         "price_comparison_yaxis_title": "Average Price (€)",
         "price_comparison_hover_marca": "Brand",
-        "price_comparison_hover_precio_nuevo": "New Price",
-        "price_comparison_hover_precio_contado": "2nd Hand Price",
-        "price_comparison_legend_new": "New Price",
-        "price_comparison_legend_contado": "2nd Hand Price",
+        "price_comparison_hover_precio_nuevo": "Average New Price",
+        "price_comparison_hover_precio_contado": "Average 2nd Hand Price",
+        "price_comparison_legend_new": "Average New Price",
+        "price_comparison_legend_contado": "Average 2nd Hand Price",
         "price_comparison_description": """
-### Comparison of New Car Price vs. Second Hand Car Price by Brand
+### Comparison of New Car Price vs. Second-Hand Car Price by Brand
 
 This bar chart compares the average price of new cars against the average price of second-hand cars, categorized by brand.
 
@@ -127,7 +124,7 @@ This bar chart compares the average price of new cars against the average price 
 - **X-Axis (Brand)**: Displays different car brands available in the market.
 - **Y-Axis (Average Price)**: Represents the average price of cars in euros (€).
 - **Blue Bars**: Indicate the average price of new cars for each brand.
-- **Orange Bars**: Indicate the average price of second-hand cars (cash price) for each brand.
+- **Orange Bars**: Indicate the average price of second-hand cars for each brand.
 
 #### Key Observations:
 1. **Price Differences**:
@@ -156,8 +153,8 @@ This chart is useful for:
             "precio_contado": "Price (€)",
             "combustible": "Fuel Type"
         },
-        "power_price_relation_hovertemplate": '<b>Power (HP)</b>: %{x:,}<br>' + \
-                                               '<b>Price (€)</b>: %{y:,.2f} €<br>' + \
+        "power_price_relation_hovertemplate": '<b>Power</b>: %{x:,} HP<br>' + \
+                                               '<b>Price</b>: %{y:,.2f}€<br>' + \
                                                '<b>Fuel Type</b>: %{customdata[0]}<br>' + \
                                                '<extra></extra>',
         "power_price_relation_description": """
@@ -167,7 +164,7 @@ This scatter plot illustrates how the price of cars relates to their power (in h
 
 #### Chart Details:
 - **X-Axis (Power)**: Represents the car's power in horsepower (HP). As power increases, higher-priced cars are observed.
-- **Y-Axis (Price)**: Shows the cash price of cars on a logarithmic scale, allowing visualization of both low and high prices on the same scale.
+- **Y-Axis (Price)**: Shows the second-hand price of cars on a logarithmic scale, allowing visualization of both low and high prices on the same scale.
 - **Colors**: Each point is colored according to the car's fuel type:
   - **Gasoline**: Orange
   - **Diesel**: Green
@@ -221,13 +218,13 @@ It is noticeable that more populous provinces like Madrid and Barcelona have the
             "precio_medio": "Average Price (€)"
         },
         "choropleth_map_price_hovertemplate": '<b>Province</b>: %{location}<br>' + \
-                                               '<b>Average Price (€)</b>: %{z:,.2f}€<br>' + \
+                                               '<b>Average Price</b>: %{z:,.2f}€<br>' + \
                                                '<extra></extra>',
         "choropleth_map_price_colorbar_title": "Average Price (€)",
         "choropleth_map_price_description": """
 ### Choropleth Map: Average Car Price by Province
 
-This map illustrates the geographical distribution of the average car price in each province of Spain.
+This map illustrates the geographical distribution of the average used car price in each province of Spain.
 
 - **Darker colors** indicate a **higher average price**.
 - **Lighter colors** represent a lower average price.
@@ -239,25 +236,25 @@ Interestingly, Almería stands out as the province with the most expensive cars 
     "es": {
         "analysis_title": "Análisis Visual de Coches de Segunda Mano",
         "separator": "---",
-        "scatter_plot_title": "Relación entre kilometraje y precio al contado según el año de matriculación",
+        "scatter_plot_title": "Relación entre kilometraje y precio según el año de matriculación",
         "scatter_plot_labels": {
             "kilometraje": "Kilometraje (km)",
-            "precio_contado": "Precio Contado (€)",
+            "precio_contado": "Precio (€)",
             "ano_matriculacion": "Año de Matriculación"
         },
-        "scatter_plot_hovertemplate": '<b>Kilometraje</b>: %{x:,}<br>' + \
-                                       '<b>Precio Contado (€)</b>: %{y:,}€<br>' + \
+        "scatter_plot_hovertemplate": '<b>Kilometraje</b>: %{x:,}km<br>' + \
+                                       '<b>Precio</b>: %{y:,}€<br>' + \
                                        '<b>Año</b>: %{customdata[0]}<br>' + \
                                        '<extra></extra>',
         "scatter_plot_colorbar_title": "Año de Matriculación",
         "scatter_plot_description": """
-### Relación entre kilometraje y precio al contado según el año de matriculación
+### Relación entre kilometraje y precio según el año de matriculación
 
-Este gráfico de dispersión representa la relación entre el kilometraje de los coches y su precio al contado, categorizados según el año de matriculación.
+Este gráfico de dispersión representa la relación entre el kilometraje de los coches y su precio, categorizados según el año de matriculación.
 
 #### Detalles del gráfico:
 - **Eje X (Kilometraje)**: Representa la distancia recorrida por el coche en kilómetros (km). A mayor kilometraje, el vehículo ha sido más usado.
-- **Eje Y (Precio contado)**: Indica el precio al contado del coche en euros (€), representado en escala logarítmica para mostrar tanto precios bajos como altos.
+- **Eje Y (Precio)**: Indica el precio del coche en euros (€), representado en escala logarítmica para mostrar tanto precios bajos como altos.
 - **Colores**: Los puntos están coloreados de acuerdo con el año de matriculación del coche:
   - **Colores más claros (amarillo)**: Representan coches matriculados más recientemente (2020 o después).
   - **Colores más oscuros (morado)**: Representan coches matriculados hace más tiempo (2000 o antes).
@@ -282,25 +279,22 @@ Este gráfico permite:
 - Identificar patrones de precio según el año de matriculación.
 - Ayudar a los compradores a evaluar coches según su uso y edad.
 
-**Nota**: La escala logarítmica en el eje Y facilita la visualización de una amplia gama de precios al contado.
+**Nota**: La escala logarítmica en el eje Y facilita la visualización de una amplia gama de precios.
 """,
         "box_plot_title": "Distribución del precio por distintivo ambiental",
         "box_plot_labels": {
             "distintivo_ambiental": "Distintivo Ambiental",
-            "precio_contado": "Precio Contado (€)"
+            "precio_contado": "Precio (€)"
         },
         "box_plot_hovertemplate": '<b>Distintivo Ambiental</b>: %{x}<br>' + \
-                                    '<b>Precio Contado (€)</b>: %{y:,.2f} €<br>' + \
-                                    '<b>Máximo</b>: %{hoverinfo.max}<br>' + \
-                                    '<b>Mínimo</b>: %{hoverinfo.min}<br>' + \
-                                    '<b>Mediana</b>: %{hoverinfo.median}<br>' + \
+                                    '<b>Precio</b>: %{y:,.2f}€<br>' + \
                                     '<extra></extra>',
         "box_plot_xaxis_title": "Distintivo Ambiental",
-        "box_plot_yaxis_title": "Precio Contado (€)",
+        "box_plot_yaxis_title": "Precio (€)",
         "box_plot_description": """
 ### Distribución del precio por distintivo ambiental
 
-Este gráfico de caja y bigotes (boxplot) muestra la distribución del precio al contado de los coches según su distintivo ambiental.
+Este gráfico de caja y bigotes (boxplot) muestra la distribución del precio de los coches según su distintivo ambiental.
 
 #### Detalles del gráfico:
 - **Eje X (Distintivo ambiental)**: Representa las diferentes categorías de distintivo ambiental otorgadas a los coches:
@@ -309,7 +303,7 @@ Este gráfico de caja y bigotes (boxplot) muestra la distribución del precio al
   - **ECO**: Vehículos híbridos o de bajas emisiones.
   - **0 EMISIONES**: Vehículos completamente eléctricos o de hidrógeno, con cero emisiones.
 
-- **Eje Y (Precio contado)**: Muestra el precio al contado de los coches en euros (€), representado en escala logarítmica para incluir tanto precios bajos como altos de manera proporcional.
+- **Eje Y (Precio)**: Muestra el precio de los coches en euros (€), representado en escala logarítmica para incluir tanto precios bajos como altos de manera proporcional.
 
 - **Colores**: Cada distintivo ambiental tiene un color diferente para facilitar la comparación.
 
@@ -340,10 +334,10 @@ Este gráfico permite:
         "price_comparison_xaxis_title": "Marca",
         "price_comparison_yaxis_title": "Precio Medio (€)",
         "price_comparison_hover_marca": "Marca",
-        "price_comparison_hover_precio_nuevo": "Precio Nuevo",
-        "price_comparison_hover_precio_contado": "Precio 2ª Mano",
-        "price_comparison_legend_new": "Precio Nuevo",
-        "price_comparison_legend_contado": "Precio 2ª Mano",
+        "price_comparison_hover_precio_nuevo": "Precio Nuevo Medio",
+        "price_comparison_hover_precio_contado": "Precio 2ª Mano Medio",
+        "price_comparison_legend_new": "Precio Nuevo Medio",
+        "price_comparison_legend_contado": "Precio 2ª Mano Medio",
         "price_comparison_description": """
 ### Precio coche nuevo vs precio coche de segunda mano por marca
 
@@ -353,7 +347,7 @@ Este gráfico de barras compara el precio medio de coches nuevos frente al preci
 - **Eje X (Marca)**: Muestra las diferentes marcas de coches disponibles en el mercado.
 - **Eje Y (Precio Medio)**: Representa el precio medio de los coches en euros (€).
 - **Barras Azules**: Indican el precio medio de coches nuevos para cada marca.
-- **Barras Naranjas**: Indican el precio medio de coches de segunda mano (precio al contado) para cada marca.
+- **Barras Naranjas**: Indican el precio medio de coches de segunda mano para cada marca.
 
 #### Observaciones clave:
 1. **Diferencias de precios**:
@@ -366,7 +360,7 @@ Este gráfico de barras compara el precio medio de coches nuevos frente al preci
 
 3. **Comparación entre marcas**:
    - **Tesla** destaca con precios más elevados para coches nuevos en comparación con marcas generalistas, pero con una diferencia más reducida entre el precio nuevo y de segunda mano.
-   - Marcas como **Mercedes-Benz** y **BMW** tienen precios nuevos más altos en comparación con el precio al contado de los coches usados.
+   - Marcas como **Mercedes-Benz** y **BMW** tienen precios nuevos más altos en comparación con el precio de los coches usados.
 
 #### Uso del gráfico:
 Este gráfico es útil para:
@@ -382,8 +376,8 @@ Este gráfico es útil para:
             "precio_contado": "Precio (€)",
             "combustible": "Tipo de Combustible"
         },
-        "power_price_relation_hovertemplate": '<b>Potencia (cv)</b>: %{x:,}<br>' + \
-                                               '<b>Precio contado</b>: %{y:,.2f} €<br>' + \
+        "power_price_relation_hovertemplate": '<b>Potencia</b>: %{x:,}cv<br>' + \
+                                               '<b>Precio</b>: %{y:,.2f}€<br>' + \
                                                '<b>Combustible</b>: %{customdata[0]}<br>' + \
                                                '<extra></extra>',
         "power_price_relation_description": """
@@ -459,7 +453,7 @@ Este mapa muestra la distribución geográfica del precio medio de coches en cad
 - Las provincias con **color más claro** tienen un precio medio más bajo.
 - Al pasar el cursor sobre una provincia, se puede observar el **precio medio exacto en euros**.
 
-La información está basada en el precio al contado promedio calculado a partir de los datos disponibles.
+La información está basada en el precio de segunda mano promedio calculado a partir de los datos disponibles.
 
 Sorprende que destaque Almería como provincia con coches más caros que el resto. No se aprecia ningún patrón.            
 """
@@ -557,7 +551,7 @@ fig = px.box(
 
 # Personalizar diseño y formato del tooltip
 fig.update_traces(
-    hovertemplate= f'{texts[lang]["box_plot_hovertemplate"]}'
+    hovertemplate= texts[lang]["box_plot_hovertemplate"]
 )
 
 # Personalizar diseño
