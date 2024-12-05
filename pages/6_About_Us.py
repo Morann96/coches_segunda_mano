@@ -18,7 +18,7 @@ team_members = [
         "role": "Dev",
         "linkedin": "https://www.linkedin.com/in/miguelgarciadelvalle-516677145",
         "github": "https://github.com/juanperez",
-        "photo": "https://via.placeholder.com/150"
+        "photo": "bin/imagenes/Foto_miguel.jpg"
     },
     {
         "name": "Carlos Moreno",
