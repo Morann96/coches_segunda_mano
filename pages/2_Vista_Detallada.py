@@ -10,6 +10,8 @@ texts = {
         "filters_header": "Filters",
         
         # Filtros y entradas
+        "manual_price_range_min": "Minimum Price",
+        "manual_price_range_max": "Maximum Price",
         "filter_price_range": "Price Range",
         "filter_registration_year_range": "Year of Registration Range",
         "select_brand": "Select Brand",
@@ -48,6 +50,8 @@ texts = {
         "filters_header": "Filtros",
         
         # Filtros y entradas
+        "manual_price_range_min": "Precio mínimo",
+        "manual_price_range_max": "Precio máximo",
         "filter_price_range": "Rango de precio",
         "filter_registration_year_range": "Rango de año de matriculación",
         "select_brand": "Selecciona Marca",
@@ -126,11 +130,18 @@ if 'filtros' not in st.session_state:
     st.session_state.filtros = {}
 
 # Filtrar por rango de precio
+
+min_price = int(data['precio_contado'].min())
+max_price = int(data['precio_contado'].max())
+
+min_value = st.sidebar.number_input(texts[lang]["manual_price_range_min"], min_value=min_price, max_value=max_price, value=min_price, step=500)
+max_value = st.sidebar.number_input(texts[lang]["manual_price_range_max"], min_value=min_price, max_value=max_price, value=max_price, step=500)
+
 min_price, max_price = st.sidebar.slider(
-    texts[lang]['filter_price_range'],
-    min_value=int(data['precio_contado'].min()),
-    max_value=int(data['precio_contado'].max()),
-    value=(int(data['precio_contado'].min()), int(data['precio_contado'].max()))
+    'Rango de precios',
+    min_value=min_price,
+    max_value=max_price,
+    value=(min_value, max_value)
 )
 st.session_state.filtros['min_price'] = min_price
 st.session_state.filtros['max_price'] = max_price
