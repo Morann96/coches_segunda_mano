@@ -14,7 +14,7 @@ st.header("**Nuestro Equipo**")
 # Define los integrantes del equipo con sus datos
 team_members = [
     {
-        "name": "Miguel Garcia",
+        "name": "Miguel García",
         "role": "Dev",
         "linkedin": "https://www.linkedin.com/in/miguelgarciadelvalle-516677145",
         "github": "https://github.com/juanperez",
