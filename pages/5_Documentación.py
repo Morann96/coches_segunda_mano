@@ -1,7 +1,6 @@
 # documentacion.py
 
 import streamlit as st
-from PIL import Image
 
 # Verificar si existe el estado de idioma, si no, se inicializa en inglés
 if 'lang' not in st.session_state:

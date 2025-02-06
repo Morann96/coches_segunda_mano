@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import mysql.connector as mc
 import plotly.express as px
 
 texts = {
@@ -106,18 +105,20 @@ else:
 lang = st.session_state.lang
 
 # Función para conectar a la base de datos
-def conectar_base_datos():
-    conn = st.connection('mysql', type='sql')
-    return conn
+# def conectar_base_datos():
+#     conn = st.connection('mysql', type='sql')
+#     return conn
   
 # Función para extraer y mostrar datos
-def obtener_datos_vista():
-    conn = conectar_base_datos()
-    query = "SELECT * FROM vista_prestaciones"
-    data = conn.query(query)  # Ejecutar consulta y obtener datos como DataFrame
-    return data
+# def obtener_datos_vista():
+#     conn = conectar_base_datos()
+#     query = "SELECT * FROM vista_prestaciones"
+#     data = conn.query(query)  # Ejecutar consulta y obtener datos como DataFrame
+#     return data
 
-data = obtener_datos_vista()
+#data = obtener_datos_vista()
+
+data = pd.read_csv("bin/datos_completos.csv")
 
 # Título de la aplicación
 st.markdown(f"<h1 style='text-align: center;'>{texts[lang]['title_app']}</h1>", unsafe_allow_html=True)
