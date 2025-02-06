@@ -198,7 +198,7 @@ st.markdown("""
 @st.cache_data
 def load_data():
     # Lista de nombres de archivo para los 10 CSV
-    files = [f"bin/datos_img_completos_{i}.csv" for i in range(1, 11)]
+    files = [f"bin/datos_img_completos_{i}.csv" for i in range(1, 16)]
     
     # Leer cada archivo y almacenar en una lista de DataFrames
     dfs = [pd.read_csv(file) for file in files]

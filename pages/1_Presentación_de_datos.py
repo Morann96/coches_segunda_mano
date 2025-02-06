@@ -490,7 +490,7 @@ def mostrar_datos(tabla):
     df = conn.query(query)  # Extraer datos como DataFrame
     return df
 
-df = mostrar_datos("vista_prestaciones")
+df = pd.read_csv("bin/datos_completos.csv")
 
 st.markdown(f'<h1 style="text-align:center; font-size: 3rem;">{texts[lang]["analysis_title"]}</h1>', unsafe_allow_html=True)
 
