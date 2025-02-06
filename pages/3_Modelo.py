@@ -298,8 +298,9 @@ escalador_y = escaladores["y_scaler"]
 st.markdown(f'<h1 style="text-align:center; font-size: 3rem;">{texts[lang]["title_app"]}</h1>', unsafe_allow_html=True)
 
 
-tabla = "vista_prestaciones"
-data = mostrar_datos(tabla)
+#tabla = "vista_prestaciones"
+#data = mostrar_datos(tabla)
+data =pd.read_csv("bin/datos_completos.csv")
 
 # Creamos la columna fecha_matriculacion para calcular la antigüedad del coche en años
 data['fecha_matriculacion'] = (

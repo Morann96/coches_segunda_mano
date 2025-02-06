@@ -117,7 +117,9 @@ def obtener_datos_vista():
     data = conn.query(query)  # Ejecutar consulta y obtener datos como DataFrame
     return data
 
-data = obtener_datos_vista()
+#data = obtener_datos_vista()
+
+data = pd.read_csv("bin/datos_completos.csv")
 
 # Título de la aplicación
 st.markdown(f"<h1 style='text-align: center;'>{texts[lang]['title_app']}</h1>", unsafe_allow_html=True)

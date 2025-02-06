@@ -3,6 +3,7 @@ import pandas as pd
 from io import BytesIO
 from PIL import Image
 import base64
+import ast
 import numpy as np
 import plotly.graph_objects as go
 import io
@@ -109,17 +110,15 @@ else:
 
 lang = st.session_state.lang
 
-# Conexión a la base de datos
-def conectar_base_datos():
-    conn = st.connection('mysql', type='sql')
-    return conn
-
-# Función para cargar datos desde la base de datos
-def cargar_datos():
-    conn = conectar_base_datos()
-    query = "SELECT * FROM vista_prestaciones_img" 
-    df = conn.query(query)
-    return df
+def convertir_str_a_bytes(valor):
+    # Verificamos que el valor sea una cadena y que parezca la representación de bytes (comienza con "b'")
+    if isinstance(valor, str) and valor.startswith("b'"):
+        try:
+            return ast.literal_eval(valor)
+        except Exception as e:
+            print(f"Error al evaluar la cadena: {e}")
+            return None
+    return valor
 
 # Función para convertir datos binarios a imagen
 def convertir_binario_a_imagen(binario):
@@ -196,16 +195,33 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # Cargar datos
-df = cargar_datos()
+@st.cache_data
+def load_data():
+    # Lista de nombres de archivo para los 10 CSV
+    files = [f"bin/datos_img_completos_{i}.csv" for i in range(1, 11)]
+    
+    # Leer cada archivo y almacenar en una lista de DataFrames
+    dfs = [pd.read_csv(file) for file in files]
+    
+    # Concatenar todos los DataFrames en uno solo
+    df = pd.concat(dfs, ignore_index=True)
+    
+    # Convertir la columna 'foto_binaria' de str a bytes (si es necesario)
+    df["foto_binaria"] = df["foto_binaria"].apply(convertir_str_a_bytes)
+    
+    # Reemplazar valores nulos en columnas categóricas
+    columnas_categoricas = ['marca', 'modelo', 'tipo_cambio', 'combustible', 'distintivo_ambiental']
+    df[columnas_categoricas] = df[columnas_categoricas].fillna('Desconocido')
+    
+    # Asegurar que las columnas numéricas sean de tipo numérico
+    columnas_numericas = ['precio_contado', 'kilometraje', 'potencia_cv', 'velocidad_max', 
+                          'aceleracion', 'consumo_medio', 'peso', 'capacidad_maletero']
+    df[columnas_numericas] = df[columnas_numericas].apply(pd.to_numeric, errors='coerce')
+    df[columnas_numericas] = df[columnas_numericas].fillna(0)
+    
+    return df
 
-# Reemplazar valores nulos solo en columnas categóricas
-columnas_categoricas = ['marca', 'modelo', 'tipo_cambio', 'combustible', 'distintivo_ambiental']
-df[columnas_categoricas] = df[columnas_categoricas].fillna('Desconocido')
-
-# Asegurar que las columnas numéricas son de tipo numérico
-columnas_numericas = ['precio_contado', 'kilometraje', 'potencia_cv', 'velocidad_max', 'aceleracion', 'consumo_medio', 'peso', 'capacidad_maletero']
-df[columnas_numericas] = df[columnas_numericas].apply(pd.to_numeric, errors='coerce')
-df[columnas_numericas] = df[columnas_numericas].fillna(0)
+df = load_data()
 
 # Título de la página
 st.markdown(f"<h1 style='text-align: center;font-size: 3rem;'>{texts[lang]['page_title']}</h1>", unsafe_allow_html=True)
