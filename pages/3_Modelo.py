@@ -462,9 +462,16 @@ with col2:
 
     # Configurar la localización para España
     try:
-        locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')  # En sistemas basados en Unix
-    except:
-        locale.setlocale(locale.LC_ALL, 'Spanish_Spain.1252')  # Para Windows
+        if sys.platform.startswith('win'):
+            # Para Windows
+            locale.setlocale(locale.LC_ALL, 'Spanish_Spain.1252')
+        else:
+            # Para sistemas Unix (Linux, macOS, etc.)
+            locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')
+    except locale.Error:
+        # Si no se puede establecer ninguno de los locales deseados,
+        # usar el locale predeterminado del sistema
+        locale.setlocale(locale.LC_ALL, '')
 
     # Función para predicción con Machine Learning
     def prediccion_ml():
