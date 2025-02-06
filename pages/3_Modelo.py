@@ -3,10 +3,8 @@ import pandas as pd
 import numpy as np
 import pickle
 import os
-import mysql.connector
 from datetime import datetime
 import locale
-import tensorflow as tf
 from tensorflow.keras.models import load_model
 import plotly.express as px
 import plotly.graph_objects as go
@@ -239,17 +237,17 @@ else:
 lang = st.session_state.lang
 
 # Función para conectar a la base de datos
-def conectar_base_datos():
-    conn = st.connection('mysql', type='sql')
-    return conn
+# def conectar_base_datos():
+#     conn = st.connection('mysql', type='sql')
+#     return conn
 
-# Función para extraer y mostrar datos
-def mostrar_datos(tabla):
-    conn = conectar_base_datos()
-    query = f"SELECT * FROM {tabla}"
-    conn.query(query)  # Consulta SQL
-    df = conn.query(query)  # Extraer datos como DataFrame
-    return df
+# # Función para extraer y mostrar datos
+# def mostrar_datos(tabla):
+#     conn = conectar_base_datos()
+#     query = f"SELECT * FROM {tabla}"
+#     conn.query(query)  # Consulta SQL
+#     df = conn.query(query)  # Extraer datos como DataFrame
+#     return df
 
 # Cargar modelo
 @st.cache_resource

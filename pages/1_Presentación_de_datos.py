@@ -1,10 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from PIL import Image
-import folium
-from streamlit_folium import st_folium
-from folium import Choropleth, GeoJson
 import geopandas as gpd
 import plotly.graph_objects as go
 import numpy as np

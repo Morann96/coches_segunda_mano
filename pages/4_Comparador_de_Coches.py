@@ -6,8 +6,8 @@ import base64
 import ast
 import numpy as np
 import plotly.graph_objects as go
-import io
-import streamlit.components.v1 as components
+
+
 
 texts = {
     "en": {
