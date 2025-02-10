@@ -138,12 +138,12 @@ max_price = int(data['precio_contado'].max())
 min_value = st.sidebar.number_input(texts[lang]["manual_price_range_min"], min_value=min_price, max_value=max_price, value=min_price, step=500)
 max_value = st.sidebar.number_input(texts[lang]["manual_price_range_max"], min_value=min_price, max_value=max_price, value=max_price, step=500)
 
-min_price, max_price = st.sidebar.slider(
-    'Rango de precios',
-    min_value=min_price,
-    max_value=max_price,
-    value=(min_value, max_value)
-)
+# min_price, max_price = st.sidebar.slider(
+#     'Rango de precios',
+#     min_value=min_price,
+#     max_value=max_price,
+#     value=(min_value, max_value)
+# )
 st.session_state.filtros['min_price'] = min_price
 st.session_state.filtros['max_price'] = max_price
 
