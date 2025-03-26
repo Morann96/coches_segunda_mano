@@ -1,7 +1,7 @@
 # **Coches segunda mano**  
 Aplicación web para analizar datos del mercado de coches de segunda mano, permitiendo visualizar tendencias, comparar precios y filtrar por características clave.  
 
-https://secondhandcarstest.streamlit.app/Home
+https://secondhandcarstest.streamlit.app
 
 ---
 
